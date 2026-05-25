@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cblyxbmrcxw1b"]
+
+[ext_resource type="Script" uid="uid://dqb6gdg7flaxe" path="res://core/main.gd" id="1_xiose"]
+
+[node name="Main" type="Node" unique_id=180705528]
+script = ExtResource("1_xiose")
+
+[node name="PrimaryContainer" type="Node" parent="." unique_id=115750125]
+
+[node name="BackgroundContainer" type="Node" parent="." unique_id=502927051]
