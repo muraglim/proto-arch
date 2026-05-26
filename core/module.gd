@@ -10,7 +10,9 @@ enum SwapType {
 	MIGRATE
 }
 
-signal nav_req(target_module_path: String, transition: SwapType)
+signal nav_req(target_module_path: String, swap: SwapType)
+
+var module_path: String = ""
 
 func req_exit(next_dest: String, swap: SwapType = SwapType.CLOSE) -> void:
 	nav_req.emit(next_dest, swap)

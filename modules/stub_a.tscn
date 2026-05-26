@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://sew0lmp877f3"]
+
+[ext_resource type="Script" uid="uid://pf80i7x42dmk" path="res://modules/stub_a.gd" id="1_tisd8"]
+
+[node name="Stub_A" type="Node" unique_id=477268411]
+script = ExtResource("1_tisd8")
+metadata/_custom_type_script = "uid://bmojomnoei6cy"
+
+[node name="Display" type="VBoxContainer" parent="." unique_id=1720503624]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menu" type="RichTextLabel" parent="Display" unique_id=70730632]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 20.0
+bbcode_enabled = true
+
+[node name="Input" type="LineEdit" parent="Display" unique_id=623603182]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 10
+size_flags_stretch_ratio = 20.0
+
+[node name="StatusBar" type="HBoxContainer" parent="Display" unique_id=766595429]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="InitCount" type="RichTextLabel" parent="Display/StatusBar" unique_id=189673145]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+bbcode_enabled = true
+
+[node name="PauseCount" type="RichTextLabel" parent="Display/StatusBar" unique_id=1700070849]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+localize_numeral_system = false
+bbcode_enabled = true
+
+[node name="ResumeCount" type="RichTextLabel" parent="Display/StatusBar" unique_id=890302861]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+bbcode_enabled = true

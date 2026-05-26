@@ -4,7 +4,7 @@ extends Node
 @onready var back: Node = $BackContainer
 
 var startup: bool = false
-const MAIN_MENU_PATH = "uid://your_menu_uid_here"
+const MAIN_MENU_PATH = "uid://b27eqwa55glmf"
 
 func _ready() -> void:
 	go_to(MAIN_MENU_PATH, Module.SwapType.CLOSE)
@@ -21,7 +21,7 @@ func go_to(next_path: String, swap: Module.SwapType) -> void:
 		elif swap == Module.SwapType.MIGRATE:
 			migrate_module()
 	for child in back.get_children():
-		if child.scene_file_path != next_path:
+		if child.module_path != next_path:
 			continue
 		back.remove_child(child)
 		front.add_child(child)
@@ -35,8 +35,9 @@ func go_to(next_path: String, swap: Module.SwapType) -> void:
 	var module_instance: Node = module_scene.instantiate()
 		
 	if module_instance is Module:
-		module_instance.nav_req.connect(_on_nav_req)
 		front.add_child(module_instance)
+		module_instance.module_path = next_path
+		module_instance.nav_req.connect(_on_nav_req)
 		module_instance.module_init()
 		print("go_to: " + next_path + " loaded fresh") # breadcrumb
 	else:
