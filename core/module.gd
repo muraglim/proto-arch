@@ -1,15 +1,19 @@
 class_name Module
 extends Node
 
-enum TransitionType {
-	DESTROY,   # 
-	BACKGROUND # Send the old module to the BackgroundContainer
+# Do not use _ready() in Module subclasses.
+# Use module_init() instead - it fires after the module
+# is fully added to the scene tree and bootstrapper wiring is complete.
+
+enum SwapType {
+	CLOSE,
+	MIGRATE
 }
 
-signal nav_req(target_module_path: String, transition: TransitionType)
+signal nav_req(target_module_path: String, transition: SwapType)
 
-func req_exit(next_dest: String, transition_type: TransitionType = TransitionType.DESTROY) -> void:
-	nav_req.emit(next_dest, transition_type)
+func req_exit(next_dest: String, swap: SwapType = SwapType.CLOSE) -> void:
+	nav_req.emit(next_dest, swap)
 
 func module_init() -> void:
 	pass
@@ -20,5 +24,5 @@ func module_pause() -> void:
 func module_resume() -> void:
 	pass
 
-func module_teardown() -> void:
+func module_shutdown() -> void:
 	pass

@@ -4,7 +4,8 @@
 
 [node name="Main" type="Node" unique_id=180705528]
 script = ExtResource("1_xiose")
+target_module_path = null
 
-[node name="PrimaryContainer" type="Node" parent="." unique_id=115750125]
+[node name="FrontContainer" type="Node" parent="." unique_id=115750125]
 
-[node name="BackgroundContainer" type="Node" parent="." unique_id=502927051]
+[node name="BackContainer" type="Node" parent="." unique_id=502927051]
