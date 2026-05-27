@@ -3,9 +3,9 @@ extends Module
 @onready var display: VBoxContainer = $Display
 @onready var menu: RichTextLabel = $Display/Menu
 @onready var input: LineEdit = $Display/Input
-@onready var status_label_1: RichTextLabel = $Display/StatusBar/InitCount
-@onready var status_label_2: RichTextLabel = $Display/StatusBar/PauseCount
-@onready var status_label_3: RichTextLabel = $Display/StatusBar/ResumeCount
+@onready var status_label_1: RichTextLabel = $Display/StatusBar/StatusLabel1
+@onready var status_label_2: RichTextLabel = $Display/StatusBar/StatusLabel2
+@onready var status_label_3: RichTextLabel = $Display/StatusBar/StatusLabel3
 
 func module_init() -> void:
 	menu.bbcode_enabled = true
