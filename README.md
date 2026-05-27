@@ -1,4 +1,4 @@
-# Proto-Arch
+# proto-arch
 
 A modular sandbox architecture for housing and interconnecting game prototypes, 
 built in Godot 4 using GDScript.
