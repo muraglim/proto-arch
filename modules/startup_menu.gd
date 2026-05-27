@@ -22,11 +22,7 @@ func _on_input(text: String) -> void:
 	input.clear()
 	match text:
 		"1":
-			var path = Keeper.get_value("uid_store", "template_menu")
-			if path == null or path.is_empty():
-				push_error("startup_menu: failed to retrieve template_menu uid")
-				return
-			req_exit(path, Module.SwapType.CLOSE)
+			req_exit(get_uid("template_menu"), Module.SwapType.CLOSE)
 
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:

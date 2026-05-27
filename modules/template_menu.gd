@@ -37,17 +37,9 @@ func _on_input(text: String) -> void:
 	input.clear()
 	match text:
 		"1":
-			var path = Keeper.get_value("uid_store", "startup_menu")
-			if path == null or path.is_empty():
-				push_error("template_menu: failed to retrieve startup_menu uid")
-				return
-			req_exit(path, Module.SwapType.MIGRATE)
+			req_exit(get_uid("startup_menu"), Module.SwapType.MIGRATE)
 		"2":
-			var path = Keeper.get_value("uid_store", "startup_menu")
-			if path == null or path.is_empty():
-				push_error("template_menu: failed to retrieve startup_menu uid")
-				return
-			req_exit(path, Module.SwapType.CLOSE)
+			req_exit(get_uid("startup_menu"), Module.SwapType.CLOSE)
 
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:
