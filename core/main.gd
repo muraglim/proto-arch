@@ -6,7 +6,11 @@ extends Node
 var startup: bool = false
 
 func _ready() -> void:
-	go_to(Keeper.get_value("uid_store", "startup_uid"), Module.SwapType.CLOSE)
+	var startup_path = Keeper.get_value("uid_store", "startup_uid")
+	if startup_path == null or startup_path.is_empty():
+		push_error("_ready: failed to retrieve startup_uid from Keeper")
+		return
+	go_to(startup_path, Module.SwapType.CLOSE)
 	startup = true
 	
 func go_to(next_path: String, swap: Module.SwapType) -> void:
