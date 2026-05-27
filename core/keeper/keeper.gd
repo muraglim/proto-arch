@@ -2,8 +2,14 @@ extends Node
 
 var stores: Dictionary = {}
 
+	
+
 func _ready() -> void:
-	stores["uid_store"] = $UID_Store
+	# store keys are derived from child node names via to_lower()
+	# node: UID_Store -> key: "uid_store"
+	# add new stores by adding child nodes to keeper.tscn only
+	for child in get_children():
+		stores[child.name.to_lower()] = child
 
 func get_value(store: String, key: String) -> Variant:
 	if not stores.has(store):
