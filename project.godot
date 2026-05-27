@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="proto-archipelago"
+config/name="proto-arch"
 run/main_scene="uid://cblyxbmrcxw1b"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
