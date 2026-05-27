@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://brteb0pj5ikk5"]
 
 [ext_resource type="Script" uid="uid://ckm2kh47rwqyd" path="res://core/keeper/keeper.gd" id="1_d8g3g"]
+[ext_resource type="Script" uid="uid://ju52bwpgk30p" path="res://core/keeper/char_roster_store.gd" id="2_6g04p"]
 [ext_resource type="Script" uid="uid://dmor254yqdo6a" path="res://core/keeper/uid_store.gd" id="3_6g04p"]
 
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")
+
+[node name="CharRoster_Store" type="Node" parent="." unique_id=1821852096]
+script = ExtResource("2_6g04p")
 
 [node name="UID_Store" type="Node" parent="." unique_id=1748296768]
 script = ExtResource("3_6g04p")

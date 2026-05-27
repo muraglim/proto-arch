@@ -15,6 +15,9 @@ signal nav_req(target_module_path: String, swap: SwapType)
 var module_path: String = ""
 
 func req_exit(next_dest: String, swap: SwapType = SwapType.CLOSE) -> void:
+	if next_dest == null or next_dest.is_empty():
+		push_error(name + ": req_exit called with empty or null destination")
+		return
 	nav_req.emit(next_dest, swap)
 
 func module_init() -> void:
