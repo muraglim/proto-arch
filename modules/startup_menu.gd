@@ -16,7 +16,7 @@ var valid_inputs: Array = ["1"]
 func update_menu() -> void:
 	menu.text = """ｓｔａｒｔｕｐ ｍｅｎｕ
 
-『1』 navigate to [u]stub[/u] [u]a[/u]"""
+『1』 navigate to template_menu"""
 
 func _on_input(text: String) -> void:	
 	input.clear()

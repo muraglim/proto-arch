@@ -6,7 +6,7 @@ extends Node
 var startup: bool = false
 
 func _ready() -> void:
-	var startup_path = Keeper.get_value("uid_store", "startup_uid")
+	var startup_path = Keeper.get_value("uid_store", "startup_menu")
 	if startup_path == null or startup_path.is_empty():
 		push_error("_ready: failed to retrieve startup_uid from Keeper")
 		return

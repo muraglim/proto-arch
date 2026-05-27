@@ -1,7 +1,7 @@
 extends Node
 
 var data: Dictionary = {
-	"startup_uid": "uid://b27eqwa55glmf",
+	"startup_menu": "uid://b27eqwa55glmf",
 	"template_menu": "uid://sew0lmp877f3"
 	}
 
