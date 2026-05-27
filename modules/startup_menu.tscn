@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://b27eqwa55glmf"]
 
-[ext_resource type="Script" uid="uid://b5h3i8onue1tn" path="res://modules/main_menu.gd" id="1_i4bag"]
+[ext_resource type="Script" uid="uid://b5h3i8onue1tn" path="res://modules/startup_menu.gd" id="1_i4bag"]
 
-[node name="MainMenu" type="Node" unique_id=2030913058]
+[node name="StartupMenu" type="Node" unique_id=2030913058]
 script = ExtResource("1_i4bag")
 metadata/_custom_type_script = "uid://bmojomnoei6cy"
 

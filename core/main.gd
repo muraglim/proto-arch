@@ -15,7 +15,7 @@ func _ready() -> void:
 	
 func go_to(next_path: String, swap: Module.SwapType) -> void:
 	if front.get_child_count() == 0 and startup:
-		push_error("go_to: front is empty after startup. main menu not loaded.")
+		push_error("go_to: front is empty after startup. startup_menu not loaded.")
 		return
 	
 	if front.get_child_count() > 0:	

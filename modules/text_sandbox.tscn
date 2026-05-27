@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://cipd2l6c8fayp"]
-
-[ext_resource type="Script" uid="uid://bmojomnoei6cy" path="res://core/module.gd" id="1_njbcp"]
-
-[node name="Node" type="Node" unique_id=2104686978]
-script = ExtResource("1_njbcp")
-metadata/_custom_type_script = "uid://bmojomnoei6cy"
