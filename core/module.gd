@@ -32,6 +32,6 @@ func module_shutdown() -> void:
 func get_uid(key: String) -> String:
 	var path = Keeper.get_value("uid_store", key)
 	if path == null or path.is_empty():
-		push_error(name + ": failed to retrieve uid for key" + key)
+		push_error(name + ": failed to retrieve uid for key - " + key)
 		return ""
 	return path
