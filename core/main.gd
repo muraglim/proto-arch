@@ -4,10 +4,9 @@ extends Node
 @onready var back: Node = $BackContainer
 
 var startup: bool = false
-const MAIN_MENU_PATH = "uid://b27eqwa55glmf"
 
 func _ready() -> void:
-	go_to(MAIN_MENU_PATH, Module.SwapType.CLOSE)
+	go_to(Keeper.get_value("uid_store", "startup_uid"), Module.SwapType.CLOSE)
 	startup = true
 	
 func go_to(next_path: String, swap: Module.SwapType) -> void:
