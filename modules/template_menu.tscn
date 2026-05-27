@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://sew0lmp877f3"]
 
-[ext_resource type="Script" uid="uid://pf80i7x42dmk" path="res://modules/stub_a.gd" id="1_tisd8"]
+[ext_resource type="Script" uid="uid://pf80i7x42dmk" path="res://modules/stub_a.gd" id="1_icj4e"]
 
-[node name="Stub_A" type="Node" unique_id=477268411]
-script = ExtResource("1_tisd8")
+[node name="TemplateMenu" type="Node" unique_id=477268411]
+script = ExtResource("1_icj4e")
 metadata/_custom_type_script = "uid://bmojomnoei6cy"
 
 [node name="Display" type="VBoxContainer" parent="." unique_id=1720503624]
