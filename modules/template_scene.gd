@@ -37,9 +37,9 @@ func _on_input(text: String) -> void:
 	input.clear()
 	match text:
 		"1":
-			req_exit(get_uid("boot_scene"), Module.SwapAction.SWAP)
+			nav_swap(get_nav("boot_scene"))
 		"2":
-			req_exit(get_uid("boot_scene"), Module.SwapAction.CLOSE)
+			nav_exit(get_nav("boot_scene"))
 	
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:

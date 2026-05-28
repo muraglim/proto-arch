@@ -22,7 +22,7 @@ func _on_input(text: String) -> void:
 	input.clear()
 	match text:
 		"1":
-			req_exit(get_uid("template_scene"), Module.SwapAction.CLOSE)
+			nav_exit(get_nav("template_scene"))
 
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:

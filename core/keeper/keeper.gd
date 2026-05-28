@@ -15,10 +15,8 @@ func get_value(store: String, key: String) -> Variant:
 		return null
 	return stores[store].get_value(key)
 
+func set_value(store: String, key: String, delta: Variant) -> void:
+	pass
 
-
-#func modify_value(store: String, key: String, amount: int) -> void:
-#	if not stores.has(store):
-#		push_error("modify_value: unknown store - " + store)
-#		return
-#	stores[store].increment(key, amount)
+func append_value() -> void: 
+	pass

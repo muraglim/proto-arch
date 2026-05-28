@@ -5,14 +5,14 @@ extends Node
 
 var is_booted: bool = false
 var swap_actions = {
-	Module.SwapAction.CLOSE: close_module,
+	Module.SwapAction.EXIT: exit_module,
 	Module.SwapAction.SWAP: swap_module
 }
 
 func _ready() -> void:
 	var boot_scene = Keeper.get_value("nav_store", "boot_scene")
 	if not Guard.is_nav_valid(boot_scene, "main.gd:_ready"): return
-	go_to(boot_scene, Module.SwapAction.CLOSE)
+	go_to(boot_scene, Module.SwapAction.EXIT)
 	is_booted = true
 	
 func go_to(dest: String, swap: Module.SwapAction) -> void:
@@ -21,7 +21,9 @@ func go_to(dest: String, swap: Module.SwapAction) -> void:
 	if front.get_child_count() > 0 and swap_actions.has(swap):
 		swap_actions[swap].call()
 	for child in back.get_children():
-		if child.module_dest != dest:
+		var module = child as Module
+		if not Guard.is_module(module, "main.gd:go_to"): continue
+		if module.module_dest != dest:
 			continue
 		back.remove_child(child)
 		front.add_child(child)
@@ -51,14 +53,14 @@ func swap_module() -> void:
 	back.add_child(module)
 	print("main.gd:swap_module: " + module.name + " swapped, front -> back.") # breadcrumb
 
-func close_module() -> void:
+func exit_module() -> void:
 	if front.get_child_count() == 0:
 		return
 	var module: Module = front.get_child(0) as Module
 	if not Guard.is_module(module, "main.gd:swap_module"): return
 	module.module_shutdown()
 	front.remove_child(module)
-	print("main.gd:close_module: " + module.name + " closed.") # breadcrumb
+	print("main.gd:exit_module: " + module.name + " exited.") # breadcrumb
 	module.queue_free()
 	
 func _on_nav_req(dest: String, swap: Module.SwapAction) -> void:
