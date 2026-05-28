@@ -2,8 +2,6 @@ extends Node
 
 var stores: Dictionary = {}
 
-	
-
 func _ready() -> void:
 	# store keys are derived from child node names via to_lower()
 	# node: UID_Store -> key: "uid_store"
