@@ -14,15 +14,15 @@ func module_init() -> void:
 var valid_inputs: Array = ["1"]
 
 func update_menu() -> void:
-	menu.text = """ｓｔａｒｔｕｐ ｍｅｎｕ
+	menu.text = """ｂｏｏｔ　ｍｅｎｕ
 
-『1』 navigate to template_menu"""
+『1』 navigate to template_scene"""
 
 func _on_input(text: String) -> void:	
 	input.clear()
 	match text:
 		"1":
-			req_exit(get_uid("template_menu"), Module.SwapType.CLOSE)
+			req_exit(get_uid("template_scene"), Module.SwapAction.CLOSE)
 
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:

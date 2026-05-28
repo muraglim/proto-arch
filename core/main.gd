@@ -3,71 +3,63 @@ extends Node
 @onready var front: Node = $FrontContainer
 @onready var back: Node = $BackContainer
 
-var startup: bool = false
+var is_booted: bool = false
+var swap_actions = {
+	Module.SwapAction.CLOSE: close_module,
+	Module.SwapAction.SWAP: swap_module
+}
 
 func _ready() -> void:
-	var startup_path = Keeper.get_value("uid_store", "startup_menu")
-	if startup_path == null or startup_path.is_empty():
-		push_error("_ready: failed to retrieve startup_uid from Keeper")
-		return
-	go_to(startup_path, Module.SwapType.CLOSE)
-	startup = true
+	var boot_scene = Keeper.get_value("nav_store", "boot_scene")
+	if not Guard.is_nav_valid(boot_scene, "main.gd:_ready"): return
+	go_to(boot_scene, Module.SwapAction.CLOSE)
+	is_booted = true
 	
-func go_to(next_path: String, swap: Module.SwapType) -> void:
-	if front.get_child_count() == 0 and startup:
-		push_error("go_to: front is empty after startup. startup_menu not loaded.")
-		return
-	
-	if front.get_child_count() > 0:	
-		if swap == Module.SwapType.CLOSE:
-			close_module()
-		elif swap == Module.SwapType.MIGRATE:
-			migrate_module()
+func go_to(dest: String, swap: Module.SwapAction) -> void:
+	if Guard.is_boot_valid(front, is_booted, "main.gd:go_to"): return
+	if not Guard.is_nav_valid(dest, "main.gd:go_to"): return
+	if front.get_child_count() > 0 and swap_actions.has(swap):
+		swap_actions[swap].call()
 	for child in back.get_children():
-		if child.module_path != next_path:
+		if child.module_dest != dest:
 			continue
 		back.remove_child(child)
 		front.add_child(child)
-		if child is Module:
-			child.module_resume()
-			print("go_to: " + child.name + " restored from back") # breadcrumb
-		else:
-			push_error("go_to: non-Module found in back - " + child.name)
+		if Guard.is_module(child, "main.gd:go_to"):
+			child.module_resume() # TODO: replace with module_unhide
 		return
-	var module_scene: PackedScene = load(next_path)
-	var module_instance: Node = module_scene.instantiate()
-		
-	if module_instance is Module:
-		front.add_child(module_instance)
-		module_instance.module_path = next_path
-		module_instance.nav_req.connect(_on_nav_req)
-		module_instance.module_init()
-		print("go_to: " + next_path + " loaded fresh") # breadcrumb
-	else:
-		push_error("go_to: loaded scene is not a Module " + next_path)
-		module_instance.queue_free()
+	start_module(dest)
 
-func migrate_module() -> void:
-	var module_migrant: Module = front.get_child(0) as Module
-	if module_migrant == null:
-		push_error("migrate_module: non-Module node found in front - " + front.get_child(0).name)
+func start_module(dest: String) -> void:
+	var scene: PackedScene = load(dest)
+	if Guard.is_unresolved(scene, "main.gd:start_module"): return
+	var module_instance: Node = scene.instantiate()
+	if not Guard.is_module(module_instance, "main.gd:start_module"):
+		module_instance.queue_free()
 		return
-	module_migrant.module_pause()
-	front.remove_child(module_migrant)
-	back.add_child(module_migrant)
-	print(module_migrant.name + " migrated to back.") # breadcrumb
+	front.add_child(module_instance)
+	module_instance.module_dest = dest
+	module_instance.nav_req.connect(_on_nav_req)
+	module_instance.module_init()
+	print("main.gd:start_module: " + module_instance.name + " started.") #breadcrumb
+
+func swap_module() -> void:
+	var module: Module = front.get_child(0) as Module
+	if not Guard.is_module(module, "main.gd:swap_module"): return
+	module.module_pause() # TODO change to module_hide
+	front.remove_child(module)
+	back.add_child(module)
+	print("main.gd:swap_module: " + module.name + " swapped, front -> back.") # breadcrumb
 
 func close_module() -> void:
 	if front.get_child_count() == 0:
 		return
-	var old_module: Module = front.get_child(0) as Module
-	if old_module == null:
-		push_error("close_module: non-Module node found in front - " + front.get_child(0).name)
-		return
-	old_module.module_shutdown()
-	front.remove_child(old_module)
-	print("close_module: " + old_module.name + " closed") # breadcrumb
-	old_module.queue_free()
+	var module: Module = front.get_child(0) as Module
+	if not Guard.is_module(module, "main.gd:swap_module"): return
+	module.module_shutdown()
+	front.remove_child(module)
+	print("main.gd:close_module: " + module.name + " closed.") # breadcrumb
+	module.queue_free()
 	
-func _on_nav_req(next_path: String, swap: Module.SwapType) -> void:
-	go_to(next_path, swap)
+func _on_nav_req(dest: String, swap: Module.SwapAction) -> void:
+	go_to(dest, swap)

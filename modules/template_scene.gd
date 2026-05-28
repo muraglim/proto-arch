@@ -28,19 +28,19 @@ func update_status() -> void:
 var valid_inputs: Array = ["1", "2"]
 
 func update_menu() -> void:
-	menu.text = """【﻿ｓｔｕｂ　ａ】
+	menu.text = """【﻿ｔｅｍｐｌａｔｅ　ｓｃｅｎｅ】
 
-『1』PAUSE template_menu and navigate to main_menu
-『2』CLOSE template_menu and navigate to main_menu"""
+『1』PAUSE template_menu and navigate to boot_scene
+『2』CLOSE template_menu and navigate to boot_scene"""
 
 func _on_input(text: String) -> void:	
 	input.clear()
 	match text:
 		"1":
-			req_exit(get_uid("startup_menu"), Module.SwapType.MIGRATE)
+			req_exit(get_uid("boot_scene"), Module.SwapAction.SWAP)
 		"2":
-			req_exit(get_uid("startup_menu"), Module.SwapType.CLOSE)
-
+			req_exit(get_uid("boot_scene"), Module.SwapAction.CLOSE)
+	
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:
 		input.clear()
