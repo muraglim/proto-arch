@@ -4,19 +4,25 @@ var stores: Dictionary = {}
 
 func _ready() -> void:
 	# store keys are derived from child node names via to_lower()
-	# node: UID_Store -> key: "uid_store"
+	# node: Nav_Store -> key: "nav_store"
 	# add new stores by adding child nodes to keeper.tscn only
 	for child in get_children():
 		stores[child.name.to_lower()] = child
 
-func get_value(store: String, key: String) -> Variant:
-	if not stores.has(store):
-		push_error("get_value: unknown store - " + store)
+func get_value(store_node: String, key: String) -> Variant:
+	if not stores.has(store_node):
+		push_error("get_value: unknown store - " + store_node)
 		return null
-	return stores[store].get_value(key)
+	return stores[store_node].get_value(key)
 
-func set_value(store: String, key: String, delta: Variant) -> void:
-	pass
+#func set_value(store_node: String, key: String, delta: Variant) -> void:
+#	return
+
+#func has_value(store_node: String, key: String) -> bool:
+#	pass
+	
+#func clear_value(store_node: String, key: String) -> void:
+#	pass
 
 func append_value() -> void: 
 	pass

@@ -2,7 +2,7 @@ extends Node
 
 var data: Dictionary = {
 	"boot_scene": "uid://b27eqwa55glmf",
-	"template_scene": "uid://sew0lmp877f3"
+	"template_scene": "uid://sew0lmp877f3",
 	}
 
 func get_value(key: String) -> String:
