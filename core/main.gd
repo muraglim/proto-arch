@@ -10,7 +10,7 @@ var swap_actions = {
 }
 
 func _ready() -> void:
-	var boot_scene = Keeper.get_value("nav_store", "boot_scene")
+	var boot_scene = Keeper.get_value("nav_store", "roll_scene")
 	if not Guard.is_nav_valid(boot_scene, "main.gd:_ready"): return
 	go_to(boot_scene, Module.SwapAction.EXIT)
 	is_booted = true
