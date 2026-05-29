@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://c431n7ciwstmp"]
 
-[ext_resource type="Script" uid="uid://cbml2yy60gjpx" path="res://modules/template_scene.gd" id="1_rp1qj"]
+[ext_resource type="Script" uid="uid://bfej6u3uh12yd" path="res://modules/roll_scene.gd" id="1_rp1qj"]
 
-[node name="TemplateScene" type="Node" unique_id=477268411]
+[node name="RollScene" type="Node" unique_id=477268411]
 script = ExtResource("1_rp1qj")
 metadata/_custom_type_script = "uid://bmojomnoei6cy"
 
@@ -24,6 +24,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 10
 size_flags_stretch_ratio = 20.0
+keep_editing_on_text_submit = true
 
 [node name="StatusBar" type="HBoxContainer" parent="Display" unique_id=766595429]
 layout_mode = 2
