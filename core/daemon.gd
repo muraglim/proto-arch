@@ -21,21 +21,6 @@ func daemon_pause() -> void:
 func daemon_resume() -> void:
 	pass
 
-func daemon_exit() -> void:
-	daemon_exit_sig.emit()
-
-func nav_to_daemon(dest: String) -> void:
-	if not Guard.is_nav_valid(dest, name + ":nav_to_daemon"): return
-	nav_to_daemon_sig.emit(dest)
-
-func nav_to_module(dest: String) -> void:
-	if not Guard.is_nav_valid(dest, name + ":nav_to_module"): return
-	nav_to_module_sig.emit(dest)
-
-func nav_to_swap(dest: String) -> void:
-	if not Guard.is_nav_valid(dest, name + ":nav_to_swap"): return
-	nav_to_swap_sig.emit(dest)
-
 func get_nav(key: String) -> String:
 	var path = Keeper.get_value("nav_store", key)
 	if path == null or path.is_empty():
@@ -48,7 +33,14 @@ func offset_value(store: String, key: String, delta: float) -> void:
 	if Guard.is_unresolved(current, name + ":offset value"): return
 	Keeper.set_value(store, key, current + delta)
 
+# signals are emitted externally via Nav autoload — unused_signal warnings expected
+@warning_ignore("unused_signal")
 signal daemon_exit_sig
+@warning_ignore("unused_signal")
 signal nav_to_daemon_sig(dest: String)
+@warning_ignore("unused_signal")
 signal nav_to_module_sig(dest: String)
+@warning_ignore("unused_signal")
 signal nav_to_swap_sig(dest: String)
+@warning_ignore("unused_signal")
+signal evict_back_module_sig(dest: String)

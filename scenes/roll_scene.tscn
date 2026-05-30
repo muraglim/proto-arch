@@ -2,9 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bfej6u3uh12yd" path="res://modules/roll_scene.gd" id="1_rp1qj"]
 
-[node name="RollScene" type="Node" unique_id=477268411]
+[node name="RollScene" type="Node" unique_id=572883474]
 script = ExtResource("1_rp1qj")
-metadata/_custom_type_script = "uid://bmojomnoei6cy"
 
 [node name="Display" type="VBoxContainer" parent="." unique_id=1720503624]
 anchors_preset = 15

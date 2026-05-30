@@ -44,4 +44,7 @@ static func module_exit(caller: Node) -> void:
 
 static func evict_back_module(caller: Node, dest: String) -> void:
 	if not Guard.is_back_valid(Main.is_in_back(dest), caller.name + ":evict_back_module"): return
+	if not caller.has_signal("evict_back_module_sig"):
+		push_error("Nav.evict_back_module: caller '%s' has no evict_back_module_sig" % caller.name)
+		return
 	caller.evict_back_module_sig.emit(dest)

@@ -24,6 +24,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 10
 size_flags_stretch_ratio = 20.0
+keep_editing_on_text_submit = true
 
 [node name="StatusBar" type="HBoxContainer" parent="Display" unique_id=766595429]
 layout_mode = 2

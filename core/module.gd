@@ -50,12 +50,8 @@ func module_unhide() -> void:
 func module_show() -> void: 
 	pass                    
 
-func module_exit() -> void:
-	module_exit_sig.emit()
-
-func module_nav_to_swap(dest: String, swap: SwapAction) -> void:
-	if not Guard.is_nav_valid(dest, name + ":nav_to_swap"): return
-	module_nav_to_swap_sig.emit(dest, swap)
-
+# signals are emitted externally via Nav autoload — unused_signal warnings expected
+@warning_ignore("unused_signal")
 signal module_exit_sig
+@warning_ignore("unused_signal")
 signal module_nav_to_swap_sig(dest: String, swap: SwapAction)

@@ -13,7 +13,6 @@
 
 extends Module
 
-
 @onready var display: VBoxContainer = $Display
 @onready var menu: RichTextLabel = $Display/Menu
 @onready var input: LineEdit = $Display/Input
@@ -45,11 +44,15 @@ func module_init() -> void:
 	input.grab_focus()
 
 func module_pause() -> void:
+	print("roll_scene: module_pause fired")
 	display.hide()
 
 func module_resume() -> void:
 	display.show()
 	input.grab_focus()
+
+func module_shutdown() -> void:
+	display.hide()
 
 func update_menu() -> void:
 	match roll_step:
@@ -79,9 +82,9 @@ func _on_input(text: String) -> void:
 				roll_step = "name"
 				update_menu()
 			"2":
-				module_nav_to_swap(get_nav("boot_scene"), Module.SwapAction.SWAP)
+				Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.SWAP)
 			"3":
-				module_nav_to_swap(get_nav("boot_scene"), Module.SwapAction.EXIT)
+				Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.EXIT)
 	else:
 		_handle_roll_input(text)
 

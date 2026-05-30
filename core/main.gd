@@ -57,6 +57,7 @@ func start_daemon(dest: String) -> void:
 	daemon_instance.daemon_exit_sig.connect(_on_daemon_exit_sig)
 	daemon_instance.nav_to_module_sig.connect(_on_nav_to_module_sig)
 	daemon_instance.nav_to_swap_sig.connect(_on_daemon_nav_to_swap_sig)
+	daemon_instance.evict_back_module_sig.connect(_on_evict_back_module_sig)
 	daemon_instance.daemon_init()
 	print("main.gd:start_daemon: " + daemon_instance.name + " started.")
 
@@ -79,7 +80,7 @@ func start_module(dest: String) -> void:
 		return
 	front.add_child(module_instance)
 	module_instance.module_dest = dest
-	module_instance.module_nav_to_swap_sig.connect(_on_module_nav_to_swap_sig)
+	module_instance.nav_to_swap_sig.connect(_on_module_nav_to_swap_sig)
 	module_instance.module_exit_sig.connect(_on_module_exit_sig)
 	module_instance.nav_to_module_sig.connect(_on_nav_to_module_sig)
 	module_instance.nav_to_daemon_sig.connect(_on_nav_to_daemon_sig)
@@ -104,6 +105,17 @@ func exit_module() -> void:
 	print("main.gd:exit_module: " + module.name + " exited.") 
 	module.queue_free()
 
+func evict_back_module(dest: String) -> void:
+	for child in back.get_children():
+		var module = child as Module
+		if module and module.module_dest == dest:
+			back.remove_child(module)
+			module.module_shutdown()
+			print("main.gd:evict_back_module: " + module.name + " evicted.")
+			module.queue_free()
+			return
+	push_error("main.gd:evict_back_module: no module with dest '%s' found in back." % dest)
+
 func is_in_back(dest: String) -> bool:
 	for child in back.get_children():
 		var module = child as Module
@@ -123,3 +135,5 @@ func _on_module_nav_to_swap_sig(dest: String, swap: Module.SwapAction) -> void:
 	route_module(dest, swap)
 func _on_module_exit_sig() -> void:
 	exit_module()
+func _on_evict_back_module_sig(dest: String) -> void:
+	evict_back_module(dest)
