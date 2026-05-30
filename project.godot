@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Keeper="*uid://brteb0pj5ikk5"
 Guard="*uid://ccr5a8bvqw2h8"
+Nav="*uid://bsi8exs862qg5"
 Main="*uid://cblyxbmrcxw1b"
 
 [display]

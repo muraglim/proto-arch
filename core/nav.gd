@@ -2,7 +2,6 @@
 # termination, not routing — semantic mismatch with Nav as a name. Monitor if exit 
 # cases grow or cause confusion, consider splitting into separate facade at that point.
 
-class_name Nav
 extends Node
 
 # Nav is the navigation facade autoload.

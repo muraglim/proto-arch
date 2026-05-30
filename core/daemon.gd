@@ -1,7 +1,3 @@
-# TO-DO: pull-up module_exit from Module -> Daemon
-# Daemon should be able to close Module from back
-# the use case is relatively thin, but feasible. 
-
 class_name Daemon
 extends Node
 
