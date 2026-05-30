@@ -41,7 +41,7 @@ func start_module(dest: String) -> void:
 		return
 	front.add_child(module_instance)
 	module_instance.module_dest = dest
-	module_instance.nav_req.connect(_on_nav_req)
+	module_instance.swap_req.connect(_on_swap_req)
 	module_instance.module_init()
 	print("main.gd:start_module: " + module_instance.name + " started.") #breadcrumb
 
@@ -63,5 +63,5 @@ func exit_module() -> void:
 	print("main.gd:exit_module: " + module.name + " exited.") # breadcrumb
 	module.queue_free()
 	
-func _on_nav_req(dest: String, swap: Module.SwapAction) -> void:
+func _on_swap_req(dest: String, swap: Module.SwapAction) -> void:
 	go_to(dest, swap)
