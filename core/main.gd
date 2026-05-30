@@ -104,6 +104,13 @@ func exit_module() -> void:
 	print("main.gd:exit_module: " + module.name + " exited.") 
 	module.queue_free()
 
+func is_in_back(dest: String) -> bool:
+	for child in back.get_children():
+		var module = child as Module
+		if module and module.module_dest == dest:
+			return true
+	return false
+
 func _on_nav_to_daemon_sig(dest: String) -> void:
 	start_daemon(dest)
 func _on_daemon_exit_sig() -> void:
