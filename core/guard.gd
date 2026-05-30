@@ -28,3 +28,9 @@ func is_module(node: Node, context: String) -> bool:
 		push_error("CRITICAL [%s]: node '%s' is not a Module." % [context, node.name])
 		return false
 	return true
+
+func is_daemon(node: Node, context: String) -> bool:
+	if not node is Daemon:
+		push_error("CRITICAL [%s]: node '%s' is not a Daemon" % [context, node.name])
+		return false
+	return true

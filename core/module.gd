@@ -1,3 +1,15 @@
+# TODO: module show/hide lifecycle is incomplete.
+# current: route_module calls module_resume() as standin for rehydrating a back->front swap.
+# problem: start_module calls module_init() on cold start — if resume path ever calls init,
+# display and input reset on a module that should be restoring state, not reinitializing.
+# approaches to explore:
+#   1. module_unhide() as dedicated restore path, main calls it instead of module_resume on swap
+#   2. a 'ready' signal from the module back to main, module self-reports when it's display-ready
+#      rather than main assuming it can call lifecycle methods blindly
+#   3. is_fresh: bool flag on Module, main checks before deciding init vs unhide path
+# constraint: solution must not require main to know anything about module internals.
+# do not resolve until a concrete case breaks — module_resume works by accident of idempotent update_menu.
+
 class_name Module
 extends Daemon
 
@@ -38,12 +50,12 @@ func module_unhide() -> void:
 func module_show() -> void: 
 	pass                    
 
-func nav_exit(dest: String) -> void:
-	if not Guard.is_nav_valid(dest, name + ":nav_exit"): return
-	swap_req.emit(dest, SwapAction.EXIT)
+func module_exit() -> void:
+	module_exit_sig.emit()
 
-func nav_swap(dest: String) -> void:
-	if not Guard.is_nav_valid(dest, name + ":nav_swap"): return
-	swap_req.emit(dest, SwapAction.SWAP)
+func module_nav_to_swap(dest: String, swap: SwapAction) -> void:
+	if not Guard.is_nav_valid(dest, name + ":nav_to_swap"): return
+	module_nav_to_swap_sig.emit(dest, swap)
 
-signal swap_req(dest: String, swap: SwapAction)
+signal module_exit_sig
+signal module_nav_to_swap_sig(dest: String, swap: SwapAction)

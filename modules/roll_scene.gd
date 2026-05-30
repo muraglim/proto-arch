@@ -79,9 +79,9 @@ func _on_input(text: String) -> void:
 				roll_step = "name"
 				update_menu()
 			"2":
-				nav_swap(get_nav("boot_scene"))
+				module_nav_to_swap(get_nav("boot_scene"), Module.SwapAction.SWAP)
 			"3":
-				nav_exit(get_nav("boot_scene"))
+				module_nav_to_swap(get_nav("boot_scene"), Module.SwapAction.EXIT)
 	else:
 		_handle_roll_input(text)
 
