@@ -16,8 +16,10 @@ and progression can cross module boundaries in meaningful ways.
 ## Architecture
 
 - **Bootstrapper** (main.gd) — scene manager handling module lifecycle and navigation
-- **Module** (module.gd) — base class for all prototype modules
-- **Keeper** — autoload facade mediating between modules and data stores
+- **Module** (module.gd) — base class for viewport and input interactions
+- **Daemon** (daemon.gd) — base class for logic
+- **Keeper**  autoload facade mediating between modules, daemons and data stores
+- **Guard**  autoload handling validation and guard checks
 
 ## Status
 
