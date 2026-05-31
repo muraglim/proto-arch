@@ -22,7 +22,7 @@ func _on_input(text: String) -> void:
 	input.clear()
 	match text:
 		"1":
-			module_nav_to_swap(get_nav("template_scene"), Module.SwapAction.SWAP)
+			Nav.to_swap(self, get_nav("template_scene"), Module.SwapAction.SWAP)
 
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:
