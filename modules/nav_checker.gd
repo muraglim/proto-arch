@@ -8,6 +8,7 @@ func module_init() -> void:
 	status.text = "[status: init]"
 	await get_tree().process_frame
 	#Nav.to_swap.SWAP verified 2026.05.31 14:00 CDT 
-	#Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.EXIT)	
+	#Nav.to_swap(self, get_nav("nav_check_module_target"), Module.SwapAction.EXIT)	
 	#Nav.to_swap.SWAP verified 2026.05.31 13:58 CDT 
-	#Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.SWAP)
+	#Nav.to_swap(self, get_nav("nav_check_module_target"), Module.SwapAction.SWAP)
+	
