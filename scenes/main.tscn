@@ -5,12 +5,16 @@
 [node name="Main" type="Node" unique_id=180705528]
 script = ExtResource("1_xiose")
 
-[node name="FrontContainer" type="Control" parent="." unique_id=781731410]
+[node name="FrontContainer" type="Control" parent="." unique_id=892697451]
 layout_mode = 3
 anchors_preset = 0
 
 [node name="BackContainer" type="Control" parent="." unique_id=767568886]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="UnderContainer" type="Node" parent="." unique_id=1084785861]
