@@ -39,8 +39,14 @@ signal daemon_exit_sig
 @warning_ignore("unused_signal")
 signal nav_to_daemon_sig(dest: String)
 @warning_ignore("unused_signal")
-signal nav_to_module_sig(dest: String)
-@warning_ignore("unused_signal")
 signal nav_to_swap_sig(dest: String)
 @warning_ignore("unused_signal")
 signal evict_back_module_sig(dest: String)
+#4FUN
+# there is no standard use case for to_module, any nav to a fresh instance of 
+# a Module has to be a swap because there would be no UX to do so without a
+# Module already in front to interact with. leaving the hooks in place to have
+# the ability to simulate something like a game crash, then have a Daemon push
+# to_module to get a UX back up after a timer, etc.
+#@warning_ignore("unused_signal")
+#signal nav_to_module_sig(dest: String)
