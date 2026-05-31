@@ -17,12 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+_pComb="*uid://bc5le2pw6j4xn"
 _dGnostic="*uid://ck5vifw575wbb"
-Comb="*uid://nletg2vj4xey"
 Keeper="*uid://brteb0pj5ikk5"
 Guard="*uid://ccr5a8bvqw2h8"
 Nav="*uid://bsi8exs862qg5"
-Main="*uid://cblyxbmrcxw1b"
 
 [display]
 

@@ -17,7 +17,7 @@ func to_module(caller: Node, dest: String) -> void:
 	caller.nav_to_module_sig.emit(dest)
 
 func to_daemon(caller: Node, dest: String) -> void:
-	if not Guard.is_nav_valid(dest, caller.name + ":to_daemon"): return
+	if Guard.is_unresolved(dest, caller.name + ":to_daemon"): return
 	if not caller.has_signal("nav_to_daemon_sig"):
 		push_error("Nav.to_daemon: caller '%s' has no nav_to_daemon_sig signal" % caller.name)
 		return
@@ -43,7 +43,9 @@ func module_exit(caller: Node) -> void:
 	caller.module_exit_sig.emit()
 
 func evict_back_module(caller: Node, dest: String) -> void:
-	if not Guard.is_back_valid(Main.is_in_back(dest), caller.name + ":evict_back_module"): return
+# this guard was added along with making Main an autoload, which lead to double instantiation
+# Main has the reference to the back container reference natively and owns this guard 
+#	if not Guard.is_back_valid(Main.is_in_back(dest), caller.name + ":evict_back_module"): return
 	if not caller.has_signal("evict_back_module_sig"):
 		push_error("Nav.evict_back_module: caller '%s' has no evict_back_module_sig" % caller.name)
 		return

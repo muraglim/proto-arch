@@ -18,6 +18,7 @@ func is_invalid_scene(scene: String, context: String) -> bool:
 		return true
 	return false
 
+#TODO: review use case, possible deprecation. handler function from before Nav autoload implemented
 func is_nav_valid(dest: String, context: String) -> bool:
 	if is_unresolved(dest, context): return false
 	if is_invalid_scene(dest, context): return false

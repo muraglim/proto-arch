@@ -46,16 +46,16 @@ func route_module(dest: String, swap: Module.SwapAction) -> void:
 	start_module(dest)
 
 func start_daemon(dest: String) -> void:
-	var scene: PackedScene = load(dest)
-	if Guard.is_unresolved(scene, "main.gd:start_daemon"): return
-	var daemon_instance: Node = scene.instantiate()
+	var script: GDScript = load(dest)
+	if Guard.is_unresolved(script, "main.gd:start_daemon"): return
+	var daemon_instance: Node = Node.new()
+	daemon_instance.set_script(script)
 	if not Guard.is_daemon(daemon_instance, "main.gd:start_daemon"):
 		daemon_instance.queue_free()
 		return
 	under.add_child(daemon_instance)
 	daemon_instance.nav_to_daemon_sig.connect(_on_nav_to_daemon_sig)
 	daemon_instance.daemon_exit_sig.connect(_on_daemon_exit_sig)
-	daemon_instance.nav_to_module_sig.connect(_on_nav_to_module_sig)
 	daemon_instance.nav_to_swap_sig.connect(_on_daemon_nav_to_swap_sig)
 	daemon_instance.evict_back_module_sig.connect(_on_evict_back_module_sig)
 	daemon_instance.daemon_init()
@@ -114,7 +114,7 @@ func evict_back_module(dest: String) -> void:
 			print("main.gd:evict_back_module: " + module.name + " evicted.")
 			module.queue_free()
 			return
-	push_error("main.gd:evict_back_module: no module with dest '%s' found in back." % dest)
+		push_error("main.gd:evict_back_module: no module with dest '%s' found in back." % dest)
 
 func is_in_back(dest: String) -> bool:
 	for child in back.get_children():
