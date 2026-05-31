@@ -5,3 +5,6 @@
 ## grep 'Comb.' before committing to catch stray calls.
 
 extends Node
+
+func valtype(label: String, targ: Variant) -> void:
+	print(label, ": ", targ, " [", typeof(targ), "]")
