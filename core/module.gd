@@ -11,7 +11,7 @@
 # do not resolve until a concrete case breaks — module_resume works by accident of idempotent update_menu.
 
 class_name Module
-extends Daemon
+extends Control
 
 # Do not use _ready() in Module subclasses.
 # Use module_init() instead - it fires after the module
@@ -50,8 +50,29 @@ func module_unhide() -> void:
 func module_show() -> void: 
 	pass                    
 
+func get_nav(key: String) -> String:
+	var path = Keeper.get_value("nav_store", key)
+	if path == null or path.is_empty():
+		push_error(name + ": failed to retrieve uid for key - " + key)
+		return ""
+	return path
+
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
+@warning_ignore("unused_signal")
+signal module_nav_to_swap_sig(dest: String, swap: SwapAction)
 @warning_ignore("unused_signal")
 signal module_exit_sig
 @warning_ignore("unused_signal")
-signal module_nav_to_swap_sig(dest: String, swap: SwapAction)
+signal evict_back_module_sig(dest: String)
+@warning_ignore("unused_signal")
+signal nav_to_daemon_sig(dest: String)
+@warning_ignore("unused_signal")
+signal daemon_exit_sig
+#4FUN
+# there is no standard use case for to_module, any nav to a fresh instance of 
+# a Module has to be a swap because there would be no UX to do so without a
+# Module already in front to interact with. leaving the hooks in place to have
+# the ability to simulate something like a game crash, then have a Daemon push
+# to_module to get a UX back up after a timer, etc.
+# @warning_ignore("unused_signal")
+# signal nav_to_module_sig(dest: String)
