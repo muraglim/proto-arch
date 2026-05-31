@@ -6,5 +6,6 @@
 
 extends Node
 
+# Comb.valtype() - basic diagnostic print function for evaluating value and type of target
 func valtype(label: String, targ: Variant) -> void:
 	print(label, ": ", targ, " [", typeof(targ), "]")
