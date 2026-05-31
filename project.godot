@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+_dGnostic="*uid://ck5vifw575wbb"
 Comb="*uid://nletg2vj4xey"
 Keeper="*uid://brteb0pj5ikk5"
 Guard="*uid://ccr5a8bvqw2h8"
