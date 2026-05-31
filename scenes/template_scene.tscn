@@ -2,11 +2,18 @@
 
 [ext_resource type="Script" uid="uid://cbml2yy60gjpx" path="res://modules/template_scene.gd" id="1_t4qqi"]
 
-[node name="TemplateScene" type="Node" unique_id=477268411]
+[node name="TemplateScene" type="Control" unique_id=784612806]
+physics_interpolation_mode = 0
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_t4qqi")
-metadata/_custom_type_script = "uid://bmojomnoei6cy"
 
 [node name="Display" type="VBoxContainer" parent="." unique_id=1720503624]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
