@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://yc3038a0dolg"]
+
+[ext_resource type="Script" uid="uid://dgpg6gtgrraw3" path="res://modules/nav_check_module_target.gd" id="1_tj8he"]
+
+[node name="NavCheckModuleTarget" type="Control" unique_id=2061554355]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tj8he")
