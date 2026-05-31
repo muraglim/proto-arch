@@ -5,8 +5,12 @@
 [node name="Main" type="Node" unique_id=180705528]
 script = ExtResource("1_xiose")
 
-[node name="FrontContainer" type="Node" parent="." unique_id=115750125]
+[node name="FrontContainer" type="Control" parent="." unique_id=781731410]
+layout_mode = 3
+anchors_preset = 0
 
-[node name="BackContainer" type="Node" parent="." unique_id=502927051]
+[node name="BackContainer" type="Control" parent="." unique_id=767568886]
+layout_mode = 3
+anchors_preset = 0
 
 [node name="UnderContainer" type="Node" parent="." unique_id=1084785861]
