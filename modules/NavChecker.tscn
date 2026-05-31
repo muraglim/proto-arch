@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://cpansnhgsaagn"]
+
+[ext_resource type="Script" uid="uid://bfhrawawu2hhl" path="res://modules/nav_checker.gd" id="1_rpjuj"]
+
+[node name="Control" type="Control" unique_id=1772460623]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rpjuj")
+metadata/_custom_type_script = "uid://bmojomnoei6cy"
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=579171335]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1889882098]
+layout_mode = 2
+
+[node name="NavChecker" type="Label" parent="MarginContainer/VBoxContainer" unique_id=868546641]
+layout_mode = 2
+
+[node name="Status" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2031067706]
+layout_mode = 2
