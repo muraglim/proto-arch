@@ -57,6 +57,13 @@ func get_nav(key: String) -> String:
 		return ""
 	return entry["uid"]
 
+func get_type(key: String) -> String:
+	var entry = Keeper.get_value("nav_dest_store", key)
+	if entry == null or not entry.has("type"):
+		push_error("nav_dest_Store.get_type(): no type for key - " + key)
+		return ""
+	return entry["type"]
+
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
 signal nav_to_swap_sig(dest: String, swap: SwapAction)
