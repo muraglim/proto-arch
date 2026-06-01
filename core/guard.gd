@@ -18,12 +18,6 @@ func is_invalid_scene(scene: String, context: String) -> bool:
 		return true
 	return false
 
-#TODO: review use case, possible deprecation. handler function from before Nav autoload implemented
-func is_nav_valid(dest: String, context: String) -> bool:
-	if is_unresolved(dest, context): return false
-	if is_invalid_scene(dest, context): return false
-	return true
-
 func is_module(node: Node, context: String) -> bool:
 	if not node is Module:
 		push_error("CRITICAL [%s]: node '%s' is not a Module." % [context, node.name])
