@@ -3,8 +3,8 @@ extends Channel
 @onready var navchecker: Label = $MarginContainer/VBoxContainer/NavChecker
 @onready var status: Label = $MarginContainer/VBoxContainer/Status
 
-#✓ Nav.to_swap(self, get_nav("nav_check_module_target"), Module.SwapAction.EXIT)	
-#func module_init() -> void:
+#✓ Nav.to_swap(self, get_nav("nav_check_channel_target"), Channel.SwapAction.EXIT)	
+#func channel_init() -> void:
 #	navchecker.text = "NavChecker"
 #	status.text = "[status: init]"
 #	await get_tree().process_frame
