@@ -62,7 +62,7 @@ func start_daemon(dest: String) -> void:
 		return
 	under.add_child(daemon_instance)
 	daemon_instance.nav_to_daemon_sig.connect(_on_nav_to_daemon_sig)
-	daemon_instance.daemon_exit_sig.connect(_on_daemon_exit_sig)
+	daemon_instance.daemon_dismiss_sig.connect(_on_daemon_dismiss_sig)
 	daemon_instance.nav_to_swap_sig.connect(_on_daemon_nav_to_swap_sig)
 	daemon_instance.evict_back_module_sig.connect(_on_evict_back_module_sig)
 	daemon_instance.daemon_init()
@@ -88,7 +88,7 @@ func start_module(dest: String) -> void:
 	front.add_child(module_instance)
 	module_instance.module_dest = dest
 	module_instance.nav_to_swap_sig.connect(_on_module_nav_to_swap_sig)
-	module_instance.module_exit_sig.connect(_on_module_exit_sig)
+	module_instance.module_dismiss_sig.connect(_on_module_dismiss_sig)
 	module_instance.nav_to_module_sig.connect(_on_nav_to_module_sig)
 	module_instance.nav_to_daemon_sig.connect(_on_nav_to_daemon_sig)
 	module_instance.module_init()
@@ -132,7 +132,7 @@ func is_in_back(dest: String) -> bool:
 
 func _on_nav_to_daemon_sig(dest: String) -> void:
 	start_daemon(dest)
-func _on_daemon_exit_sig() -> void:
+func _on_daemon_dismiss_sig() -> void:
 	exit_daemon()
 func _on_daemon_nav_to_swap_sig(dest: String) -> void:
 	route_module(dest, Module.SwapAction.SWAP)
@@ -140,7 +140,7 @@ func _on_nav_to_module_sig(dest: String) -> void:
 	route_module(dest, Module.SwapAction.EXIT)
 func _on_module_nav_to_swap_sig(dest: String, swap: Module.SwapAction) -> void:
 	route_module(dest, swap)
-func _on_module_exit_sig() -> void:
+func _on_module_dismiss_sig() -> void:
 	exit_module()
 func _on_evict_back_module_sig(dest: String) -> void:
 	evict_back_module(dest)
