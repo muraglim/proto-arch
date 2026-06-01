@@ -35,6 +35,11 @@ func route_module(dest: String, swap: Module.SwapAction) -> void:
 	if Guard.is_invalid_scene(dest, "main.gd:_ready"): return
 	if front.get_child_count() > 0 and swap_actions.has(swap):
 		swap_actions[swap].call()
+	if front.get_child_count() > 0:
+		var front_module = front.get_child(0) as Module
+		if Guard.is_module(front_module, "main.gd:route_module") and front_module.module_dest == dest:
+			front_module.module_resume()
+			return
 	for child in back.get_children():
 		var module = child as Module
 		if not Guard.is_module(module, "main.gd:route_module"): continue
