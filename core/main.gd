@@ -24,13 +24,15 @@ var swap_actions = {
 
 func _ready() -> void:
 	var boot_scene = Keeper.get_value("nav_store", "nav_checker")
-	if not Guard.is_nav_valid(boot_scene, "main.gd:_ready"): return
+	if Guard.is_unresolved(boot_scene, "main.gd:_ready"): return
+	if Guard.is_invalid_scene(boot_scene, "main.gd:_ready"): return
 	route_module(boot_scene, Module.SwapAction.EXIT)
 	is_booted = true
 	
 func route_module(dest: String, swap: Module.SwapAction) -> void:
 	if Guard.is_boot_valid(front, is_booted, "main.gd:route_module"): return
-	if not Guard.is_nav_valid(dest, "main.gd:route_module"): return
+	if Guard.is_unresolved(dest, "main.gd:_ready"): return
+	if Guard.is_invalid_scene(dest, "main.gd:_ready"): return
 	if front.get_child_count() > 0 and swap_actions.has(swap):
 		swap_actions[swap].call()
 	for child in back.get_children():
