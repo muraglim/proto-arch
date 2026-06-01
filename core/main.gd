@@ -23,7 +23,7 @@ var swap_actions = {
 }
 
 func _ready() -> void:
-	var boot_scene = Keeper.get_value("nav_dest_store", "nav_checker")
+	var boot_scene = Keeper.get_value("_nav_dest_store", "nav_checker")
 	if Guard.is_unresolved(boot_scene, "main.gd:_ready"): return
 	if Guard.is_invalid_scene(boot_scene, "main.gd:_ready"): return
 	route_channel(boot_scene, Channel.SwapAction.EXIT)

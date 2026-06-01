@@ -4,12 +4,12 @@ var stores: Dictionary = {}
 
 func _ready() -> void:
 	# [scene tree legibility]
-	# _Store node names use lowercase prefix + capital suffix (nav_dest_Store) 
+	# _Store node names use lowercase prefix + capital suffix (_nav_dest_store) 
 	# [Keeper keys]
 	# derived via to_lower()
 	# add new _Stores by adding child nodes to keeper.tscn
 	# [callsites]
-	# ("nav_dest_store")
+	# ("_nav_dest_store")
 	for child in get_children():
 		stores[child.name.to_lower()] = child
 

@@ -7,7 +7,7 @@
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")
 
-[node name="nav_dest_Store" type="Node" parent="." unique_id=1748296768]
+[node name="_nav_dest_Store" type="Node" parent="." unique_id=1748296768]
 script = ExtResource("2_e787k")
 
 [node name="roster_Store" type="Node" parent="." unique_id=1401507670]

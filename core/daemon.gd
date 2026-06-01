@@ -22,16 +22,16 @@ func daemon_resume() -> void:
 	pass
 
 func get_nav(key: String) -> String:
-	var entry = Keeper.get_value("nav_dest_store", key)
+	var entry = Keeper.get_value("_nav_dest_store", key)
 	if entry == null or not entry.has("uid") or entry["uid"].is_empty():
 		push_error(name + ": failed to retrieve uid for key - " + key)
 		return ""
 	return entry["uid"]
 
 func get_type(key: String) -> String:
-	var entry = Keeper.get_value("nav_dest_store", key)
+	var entry = Keeper.get_value("_nav_dest_store", key)
 	if entry == null or not entry.has("type"):
-		push_error("nav_dest_Store.get_type(): no type for key - " + key)
+		push_error("_nav_dest_store.get_type(): no type for key - " + key)
 		return ""
 	return entry["type"]
 
