@@ -51,7 +51,7 @@ func channel_show() -> void:
 	pass                    
 
 func get_nav(key: String) -> String:
-	var path = Keeper.get_value("nav_store", key)
+	var path = Keeper.get_value("nav_dest_store", key)
 	if path == null or path.is_empty():
 		push_error(name + ": failed to retrieve uid for key - " + key)
 		return ""
