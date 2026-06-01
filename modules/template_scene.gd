@@ -1,4 +1,4 @@
-extends Module
+extends Channel
 
 @onready var display: VBoxContainer = $Display
 @onready var menu: RichTextLabel = $Display/Menu
@@ -7,17 +7,17 @@ extends Module
 @onready var status_label_2: RichTextLabel = $Display/StatusBar/StatusLabel2
 @onready var status_label_3: RichTextLabel = $Display/StatusBar/StatusLabel3
 
-func module_init() -> void:
+func channel_init() -> void:
 	menu.bbcode_enabled = true
 	update_menu()
 	input.text_submitted.connect(_on_input)
 	input.text_changed.connect(_on_text_changed)
 	input.grab_focus()
 
-func module_pause() -> void:
+func channel_pause() -> void:
 	display.hide()
 
-func module_resume() -> void:
+func channel_resume() -> void:
 	display.show()
 	input.grab_focus()
 
@@ -37,9 +37,9 @@ func _on_input(text: String) -> void:
 	input.clear()
 	match text:
 		"1":
-			Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.SWAP)
+			Nav.to_swap(self, get_nav("boot_scene"), Channel.SwapAction.SWAP)
 		"2":
-			Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.EXIT)
+			Nav.to_swap(self, get_nav("boot_scene"), Channel.SwapAction.EXIT)
 	
 func _on_text_changed(new_text: String) -> void:
 	if new_text not in valid_inputs:

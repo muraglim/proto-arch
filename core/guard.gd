@@ -18,9 +18,9 @@ func is_invalid_scene(scene: String, context: String) -> bool:
 		return true
 	return false
 
-func is_module(node: Node, context: String) -> bool:
-	if not node is Module:
-		push_error("CRITICAL [%s]: node '%s' is not a Module." % [context, node.name])
+func is_channel(node: Node, context: String) -> bool:
+	if not node is Channel:
+		push_error("CRITICAL [%s]: node '%s' is not a Channel." % [context, node.name])
 		return false
 	return true
 
@@ -32,6 +32,6 @@ func is_daemon(node: Node, context: String) -> bool:
 
 func is_back_valid(result: bool, context: String) -> bool:
 	if not result:
-		push_error("CRITICAL: [%s]: target module is not in back container." % context)
+		push_error("CRITICAL: [%s]: target channel is not in back container." % context)
 		return false
 	return true

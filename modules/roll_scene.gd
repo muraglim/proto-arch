@@ -11,7 +11,7 @@
 # update_status(): stub with no gameplay context currently
 # decide ideal placement alongside update_menu() when context provides
 
-extends Module
+extends Channel
 
 @onready var display: VBoxContainer = $Display
 @onready var menu: RichTextLabel = $Display/Menu
@@ -36,22 +36,22 @@ var loop_count: int = 0
 
 var constrained_inputs: Array = ["1", "2", "3"] 
 
-func module_init() -> void:
+func channel_init() -> void:
 	menu.bbcode_enabled = true
 	update_menu()
 	input.text_submitted.connect(_on_input)
 	input.text_changed.connect(_on_text_changed)
 	input.grab_focus()
 
-func module_pause() -> void:
-	print("roll_scene: module_pause fired")
+func channel_pause() -> void:
+	print("roll_scene: channel_pause fired")
 	display.hide()
 
-func module_resume() -> void:
+func channel_resume() -> void:
 	display.show()
 	input.grab_focus()
 
-func module_shutdown() -> void:
+func channel_shutdown() -> void:
 	display.hide()
 
 func update_menu() -> void:
@@ -82,9 +82,9 @@ func _on_input(text: String) -> void:
 				roll_step = "name"
 				update_menu()
 			"2":
-				Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.SWAP)
+				Nav.to_swap(self, get_nav("boot_scene"), Channel.SwapAction.SWAP)
 			"3":
-				Nav.to_swap(self, get_nav("boot_scene"), Module.SwapAction.EXIT)
+				Nav.to_swap(self, get_nav("boot_scene"), Channel.SwapAction.EXIT)
 	else:
 		_handle_roll_input(text)
 
