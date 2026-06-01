@@ -28,6 +28,13 @@ func get_nav(key: String) -> String:
 		return ""
 	return entry["uid"]
 
+func get_type(key: String) -> String:
+	var entry = Keeper.get_value("nav_dest_store", key)
+	if entry == null or not entry.has("type"):
+		push_error("nav_dest_Store.get_type(): no type for key - " + key)
+		return ""
+	return entry["type"]
+
 func offset_value(store: String, key: String, delta: float) -> void:
 	var current = Keeper.get_value(store, key)
 	if Guard.is_unresolved(current, name + ":offset value"): return
