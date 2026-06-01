@@ -35,7 +35,7 @@ func offset_value(store: String, key: String, delta: float) -> void:
 
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
-signal daemon_exit_sig
+signal daemon_dismiss_sig
 @warning_ignore("unused_signal")
 signal nav_to_daemon_sig(dest: String)
 @warning_ignore("unused_signal")
