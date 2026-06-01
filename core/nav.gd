@@ -1,4 +1,4 @@
-# BREADCRUMB: exit methods (module_exit, daemon_exit, evict_back_module) are lifecycle 
+# BREADCRUMB: exit methods (module_dismiss, daemon_dismiss, evict_back_module) are lifecycle 
 # termination, not routing — semantic mismatch with Nav as a name. Monitor if exit 
 # cases grow or cause confusion, consider splitting into separate facade at that point.
 
@@ -32,21 +32,21 @@ func to_swap(caller: Node, dest: String, swap: Module.SwapAction) -> void:
 		return
 	caller.nav_to_swap_sig.emit(dest, swap)
 
-func daemon_exit(caller: Node) -> void:
-	if not caller.has_signal("daemon_exit_sig"):
-		push_error("Nav.daemon_exit: caller '%s' has no daemon_exit_sig signal" % caller.name)
+func daemon_dismiss(caller: Node) -> void:
+	if not caller.has_signal("daemon_dismiss_sig"):
+		push_error("Nav.daemon_dismiss: caller '%s' has no daemon_dismiss_sig signal" % caller.name)
 		return
-	caller.daemon_exit_sig.emit()
+	caller.daemon_dismiss_sig.emit()
 
-func module_exit(caller: Node) -> void:
-	if not caller.has_signal("module_exit_sig"):
-		push_error("Nav.module_exit: caller '%s' has no module_exit_sig signal" % caller.name)
+func module_dismiss(caller: Node) -> void:
+	if not caller.has_signal("module_dismiss_sig"):
+		push_error("Nav.module_dismiss: caller '%s' has no module_dismiss_sig signal" % caller.name)
 		return
-	caller.module_exit_sig.emit()
+	caller.module_dismiss_sig.emit()
 
 func evict_back_module(caller: Node, dest: String) -> void:
-# this guard was added along with making Main an autoload, which lead to double instantiation
-# Main has the reference to the back container reference natively and owns this guard 
+# remnant from Main as autoload which lead to double instantiation
+# Main references to the back container locally and owns this guard 
 #	if not Guard.is_back_valid(Main.is_in_back(dest), caller.name + ":evict_back_module"): return
 	if not caller.has_signal("evict_back_module_sig"):
 		push_error("Nav.evict_back_module: caller '%s' has no evict_back_module_sig" % caller.name)
