@@ -121,7 +121,7 @@ func evict_back_module(dest: String) -> void:
 			print("main.gd:evict_back_module: " + module.name + " evicted.")
 			module.queue_free()
 			return
-		push_error("main.gd:evict_back_module: no module with dest '%s' found in back." % dest)
+	push_error("main.gd:evict_back_module: no module with dest '%s' found in back." % dest)
 
 func is_in_back(dest: String) -> bool:
 	for child in back.get_children():
