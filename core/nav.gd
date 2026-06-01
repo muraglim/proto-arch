@@ -10,7 +10,8 @@ extends Node
 # Signals remain on the calling instance — Nav drives them, not owns them.
 
 func to_module(caller: Node, dest: String) -> void:
-	if not Guard.is_nav_valid(dest, caller.name + ":to_module"): return
+	if Guard.is_invalid_scene(dest, caller.name): return
+	if Guard.is_unresolved(dest, caller.name + ":to_module"): return 
 	if not caller.has_signal("nav_to_module_sig"):
 		push_error("Nav.to_module: caller '%s' has no nav_to_module_sig signal" % caller.name)
 		return
@@ -24,7 +25,8 @@ func to_daemon(caller: Node, dest: String) -> void:
 	caller.nav_to_daemon_sig.emit(dest)
 
 func to_swap(caller: Node, dest: String, swap: Module.SwapAction) -> void:
-	if not Guard.is_nav_valid(dest, caller.name + ":to_swap"): return
+	if Guard.is_invalid_scene(dest, caller.name): return
+	if Guard.is_unresolved(dest, caller.name + ":to_module"): return 
 	if not caller.has_signal("nav_to_swap_sig"):
 		push_error("Nav.to_swap: caller '%s' has no nav_to_swap_sig signal" % caller.name)
 		return
