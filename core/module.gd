@@ -61,13 +61,13 @@ func get_nav(key: String) -> String:
 @warning_ignore("unused_signal")
 signal nav_to_swap_sig(dest: String, swap: SwapAction)
 @warning_ignore("unused_signal")
-signal module_exit_sig
+signal module_dismiss_sig
 @warning_ignore("unused_signal")
 signal evict_back_module_sig(dest: String)
 @warning_ignore("unused_signal")
 signal nav_to_daemon_sig(dest: String)
 @warning_ignore("unused_signal")
-signal daemon_exit_sig
+signal daemon_dismiss_sig
 # this does something, don't remove it.
 @warning_ignore("unused_signal")
 signal nav_to_module_sig(dest: String)
