@@ -22,11 +22,11 @@ func daemon_resume() -> void:
 	pass
 
 func get_nav(key: String) -> String:
-	var path = Keeper.get_value("nav_dest_store", key)
-	if path == null or path.is_empty():
+	var entry = Keeper.get_value("nav_dest_store", key)
+	if entry == null or not entry.has("uid") or entry["uid"].is_empty():
 		push_error(name + ": failed to retrieve uid for key - " + key)
 		return ""
-	return path
+	return entry["uid"]
 
 func offset_value(store: String, key: String, delta: float) -> void:
 	var current = Keeper.get_value(store, key)
