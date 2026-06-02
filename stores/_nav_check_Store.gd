@@ -18,6 +18,10 @@ func _ready() -> void:
 		"verified": false,
 		"timestamp": 0.0
 	},
+	"verify_daemon_init": {
+		"verified": false,
+		"timestamp": 0.0		
+	},
 }
 
 func nav_check_stamp(key: String) -> void:

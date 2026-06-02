@@ -3,11 +3,11 @@ extends Store
 func _ready() -> void:
 	data = {
 		"nav_check_channel": {
-			"uid": "uid://cpansnhgsaagn",
+			"uid": "uid://q6r1tmxt62gl",
 			"type": "channel"
 		},
 		"nav_check_target_channel": {
-			"uid": "uid://yc3038a0dolg",
+			"uid": "uid://bigtqsohrf3g1",
 			"type": "channel"
 		},
 		"nav_check_daemon": {
