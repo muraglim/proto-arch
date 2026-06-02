@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cpansnhgsaagn"]
 
-[ext_resource type="Script" uid="uid://bfhrawawu2hhl" path="res://modules/nav_checker.gd" id="1_rpjuj"]
+[ext_resource type="Script" uid="uid://u0lyo7yw8nvg" path="res://channels/nav_check_channel.gd" id="1_isrxo"]
 
 [node name="NavChecker" type="Control" unique_id=1772460623]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_rpjuj")
+script = ExtResource("1_isrxo")
 metadata/_custom_type_script = "uid://bmojomnoei6cy"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=579171335]

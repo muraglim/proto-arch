@@ -1,14 +1,18 @@
 [gd_scene format=3 uid="uid://brteb0pj5ikk5"]
 
 [ext_resource type="Script" uid="uid://ckm2kh47rwqyd" path="res://core/keeper.gd" id="1_d8g3g"]
-[ext_resource type="Script" uid="uid://bclykvbm5f3ra" path="res://stores/nav_dest_Store.gd" id="2_e787k"]
+[ext_resource type="Script" uid="uid://bclykvbm5f3ra" path="res://stores/_nav_dest_Store.gd" id="2_e787k"]
 [ext_resource type="Script" uid="uid://dug807o48h8hq" path="res://stores/roster_store.gd" id="3_etpyo"]
+[ext_resource type="Script" uid="uid://c571jy2vnvv1d" path="res://stores/_nav_check_Store.gd" id="3_mwap5"]
 
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")
 
 [node name="_nav_dest_Store" type="Node" parent="." unique_id=1748296768]
 script = ExtResource("2_e787k")
+
+[node name="_nav_check_Store" type="Node" parent="." unique_id=2021893670]
+script = ExtResource("3_mwap5")
 
 [node name="roster_Store" type="Node" parent="." unique_id=1401507670]
 script = ExtResource("3_etpyo")
