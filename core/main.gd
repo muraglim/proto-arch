@@ -71,7 +71,7 @@ func start_daemon(dest: String) -> void:
 	daemon_instance.daemon_init()
 	print("main.gd:start_daemon: " + daemon_instance.name + " started.")
 
-func exit_daemon() -> void:
+func daemon_dismiss() -> void:
 	if under.get_child_count() == 0:
 		return
 	var daemon: Daemon = under.get_child(0) as Daemon
@@ -136,7 +136,7 @@ func is_in_back(dest: String) -> bool:
 func _on_nav_to_daemon(dest: String) -> void:
 	start_daemon(dest)
 func _on_daemon_dismiss() -> void:
-	exit_daemon()
+	daemon_dismiss()
 func _on_daemon_nav_to_swap(dest: String) -> void:
 	route_channel(dest, Channel.SwapAction.SWAP)
 func _on_nav_to_channel(dest: String) -> void:
