@@ -24,7 +24,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: exit_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Keeper.get_value("_nav_dest_store", "nav_check_channel")
+	var entry = Keeper.get_value("_nav_dest_store", "json_test_channel")
 	if Guard.is_unresolved(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
 	if Guard.is_unresolved(boot_scene, "[Main] _ready()"): return

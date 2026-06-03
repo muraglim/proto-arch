@@ -12,3 +12,6 @@ func valtype(label: String, targ: Variant) -> void:
 
 func log(message: String) -> void:
 	print("[pComb] " + message)
+
+func tlog(message: String) -> void:
+	print("[pComb] [%d ms] " % Time.get_ticks_msec() + message)

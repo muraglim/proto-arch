@@ -1,4 +1,4 @@
-extends Store
+extends AutoSaveStore
 
 func _ready() -> void:
 	data = {
