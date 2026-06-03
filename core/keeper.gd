@@ -54,10 +54,3 @@ func get_store(store_node: String) -> Node:
 		push_error("[Keeper] get_store(store: %s): unknown store" % store_node)
 		return null
 	return stores[store_node]
-
-func call_store(store_node: String, method: String, args: Array = []) -> Variant:
-	#TODO edge case utility, no current use case
-	if not stores.has(store_node):
-		push_error("[Keeper] call_store(store: %s, method: %s, args: %s): unknown store" % [store_node, method, args])
-		return null
-	return stores[store_node].callv(method, args)
