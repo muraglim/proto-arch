@@ -17,12 +17,13 @@ extends Node
 @onready var under: Node = $UnderContainer
 
 var is_booted: bool = false
-var swap_actions = {
-	Channel.SwapAction.EXIT: exit_channel,
-	Channel.SwapAction.SWAP: swap_channel
-}
+var swap_actions: Dictionary = {}	
 
 func _ready() -> void:
+	swap_actions = {
+		Channel.SwapAction.EXIT: exit_channel,
+		Channel.SwapAction.SWAP: swap_channel
+	}
 	var entry = Keeper.get_value("_nav_dest_store", "nav_check_channel")
 	if Guard.is_unresolved(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
