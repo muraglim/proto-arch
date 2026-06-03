@@ -61,10 +61,7 @@ func start_daemon(dest: String) -> void:
 		daemon_instance.queue_free()
 		return
 	under.add_child(daemon_instance)
-	daemon_instance.nav_to_daemon.connect(_on_nav_to_daemon)
-	daemon_instance.daemon_dismiss.connect(_on_daemon_dismiss)
-	daemon_instance.nav_to_swap.connect(_on_daemon_nav_to_swap)
-	daemon_instance.evict_back_channel.connect(_on_evict_back_channel)
+	daemon_instance._connect_to_main(self)
 	daemon_instance.daemon_init()
 	print("[Main] start_daemon(dest: %s): %s started." % [dest, daemon_instance.name])
 
@@ -87,10 +84,7 @@ func start_channel(dest: String) -> void:
 		return
 	front.add_child(channel_instance)
 	channel_instance.channel_dest = dest
-	channel_instance.nav_to_swap.connect(_on_channel_nav_to_swap)
-	channel_instance.channel_dismiss.connect(_on_channel_dismiss)
-	channel_instance.nav_to_channel.connect(_on_nav_to_channel)
-	channel_instance.nav_to_daemon.connect(_on_nav_to_daemon)
+	channel_instance._connect_to_main(self)
 	channel_instance.channel_init()
 	print("[Main] start_channel(dest: %s): %s started." % [dest, channel_instance.name]) 
 
