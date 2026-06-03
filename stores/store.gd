@@ -4,7 +4,7 @@ var data = {}
 
 @export var verbose := false
 
-func get_value(key: Variant, default_value = null) -> Variant:
+func get_value(key: String, default_value = null) -> Variant:
 	if data.has(key):
 		var value = data[key]
 		_log("get_value(key: %s) -> found: %s" % [key, value])
@@ -12,12 +12,12 @@ func get_value(key: Variant, default_value = null) -> Variant:
 	_log("get_value(key: %s) -> not found, returning default: %s" % [key, default_value])
 	return default_value
 
-func set_value(key: Variant, value: Variant) -> void:
+func set_value(key: String, value: Variant) -> void:
 	var previous = data.get(key, null)
 	data[key] = value
 	_log("set_value(key: %s, value: %s) -> previous: %s" % [key, value, previous])
 
-func clear_value(key: Variant) -> void:
+func clear_value(key: String) -> void:
 	if data.has(key):
 		var old = data[key]
 		data.erase(key)
@@ -25,7 +25,7 @@ func clear_value(key: Variant) -> void:
 	else:
 		_log("clear_value(key: %s) -> key not found" % key)
 
-func append_value(key: Variant, value: Variant) -> void:
+func append_value(key: String, value: Variant) -> void:
 	if not data.has(key):
 		data[key] = []
 	elif not data[key] is Array:
@@ -34,7 +34,7 @@ func append_value(key: Variant, value: Variant) -> void:
 	data[key].append(value)
 	_log("append_value(key: %s) -> Array now has %d items: %s" % [key, data[key].size(), data[key]])
 
-func has_key(key: Variant) -> bool:
+func has_key(key: String) -> bool:
 	var exists = data.has(key)
 	_log("has_key(key: %s) -> returns %s" % [key, exists])
 	return exists
