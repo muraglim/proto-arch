@@ -16,4 +16,3 @@ script = ExtResource("3_mwap5")
 
 [node name="roster_Store" type="Node" parent="." unique_id=1401507670]
 script = ExtResource("3_etpyo")
-metadata/_custom_type_script = "uid://c7f7ogvtjmd5i"
