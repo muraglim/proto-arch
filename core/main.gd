@@ -30,27 +30,23 @@ func _ready() -> void:
 	if Guard.is_invalid_scene(boot_scene, "[Main] _ready()"): return
 	route_channel(boot_scene, Channel.SwapAction.EXIT)
 	is_booted = true
-	
+
 func route_channel(dest: String, swap: Channel.SwapAction) -> void:
-	if Guard.is_boot_valid(front, is_booted, "[Main] route_channel()"): return
+	if Guard.is_boot_valid(front, is_booted, "[Main route_channel()"): return
 	if Guard.is_unresolved(dest, "[Main] route_channel()"): return
-	if Guard.is_invalid_scene(dest, "[Main] route_channel()"): return
-	if front.get_child_count() > 0 and swap_actions.has(swap):
+	if Guard.is_invalid_scene(dest, "Main route_channel()"): return
+	var current: Channel = front.get_child(0) as Channel if front.get_child_count() > 0 else null
+	if current and current.channel_dest == dest:
+		current.channel_resume()
+		return
+	if current and swap_actions.has(swap):
 		swap_actions[swap].call()
-	if front.get_child_count() > 0:
-		var front_channel = front.get_child(0) as Channel
-		if Guard.is_channel(front_channel, "[Main] route_channel()") and front_channel.channel_dest == dest:
-			front_channel.channel_resume()
-			return
 	for child in back.get_children():
 		var channel = child as Channel
-		if not Guard.is_channel(channel, "[Main] route_channel()"): continue
-		if channel.channel_dest != dest:
-			continue
+		if not channel or channel.channel_dest != dest: continue
 		back.remove_child(child)
 		front.add_child(child)
-		if Guard.is_channel(child, "[Main] route_channel()"):
-			child.channel_resume() # TODO: replace with channel_unhide
+		child.channel_resume()
 		return
 	start_channel(dest)
 
