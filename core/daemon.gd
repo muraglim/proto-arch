@@ -9,6 +9,8 @@ extends Node
 # Keeper.get_value(), Keeper.set_value(), Keeper.append_value()
 # Do not add data primitive wrappers here.
 
+@export var verbose := false
+
 func daemon_init() -> void:
 	pass
 
@@ -21,24 +23,28 @@ func daemon_pause() -> void:
 func daemon_resume() -> void:
 	pass
 
+func offset_value(store: String, key: String, delta: float) -> void:
+	var current = Keeper.get_value(store, key)
+	if Guard.is_unresolved(current, name + ":offset value"): return
+	Keeper.set_value(store, key, current + delta)
+
 func get_nav(key: String) -> String:
 	var entry = Keeper.get_value("_nav_dest_store", key)
 	if entry == null or not entry.has("uid") or entry["uid"].is_empty():
-		push_error(name + ": failed to retrieve uid for key - " + key)
+		_log("get_nav(key: %s): failed to retrieve uid" % key)
 		return ""
 	return entry["uid"]
 
 func get_type(key: String) -> String:
 	var entry = Keeper.get_value("_nav_dest_store", key)
 	if entry == null or not entry.has("type"):
-		push_error("_nav_dest_store.get_type(): no type for key - " + key)
+		_log("get_type(key: %s): no type found" % key)
 		return ""
 	return entry["type"]
 
-func offset_value(store: String, key: String, delta: float) -> void:
-	var current = Keeper.get_value(store, key)
-	if Guard.is_unresolved(current, name + ":offset value"): return
-	Keeper.set_value(store, key, current + delta)
+func _log(msg: String) -> void:
+	if verbose:
+		print("[%s] " % name, msg)
 
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
