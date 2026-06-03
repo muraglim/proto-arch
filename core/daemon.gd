@@ -45,6 +45,12 @@ func get_type(key: String) -> String:
 		return ""
 	return entry["type"]
 
+func _connect_to_main(main: Node) -> void:
+	nav_to_daemon.connect(main._on_nav_to_daemon)
+	daemon_dismiss.connect(main._on_daemon_dismiss)
+	nav_to_swap.connect(main._on_daemon_nav_to_swap)
+	evict_back_channel.connect(main._on_evict_back_channel)
+
 func _log(msg: String) -> void:
 	if verbose:
 		print("[%s] " % name, msg)
