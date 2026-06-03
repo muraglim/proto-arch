@@ -51,13 +51,13 @@ func _log(msg: String) -> void:
 
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
-signal daemon_dismiss_sig
+signal daemon_dismiss
 @warning_ignore("unused_signal")
-signal nav_to_daemon_sig(dest: String)
+signal nav_to_daemon(dest: String)
 @warning_ignore("unused_signal")
-signal nav_to_swap_sig(dest: String)
+signal nav_to_swap(dest: String)
 @warning_ignore("unused_signal")
-signal evict_back_channel_sig(dest: String)
+signal evict_back_channel(dest: String)
 # currently unused as boot starts through a Channel - might be needed in future
 @warning_ignore("unused_signal")
-signal nav_to_channel_sig(dest: String)
+signal nav_to_channel(dest: String)

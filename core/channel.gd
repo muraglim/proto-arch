@@ -71,15 +71,15 @@ func _log(msg: String) -> void:
 
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
-signal nav_to_swap_sig(dest: String, swap: SwapAction)
+signal nav_to_swap(dest: String, swap: SwapAction)
 @warning_ignore("unused_signal")
-signal channel_dismiss_sig
+signal channel_dismiss
 @warning_ignore("unused_signal")
-signal evict_back_channel_sig(dest: String)
+signal evict_back_channel(dest: String)
 @warning_ignore("unused_signal")
-signal nav_to_daemon_sig(dest: String)
+signal nav_to_daemon(dest: String)
 @warning_ignore("unused_signal")
-signal daemon_dismiss_sig
+signal daemon_dismiss
 # this does something, don't remove it.
 @warning_ignore("unused_signal")
-signal nav_to_channel_sig(dest: String)
+signal nav_to_channel(dest: String)

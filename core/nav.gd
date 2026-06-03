@@ -12,43 +12,43 @@ extends Node
 func to_channel(caller: Node, dest: String) -> void:
 	if Guard.is_invalid_scene(dest, caller.name): return
 	if Guard.is_unresolved(dest, caller.name + ":to_channel"): return 
-	if not caller.has_signal("nav_to_channel_sig"):
-		push_error("Nav.to_channel: caller '%s' has no nav_to_channel_sig signal" % caller.name)
+	if not caller.has_signal("nav_to_channel"):
+		push_error("Nav.to_channel: caller '%s' has no nav_to_channel signal" % caller.name)
 		return
-	caller.nav_to_channel_sig.emit(dest)
+	caller.nav_to_channel.emit(dest)
 
 func to_daemon(caller: Node, dest: String) -> void:
 	if Guard.is_unresolved(dest, caller.name + ":to_daemon"): return
-	if not caller.has_signal("nav_to_daemon_sig"):
-		push_error("Nav.to_daemon: caller '%s' has no nav_to_daemon_sig signal" % caller.name)
+	if not caller.has_signal("nav_to_daemon"):
+		push_error("Nav.to_daemon: caller '%s' has no nav_to_daemon signal" % caller.name)
 		return
-	caller.nav_to_daemon_sig.emit(dest)
+	caller.nav_to_daemon.emit(dest)
 
 func to_swap(caller: Node, dest: String, swap: Channel.SwapAction) -> void:
 	if Guard.is_invalid_scene(dest, caller.name): return
 	if Guard.is_unresolved(dest, caller.name + ":to_channel"): return 
-	if not caller.has_signal("nav_to_swap_sig"):
-		push_error("Nav.to_swap: caller '%s' has no nav_to_swap_sig signal" % caller.name)
+	if not caller.has_signal("nav_to_swap"):
+		push_error("Nav.to_swap: caller '%s' has no nav_to_swap signal" % caller.name)
 		return
-	caller.nav_to_swap_sig.emit(dest, swap)
+	caller.nav_to_swap.emit(dest, swap)
 
 func daemon_dismiss(caller: Node) -> void:
-	if not caller.has_signal("daemon_dismiss_sig"):
-		push_error("Nav.daemon_dismiss: caller '%s' has no daemon_dismiss_sig signal" % caller.name)
+	if not caller.has_signal("daemon_dismiss"):
+		push_error("Nav.daemon_dismiss: caller '%s' has no daemon_dismiss signal" % caller.name)
 		return
-	caller.daemon_dismiss_sig.emit()
+	caller.daemon_dismiss.emit()
 
 func channel_dismiss(caller: Node) -> void:
-	if not caller.has_signal("channel_dismiss_sig"):
-		push_error("Nav.channel_dismiss: caller '%s' has no channel_dismiss_sig signal" % caller.name)
+	if not caller.has_signal("channel_dismiss"):
+		push_error("Nav.channel_dismiss: caller '%s' has no channel_dismiss signal" % caller.name)
 		return
-	caller.channel_dismiss_sig.emit()
+	caller.channel_dismiss.emit()
 
 func evict_back_channel(caller: Node, dest: String) -> void:
 # remnant from Main as autoload which lead to double instantiation
 # current logic: Main has local back container reference so owns this guard 
 #	if not Guard.is_back_valid(Main.is_in_back(dest), caller.name + ":evict_back_channel"): return
-	if not caller.has_signal("evict_back_channel_sig"):
-		push_error("Nav.evict_back_channel: caller '%s' has no evict_back_channel_sig" % caller.name)
+	if not caller.has_signal("evict_back_channel"):
+		push_error("Nav.evict_back_channel: caller '%s' has no evict_back_channel" % caller.name)
 		return
-	caller.evict_back_channel_sig.emit(dest)
+	caller.evict_back_channel.emit(dest)

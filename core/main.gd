@@ -64,10 +64,10 @@ func start_daemon(dest: String) -> void:
 		daemon_instance.queue_free()
 		return
 	under.add_child(daemon_instance)
-	daemon_instance.nav_to_daemon_sig.connect(_on_nav_to_daemon_sig)
-	daemon_instance.daemon_dismiss_sig.connect(_on_daemon_dismiss_sig)
-	daemon_instance.nav_to_swap_sig.connect(_on_daemon_nav_to_swap_sig)
-	daemon_instance.evict_back_channel_sig.connect(_on_evict_back_channel_sig)
+	daemon_instance.nav_to_daemon.connect(_on_nav_to_daemon)
+	daemon_instance.daemon_dismiss.connect(_on_daemon_dismiss)
+	daemon_instance.nav_to_swap.connect(_on_daemon_nav_to_swap)
+	daemon_instance.evict_back_channel.connect(_on_evict_back_channel)
 	daemon_instance.daemon_init()
 	print("main.gd:start_daemon: " + daemon_instance.name + " started.")
 
@@ -90,10 +90,10 @@ func start_channel(dest: String) -> void:
 		return
 	front.add_child(channel_instance)
 	channel_instance.channel_dest = dest
-	channel_instance.nav_to_swap_sig.connect(_on_channel_nav_to_swap_sig)
-	channel_instance.channel_dismiss_sig.connect(_on_channel_dismiss_sig)
-	channel_instance.nav_to_channel_sig.connect(_on_nav_to_channel_sig)
-	channel_instance.nav_to_daemon_sig.connect(_on_nav_to_daemon_sig)
+	channel_instance.nav_to_swap.connect(_on_channel_nav_to_swap)
+	channel_instance.channel_dismiss.connect(_on_channel_dismiss)
+	channel_instance.nav_to_channel.connect(_on_nav_to_channel)
+	channel_instance.nav_to_daemon.connect(_on_nav_to_daemon)
 	channel_instance.channel_init()
 	print("main.gd:start_channel: " + channel_instance.name + " started.") 
 
@@ -133,17 +133,17 @@ func is_in_back(dest: String) -> bool:
 			return true
 	return false
 
-func _on_nav_to_daemon_sig(dest: String) -> void:
+func _on_nav_to_daemon(dest: String) -> void:
 	start_daemon(dest)
-func _on_daemon_dismiss_sig() -> void:
+func _on_daemon_dismiss() -> void:
 	exit_daemon()
-func _on_daemon_nav_to_swap_sig(dest: String) -> void:
+func _on_daemon_nav_to_swap(dest: String) -> void:
 	route_channel(dest, Channel.SwapAction.SWAP)
-func _on_nav_to_channel_sig(dest: String) -> void:
+func _on_nav_to_channel(dest: String) -> void:
 	route_channel(dest, Channel.SwapAction.EXIT)
-func _on_channel_nav_to_swap_sig(dest: String, swap: Channel.SwapAction) -> void:
+func _on_channel_nav_to_swap(dest: String, swap: Channel.SwapAction) -> void:
 	route_channel(dest, swap)
-func _on_channel_dismiss_sig() -> void:
+func _on_channel_dismiss() -> void:
 	exit_channel()
-func _on_evict_back_channel_sig(dest: String) -> void:
+func _on_evict_back_channel(dest: String) -> void:
 	evict_back_channel(dest)
