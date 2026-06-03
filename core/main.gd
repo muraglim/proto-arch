@@ -59,6 +59,7 @@ func start_daemon(dest: String) -> void:
 	if Guard.is_unresolved(script, "main.gd:start_daemon"): return
 	var daemon_instance: Node = Node.new()
 	daemon_instance.set_script(script)
+	daemon_instance.name = script.resource_path.get_file().get_basename()
 	if not Guard.is_daemon(daemon_instance, "main.gd:start_daemon"):
 		daemon_instance.queue_free()
 		return

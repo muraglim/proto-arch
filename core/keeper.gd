@@ -61,4 +61,3 @@ func call_store(store_node: String, method: String, args: Array = []) -> Variant
 		push_error("[Keeper] call_store(store: %s, method: %s, args: %s): unknown store" % [store_node, method, args])
 		return null
 	return stores[store_node].callv(method, args)
-
