@@ -39,7 +39,7 @@ func has_key(key: Variant) -> bool:
 	_log("has_key(key: %s) -> returns %s" % [key, exists])
 	return exists
 
-func get_keys() -> Array:
+func get_keys() -> Array[String]:
 	_log("get_keys() -> has %d keys" % data.size())
 	return data.keys()
 

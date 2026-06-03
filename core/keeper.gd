@@ -43,7 +43,7 @@ func has_key(store_node: String, key: String) -> bool:
 		return false
 	return stores[store_node].has_key(key)
 
-func get_keys(store_node: String) -> Array:
+func get_keys(store_node: String) -> Array[String]:
 	if not stores.has(store_node):
 		push_error("[Keeper] get_keys(store: %s): unknown store" % store_node)
 		return []
