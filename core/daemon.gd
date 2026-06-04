@@ -23,6 +23,9 @@ func daemon_pause() -> void:
 func daemon_resume() -> void:
 	pass
 
+# offset_value lives here rather than Keeper — Keeper handles storage primitives only.
+# Daemon computes the offset and passes the result to Keeper.set_value(), 
+# keeping arithmetic out of the storage facade.
 func offset_value(store: String, key: String, delta: float) -> void:
 	var current = Keeper.get_value(store, key)
 	if Guard.is_unresolved(current, name + ":offset_value"): return
@@ -31,6 +34,8 @@ func offset_value(store: String, key: String, delta: float) -> void:
 		return
 	Keeper.set_value(store, key, float(current) + delta)
 
+# get_nav() and get_type() are duplicated from Daemon — residue of a prior Channel extends Daemon 
+# relationship that caused scene construction errors. consolidate if a shared base becomes viable.
 func get_nav(key: String) -> String:
 	var entry = Keeper.get_value("_nav_dest_store", key)
 	if entry == null or not entry.has("uid") or entry["uid"].is_empty():
@@ -64,6 +69,8 @@ signal nav_to_daemon(dest: String)
 signal nav_to_swap(dest: String)
 @warning_ignore("unused_signal")
 signal evict_back_channel(dest: String)
-# currently unused as boot starts through a Channel - might be needed in future
+# unused at boot — boot routes through Channel. available for Daemon-initiated Channel 
+# navigation e.g. ambush triggers, sleep timers, any case where logic drives a front swap
+# without Channel involvement.
 @warning_ignore("unused_signal")
 signal nav_to_channel(dest: String)

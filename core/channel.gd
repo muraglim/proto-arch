@@ -23,6 +23,7 @@ extends Control
 # Do not add data primitive wrappers here.
 
 @export var verbose := false
+var _main: Node = null
 enum SwapAction {
 	EXIT,
 	SWAP
@@ -42,15 +43,21 @@ func channel_pause() -> void:
 func channel_resume() -> void:
 	pass
 
+# paired with channel_unhide() — swap cycle path (front -> back -> front)
 func channel_hide() -> void:
 	pass
 
+# paired with channel_hide() — restores a previously visible channel from back
 func channel_unhide() -> void:
 	pass
 
+# first render path — channel initialized directly to back, show() fires on first front promotion
+# distinct from unhide() which assumes prior front visibility
 func channel_show() -> void: 
 	pass                    
 
+# get_nav() and get_type() are duplicated from Daemon — residue of a prior Channel extends Daemon 
+# relationship that caused scene construction errors. consolidate if a shared base becomes viable.
 func get_nav(key: String) -> String:
 	var entry = Keeper.get_value("_nav_dest_store", key)
 	if entry == null or not entry.has("uid") or entry["uid"].is_empty():
@@ -66,6 +73,7 @@ func get_type(key: String) -> String:
 	return entry["type"]
 
 func _connect_to_main(main: Node) -> void:
+	_main = main
 	nav_to_swap.connect(main._on_channel_nav_to_swap)
 	channel_dismiss.connect(main._on_channel_dismiss)
 	nav_to_channel.connect(main._on_nav_to_channel)
@@ -87,6 +95,6 @@ signal evict_back_channel(dest: String)
 signal nav_to_daemon(dest: String)
 @warning_ignore("unused_signal")
 signal daemon_dismiss
-# this does something, don't remove it.
+# confirmed live — removing this broke routing. cause of confusion not fully parsed.
 @warning_ignore("unused_signal")
 signal nav_to_channel(dest: String)
