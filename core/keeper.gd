@@ -1,15 +1,13 @@
+# Store registration: child nodes of keeper.tscn are auto-registered on ready.
+# Node names use lowercase prefix + capital suffix (e.g. nav_dest_Store) for scene legibility.
+# Dictionary keys are derived via .to_lower() — callsites use lowercase (e.g. "_nav_dest_store").
+# To add a new store: add a child node to keeper.tscn, then attach the script, naming convention handles the rest.
+
 extends Node
 
 var stores: Dictionary = {}
 
 func _ready() -> void:
-	# [scene tree legibility]
-	# _Store node names use lowercase prefix + capital suffix (_nav_dest_Store) 
-	# [Keeper dictionary keys]
-	# derived via to_lower()
-	# add new _Stores by adding child nodes to keeper.tscn
-	# [callsite casing]
-	# ("_nav_dest_store")
 	for child in get_children():
 		stores[child.name.to_lower()] = child
 
@@ -50,6 +48,9 @@ func get_keys(store_node: String) -> Array[String]:
 	return stores[store_node].get_keys()
 
 func get_store(store_node: String) -> Node:
+# escape hatch: exposes raw store reference, bypasses facade pattern.
+# no demonstrated use case yet — deprecate once specific 
+# Keeper facade methods cover the gap.
 	if not stores.has(store_node):
 		push_error("[Keeper] get_store(store: %s): unknown store" % store_node)
 		return null

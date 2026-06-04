@@ -34,6 +34,8 @@ func load_data() -> void:
 		push_error("[%s] load_data(): failed to parse JSON" % name)
 		return
 	for key in parsed.keys():
+# only loads keys that already exist in data
+# intentional merge-over-defaults behavior
 		if data.has(key):
 			data[key] = parsed[key]
 			

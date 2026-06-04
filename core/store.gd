@@ -26,10 +26,11 @@ func clear_value(key: String) -> void:
 		_log("clear_value(key: %s) -> key not found" % key)
 
 func append_value(key: String, value: Variant) -> void:
+# if key does not exist, silently initializes an empty Array
 	if not data.has(key):
 		data[key] = []
 	elif not data[key] is Array:
-		push_error("append_value(key: %s): key exists but is type %s" % [key, typeof_string(data[key])])
+		push_error("append_value(key: %s): key exists but is type %s" % [key, type_string(typeof(data[key]))])
 		return
 	data[key].append(value)
 	_log("append_value(key: %s) -> Array now has %d items: %s" % [key, data[key].size(), data[key]])
@@ -41,7 +42,7 @@ func has_key(key: String) -> bool:
 
 func get_keys() -> Array[String]:
 	_log("get_keys() -> has %d keys" % data.size())
-	return data.keys()
+	return Array(data.keys(), TYPE_STRING, &"", null)
 
 func _log(msg: String) -> void:
 	if verbose:
