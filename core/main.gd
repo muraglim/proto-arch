@@ -112,6 +112,9 @@ func evict_back_channel(dest: String) -> void:
 func is_in_back(dest: String) -> bool:
 	return _find_back_channel(dest) != null
 
+func is_in_under(dest: String) -> bool:
+	return _find_daemon(dest) != null
+
 func _find_back_channel(dest: String) -> Channel:
 	for child in back.get_children():
 		var channel = child as Channel
