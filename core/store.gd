@@ -47,6 +47,3 @@ func get_keys() -> Array[String]:
 func _log(msg: String) -> void:
 	if verbose:
 		print("[%s] " % name, msg)
-
-func typeof_string(value: Variant) -> String:
-	return type_string(typeof(value))
