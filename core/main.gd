@@ -56,13 +56,13 @@ func start_daemon(dest: String) -> void:
 	_on_daemon_started(daemon_instance)
 	print("[Main] start_daemon(dest: %s): %s started." % [dest, daemon_instance.name])
 
-# dismiss: called by a Daemon self-exit, or a sibling Daemon triggering sibling exit
+# dismiss: called by a Daemon self-dismiss from under, or a sibling Daemon triggering sibling dismiss
 func daemon_dismiss(dest: String) -> void:
 	var daemon = _find_daemon(dest)
 	if not Guard.is_daemon(daemon, "[Main] daemon_dismiss()"): return
 	daemon.daemon_shutdown()
 	under.remove_child(daemon)
-	print("[Main] daemon_dismiss(): %s exited." % daemon.name)
+	print("[Main] daemon_dismiss(): %s dismissed." % daemon.name)
 	daemon.queue_free()
 
 # evict: called across container type boundaries (Channel evicting Daemon or vice versa)
@@ -95,15 +95,15 @@ func swap_channel() -> void:
 	back.add_child(channel)
 	print("[Main] swap_channel(): %s swapped front -> back." % channel.name)
 
-# dismiss: called by a Channel self-exit, or a sibling Channel triggering sibling exit
+# dismiss: called by a Channel self-dismiss from back, or a sibling Channel triggering sibling dismiss
 func dismiss_channel() -> void:
 	if front.get_child_count() == 0:
 		return
 	var channel: Channel = front.get_child(0) as Channel
-	if not Guard.is_channel(channel, "[Main] exit_channel()"): return
+	if not Guard.is_channel(channel, "[Main] dismiss_channel()"): return
 	channel.channel_shutdown()
 	front.remove_child(channel)
-	print("[Main] exit_channel(): %s exited." % channel.name)
+	print("[Main] dismiss_channel(): %s dismissed." % channel.name)
 	channel.queue_free()
 
 # evict: called across container type boundaries (Channel evicting Daemon or vice versa)
