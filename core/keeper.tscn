@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://bclykvbm5f3ra" path="res://stores/_nav_dest_Store.gd" id="2_e787k"]
 [ext_resource type="Script" uid="uid://dug807o48h8hq" path="res://stores/roster_store.gd" id="3_etpyo"]
 [ext_resource type="Script" uid="uid://c571jy2vnvv1d" path="res://stores/_nav_check_Store.gd" id="3_mwap5"]
+[ext_resource type="Script" uid="uid://dw7al5n1t7ui3" path="res://stores/tealwyv_player_store.gd" id="6_1qa4x"]
+[ext_resource type="Script" uid="uid://cm70cvnxnh10s" path="res://stores/tealwyv_luck_Store.gd" id="7_trhg3"]
 
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")
@@ -14,9 +16,21 @@ script = ExtResource("2_e787k")
 
 [node name="_json_test_Store" type="Node" parent="." unique_id=1014203657]
 script = ExtResource("2_424vn")
+verbose = null
 
 [node name="_nav_check_Store" type="Node" parent="." unique_id=2021893670]
 script = ExtResource("3_mwap5")
+verbose = null
 
 [node name="roster_Store" type="Node" parent="." unique_id=1401507670]
 script = ExtResource("3_etpyo")
+
+[node name="tealwyv_player_Store" type="Node" parent="." unique_id=892096859]
+script = ExtResource("6_1qa4x")
+verbose = null
+metadata/_custom_type_script = "uid://ck2m36eivvd13"
+
+[node name="tealwyv_luck_Store" type="Node" parent="." unique_id=1633547252]
+script = ExtResource("7_trhg3")
+verbose = null
+metadata/_custom_type_script = "uid://ck2m36eivvd13"
