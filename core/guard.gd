@@ -1,3 +1,8 @@
+# is_channel() and is_daemon() are type validators: return true = valid, false = error.
+# this inverts the sentinel pattern used elsewhere in Guard (true = error, stop).
+# inversion is intentional for callsite legibility — if not Guard.is_channel() reads naturally.
+# revisit if the guard family grows and these remain the only outliers.
+
 extends Node
 
 func is_front_empty_after_boot(front_container: Node, is_booted: bool, context: String) -> bool:
@@ -14,7 +19,7 @@ func is_unresolved(value: Variant, context: String) -> bool:
 
 func is_invalid_scene(scene: String, context: String) -> bool:
 	if not ResourceLoader.exists(scene):
-		push_error("CRITICAL [%s]: target scene '%s' is not a valid scene resource." % [context, scene])
+		push_error("CRITICAL [%s]: '%s' does not exist as a registered resource." % [context, scene])
 		return true
 	return false
 
