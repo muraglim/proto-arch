@@ -36,7 +36,7 @@ func daemon_dismiss(caller: Node) -> void:
 	if not caller.has_signal("daemon_dismiss"):
 		push_error("Nav.daemon_dismiss: caller '%s' has no daemon_dismiss signal" % caller.name)
 		return
-	caller.daemon_dismiss.emit()
+	caller.daemon_dismiss.emit(caller.get_script().resource_path)
 
 func channel_dismiss(caller: Node) -> void:
 	if not caller.has_signal("channel_dismiss"):

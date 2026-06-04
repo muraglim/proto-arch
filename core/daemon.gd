@@ -57,7 +57,7 @@ func _log(msg: String) -> void:
 
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
-signal daemon_dismiss
+signal daemon_dismiss(dest: String)
 @warning_ignore("unused_signal")
 signal nav_to_daemon(dest: String)
 @warning_ignore("unused_signal")

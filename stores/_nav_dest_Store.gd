@@ -19,5 +19,3 @@ func _ready() -> void:
 			"type": "channel"
 		},
 	}
-	print("_nav_dest_Store data: ", data)
-	print("_nav_dest_Store data type: ", typeof(data))
