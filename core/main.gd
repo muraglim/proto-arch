@@ -8,11 +8,12 @@ var is_booted: bool = false
 var swap_actions: Dictionary = {}
 
 func _ready() -> void:
+# dispatch table: maps SwapAction enum values to their handler functions
 	swap_actions = {
-		Channel.SwapAction.EXIT: exit_channel,
+		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Keeper.get_value("_nav_dest_store", "nav_check_channel")
+	var entry = Keeper.get_value("_nav_dest_store", "tealwyv_forest_channel")
 	if Guard.is_unresolved(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
 	if Guard.is_unresolved(boot_scene, "[Main] _ready()"): return
@@ -21,7 +22,7 @@ func _ready() -> void:
 	is_booted = true
 
 func route_channel(dest: String, swap: Channel.SwapAction) -> void:
-	if Guard.is_boot_valid(front, is_booted, "[Main] route_channel()"): return
+	if Guard.is_front_empty_after_boot(front, is_booted, "[Main] route_channel()"): return
 	if Guard.is_unresolved(dest, "[Main] route_channel()"): return
 	if Guard.is_invalid_scene(dest, "[Main] route_channel()"): return
 	var current: Channel = front.get_child(0) as Channel if front.get_child_count() > 0 else null
@@ -50,8 +51,10 @@ func start_daemon(dest: String) -> void:
 	under.add_child(daemon_instance)
 	daemon_instance._connect_to_main(self)
 	daemon_instance.daemon_init()
+	_on_daemon_started(daemon_instance)
 	print("[Main] start_daemon(dest: %s): %s started." % [dest, daemon_instance.name])
 
+# dismiss: called by a Daemon self-exit, or a sibling Daemon triggering sibling exit
 func daemon_dismiss(dest: String) -> void:
 	var daemon = _find_daemon(dest)
 	if not Guard.is_daemon(daemon, "[Main] daemon_dismiss()"): return
@@ -60,6 +63,7 @@ func daemon_dismiss(dest: String) -> void:
 	print("[Main] daemon_dismiss(): %s exited." % daemon.name)
 	daemon.queue_free()
 
+# evict: called across container type boundaries (Channel evicting Daemon or vice versa)
 func evict_daemon(dest: String) -> void:
 	var daemon = _find_daemon(dest)
 	if not Guard.is_daemon(daemon, "[Main] evict_daemon()"): return
@@ -89,7 +93,8 @@ func swap_channel() -> void:
 	back.add_child(channel)
 	print("[Main] swap_channel(): %s swapped front -> back." % channel.name)
 
-func exit_channel() -> void:
+# dismiss: called by a Channel self-exit, or a sibling Channel triggering sibling exit
+func dismiss_channel() -> void:
 	if front.get_child_count() == 0:
 		return
 	var channel: Channel = front.get_child(0) as Channel
@@ -99,6 +104,7 @@ func exit_channel() -> void:
 	print("[Main] exit_channel(): %s exited." % channel.name)
 	channel.queue_free()
 
+# evict: called across container type boundaries (Channel evicting Daemon or vice versa)
 func evict_back_channel(dest: String) -> void:
 	var channel = _find_back_channel(dest)
 	if not channel:
@@ -129,6 +135,12 @@ func _find_daemon(dest: String) -> Daemon:
 			return daemon
 	return null
 
+#KLDG
+func _on_daemon_started(daemon: Daemon) -> void:
+	var channel = front.get_child(0) as Channel
+	if channel and channel.has_method("set_combat_daemon"):
+			channel.set_combat_daemon(daemon)
+
 func _on_nav_to_daemon(dest: String) -> void:
 	start_daemon(dest)
 func _on_daemon_dismiss(dest: String) -> void:
@@ -140,7 +152,7 @@ func _on_nav_to_channel(dest: String) -> void:
 func _on_channel_nav_to_swap(dest: String, swap: Channel.SwapAction) -> void:
 	route_channel(dest, swap)
 func _on_channel_dismiss() -> void:
-	exit_channel()
+	dismiss_channel()
 func _on_evict_back_channel(dest: String) -> void:
 	evict_back_channel(dest)
 func _on_evict_daemon(dest: String) -> void:

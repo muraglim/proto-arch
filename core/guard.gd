@@ -1,6 +1,6 @@
 extends Node
 
-func is_boot_valid(front_container: Node, is_booted: bool, context: String) -> bool:
+func is_front_empty_after_boot(front_container: Node, is_booted: bool, context: String) -> bool:
 	if front_container.get_child_count() == 0 and is_booted:
 		push_error("CRITICAL [%s]: front is empty while is_booted is true." % context)
 		return true 
