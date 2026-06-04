@@ -137,7 +137,7 @@ func _find_daemon(dest: String) -> Daemon:
 			return daemon
 	return null
 
-#KLDG
+#KLDG see: tealwyv_forest_channel set_combat_daemon()
 func _on_daemon_started(daemon: Daemon) -> void:
 	var channel = front.get_child(0) as Channel
 	if channel and channel.has_method("set_combat_daemon"):
