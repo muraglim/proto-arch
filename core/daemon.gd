@@ -23,13 +23,13 @@ func daemon_pause() -> void:
 func daemon_resume() -> void:
 	pass
 
-#func offset_value(store: String, key: String, delta: float) -> void:
-#	var current = Keeper.get_value(store, key)
-#	if Guard.is_unresolved(current, name + ":offset_value"): return
-#	if not current is float and not current is int:
-#		_log("offset_value(store: %s, key: %s): value is not numeric, got %s" % [store, key, type_string(typeof(current))])
-#		return
-#	Keeper.set_value(store, key, current + delta)
+func offset_value(store: String, key: String, delta: float) -> void:
+	var current = Keeper.get_value(store, key)
+	if Guard.is_unresolved(current, name + ":offset_value"): return
+	if not current is float and not current is int:
+		_log("offset_value(store: %s, key: %s): value is not numeric, got %s" % [store, key, type_string(typeof(current))])
+		return
+	Keeper.set_value(store, key, float(current) + delta)
 
 func get_nav(key: String) -> String:
 	var entry = Keeper.get_value("_nav_dest_store", key)
