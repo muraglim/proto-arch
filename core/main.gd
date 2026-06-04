@@ -40,6 +40,8 @@ func route_channel(dest: String, swap: Channel.SwapAction) -> void:
 	start_channel(dest)
 
 func start_daemon(dest: String) -> void:
+# Daemons are script-only, no invalid scene guard needed 
+# TODO: consider guard against passing a scene uid as dest
 	var script: GDScript = load(dest)
 	if Guard.is_unresolved(script, "[Main] start_daemon()"): return
 	var daemon_instance: Node = Node.new()

@@ -1,6 +1,7 @@
 # BREADCRUMB: exit methods (channel_dismiss, daemon_dismiss, evict_back_channel) are lifecycle 
 # termination, not routing — semantic mismatch with Nav as a name. Monitor if exit 
 # cases grow or cause confusion, consider splitting into separate facade at that point.
+# TODO: conform logging to project convention
 
 extends Node
 
@@ -18,6 +19,8 @@ func to_channel(caller: Node, dest: String) -> void:
 	caller.nav_to_channel.emit(dest)
 
 func to_daemon(caller: Node, dest: String) -> void:
+# Daemons are script-only, no invalid scene guard needed 
+# TODO: consider guard against passing a scene uid as dest
 	if Guard.is_unresolved(dest, caller.name + ":to_daemon"): return
 	if not caller.has_signal("nav_to_daemon"):
 		push_error("Nav.to_daemon: caller '%s' has no nav_to_daemon signal" % caller.name)
@@ -26,7 +29,7 @@ func to_daemon(caller: Node, dest: String) -> void:
 
 func to_swap(caller: Node, dest: String, swap: Channel.SwapAction) -> void:
 	if Guard.is_invalid_scene(dest, caller.name): return
-	if Guard.is_unresolved(dest, caller.name + ":to_channel"): return 
+	if Guard.is_unresolved(dest, caller.name + ":to_swap"): return 
 	if not caller.has_signal("nav_to_swap"):
 		push_error("Nav.to_swap: caller '%s' has no nav_to_swap signal" % caller.name)
 		return
@@ -45,9 +48,6 @@ func channel_dismiss(caller: Node) -> void:
 	caller.channel_dismiss.emit()
 
 func evict_back_channel(caller: Node, dest: String) -> void:
-# remnant from Main as autoload which lead to double instantiation
-# current logic: Main has local back container reference so owns this guard 
-#	if not Guard.is_back_valid(Main.is_in_back(dest), caller.name + ":evict_back_channel"): return
 	if not caller.has_signal("evict_back_channel"):
 		push_error("Nav.evict_back_channel: caller '%s' has no evict_back_channel" % caller.name)
 		return
