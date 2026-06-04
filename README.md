@@ -1,26 +1,89 @@
 # proto-arch
 
-A modular sandbox architecture for housing and interconnecting game prototypes, 
-built in Godot 4 using GDScript.
+A modular sandbox architecture for housing and interconnecting game prototypes, built in Godot 4 using GDScript. Text-only phase is an intentional scope constraint for learning.
 
 ## Concept
 
-Proto-Arch is a learning environment and design research platform. Individual 
-prototypes live as self-contained modules within a shared architecture, 
-interoperating through a central state facade (Keeper) and a signal-based 
-navigation bootstrapper. 
+Proto-Arch is a design research platform. Individual prototypes live as self-contained modules within a shared architecture, interoperating through a central state facade and a signal-based navigation system.
 
-The long-term design goal is a 'carousel' of game contexts where characters 
-and progression can cross module boundaries in meaningful ways.
+Long-term design goal: a carousel of game contexts where characters and progression cross game context boundaries meaningfully. This is future intent, not current scope.
 
 ## Architecture
 
-- **Bootstrapper** (main.gd) — scene manager handling module lifecycle and navigation
-- **Module** (module.gd) — base class for viewport and input interactions
-- **Daemon** (daemon.gd) — base class for logic
-- **Keeper**  autoload facade mediating between modules, daemons and data stores
-- **Guard**  autoload handling validation and guard checks
+### Scene Structure
+
+Main (`main.gd`) is the scene manager and bootstrapper. It is not an autoload — instantiated once as the root scene. It owns three containers:
+
+- `front` — active Channel, primary input and display
+- `back` — cached Channels, swapped out but not destroyed
+- `under` — active Daemons, logic layer only
+
+### Autoloads
+
+**Nav** — navigation facade. All navigation calls route through Nav methods. Guard checks and signal emission are centralized here. Signals live on the calling instance — Nav drives them, does not own them.
+
+**Keeper** — state facade. Manages child Store nodes registered at ready via the scene tree. Callsites never interact with stores directly — all reads and writes go through Keeper's proxied methods. Child store nodes use a `lowercase_prefix_Store` naming convention; Keeper keys are derived via `.to_lower()`.
+
+**Guard** — validation layer. Provides guard checks used at callsites across the codebase. Returns `true` on error condition (stop/early return pattern), with two exceptions: `is_channel()` and `is_daemon()` are type validators that return `true` on valid — inversion is intentional for callsite legibility.
+
+### Base Classes
+
+**Channel** (`channel.gd`) extends Control — display and input handling. Lives in `front` or `back`. Lifecycle methods: `channel_init()`, `channel_shutdown()`, `channel_pause()`, `channel_resume()`, `channel_hide()`, `channel_unhide()`, `channel_show()`. Do not use `_ready()` in subclasses — use `channel_init()`, which fires after scene tree insertion and bootstrapper wiring.
+
+**Daemon** (`daemon.gd`) extends Node — logic only, no scene. Lives in `under`. Script-only by design; never attach a scene. Lifecycle methods: `daemon_init()`, `daemon_shutdown()`, `daemon_pause()`, `daemon_resume()`. Do not use `_ready()` in subclasses — use `daemon_init()`.
+
+**Store** (`store.gd`) extends Node — base class for all state stores. Child of Keeper in the scene tree. Subclasses:
+- `PersistentStore` — adds file-backed persistence. Loads on ready, merges over defaults (unknown keys from file are ignored to protect against stale save data).
+- `AutoSaveStore` — extends PersistentStore, saves on every `set_value()` mutation.
+
+### Navigation
+
+All navigation routes through Nav. Channels and Daemons emit signals; Nav drives emission, Main handles the signal callbacks and executes routing logic. Nav methods validate callers have the required signal before emitting.
+
+SwapAction enum (defined on Channel) controls routing behavior:
+- `EXIT` — current Channel is shut down and freed before the new one starts
+- `SWAP` — current Channel is paused and moved to `back`, available for resume
+
+### Tooling Layer
+
+**_pComb** — lightweight print/logging helpers for in-development interrogation. Not a debug system — a quick reach for when you need to look at something.
+
+**_dGnostic** — deferred until gameplay complexity warrants more systematic inspection than print calls provide.
+
+Tooling autoloads use a `lowercase_prefix + PascalCase` naming convention (`_pComb`, `_dGnostic`). The lowercase prefix describes the function category. New tooling slots into this system by assigning a prefix.
+
+## Naming Conventions
+
+| Context | Convention | Example |
+|---|---|---|
+| Base classes | PascalCase | `Channel`, `Daemon`, `Store` |
+| Autoloads | Single-word PascalCase | `Nav`, `Keeper`, `Guard` |
+| Tooling autoloads | `_lowercasePrefix + PascalCase` | `_pComb`, `_dGnostic` |
+| Store child nodes (scene) | `lowercase_prefix_Store` | `nav_dest_Store` |
+| Keeper callsite keys | `.to_lower()` of node name | `"_nav_dest_store"` |
+| Scene scripts (subclasses) | `lower_with_underscore`, min two words | `nav_checker`, `nav_check_daemon` |
+| Methods | `lower_case()` everywhere | `channel_init()`, `get_value()` |
+
+## Folder Structure
+
+```
+/core/       — base classes, autoloads
+/stores/     — Store subclass instances
+/channels/   — Channel subclass scenes and scripts
+/daemons/    — Daemon subclass scripts
+```
+
+## Dismiss vs Evict
+
+Semantic distinction used throughout the codebase for lifecycle termination calls:
+
+- **dismiss** — a container exiting itself, or a sibling triggering a sibling exit (Channel dismissing Channel, Daemon dismissing Daemon)
+- **evict** — cross-type boundary termination (Daemon triggering Channel exit, Channel triggering Daemon exit)
+
+## Tooling Intent
+
+The codebase trends toward self-documenting and machine-readable. As Python literacy develops naturally from GDScript familiarity, the intent is to build lightweight automation tooling that surfaces accumulated debt and process signals — TODO pullup across the file tree, nav path verification, callsite hygiene checks before commits. Implementation deferred until there is sufficient codebase familiarity to design against real friction rather than speculated friction.
 
 ## Status
 
-Early development. Text-based prototype environment currently in progress.
+Early development. Architecture is stable. Single text-based prototype environment in progress.
