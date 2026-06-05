@@ -15,6 +15,8 @@ func _ready() -> void:
 	}
 	var entry = Keeper.get_value("_nav_dest_store", "tealwyv_forest_channel")
 	if Guard.is_unresolved(entry, "[Main] _ready()"): return
+# assumes entry is a Dictionary with a "uid" key
+# no structural guard here — correctness depends on store write discipline
 	var boot_scene = entry["uid"]
 	if Guard.is_unresolved(boot_scene, "[Main] _ready()"): return
 	if Guard.is_invalid_scene(boot_scene, "[Main] _ready()"): return
