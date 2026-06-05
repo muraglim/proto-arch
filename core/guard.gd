@@ -39,9 +39,3 @@ func is_daemon(node: Node, context: String) -> bool:
 		push_error("CRITICAL [%s]: node '%s' is not a Daemon" % [context, node.name])
 		return false
 	return true
-
-func is_back_valid(result: bool, context: String) -> bool:
-	if not result:
-		push_error("CRITICAL: [%s]: target channel is not in back container." % context)
-		return false
-	return true
