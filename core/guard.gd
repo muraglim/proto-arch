@@ -1,7 +1,9 @@
-# is_channel() and is_daemon() are type validators: return true = valid, false = error.
-# this inverts the sentinel pattern used elsewhere in Guard (true = error, stop).
-# inversion is intentional for callsite legibility — if not Guard.is_channel() reads naturally.
-# revisit if the guard family grows and these remain the only outliers.
+# Predicate design note:
+# is_channel() and is_daemon() are *type predicates* — they return true when
+# the object is of the expected type. This is the opposite of a sentinel,
+# where true signals an error. Inversion is intentional: callers use them as
+# positive guards, e.g. `if is_channel(node): …`.
+# When adding a new container type in Main.gd, add a matching predicate here.
 
 extends Node
 
