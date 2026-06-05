@@ -40,4 +40,6 @@ func load_data() -> void:
 			data[key] = parsed[key]
 			
 func _init_defaults() -> void:
+# Override in subclasses to seed default data.
+# Fires before load_data() in _ready(), so file values merge over these defaults.
 	pass
