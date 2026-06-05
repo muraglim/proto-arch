@@ -67,6 +67,9 @@ func daemon_dismiss(dest: String) -> void:
 
 # evict: called across container type boundaries (Channel evicting Daemon or vice versa)
 func evict_daemon(dest: String) -> void:
+	print("[Main] evict_daemon(): searching for '%s'", dest.get_file().get_basename())
+	for child in under.get_children():
+		print(" - under child: '%s'" % child.name)
 	var daemon = _find_daemon(dest)
 	if not Guard.is_daemon(daemon, "[Main] evict_daemon()"): return
 	daemon.daemon_shutdown()
@@ -131,9 +134,13 @@ func _find_back_channel(dest: String) -> Channel:
 	return null
 
 func _find_daemon(dest: String) -> Daemon:
+	var path := dest
+	if dest.begins_with("uid://"):
+		path = ResourceUID.get_id_path(ResourceUID.text_to_id(dest))
+	var target_name := path.get_file().get_basename()
 	for child in under.get_children():
 		var daemon = child as Daemon
-		if daemon and daemon.name == dest.get_file().get_basename():
+		if daemon and daemon.name == target_name:
 			return daemon
 	return null
 

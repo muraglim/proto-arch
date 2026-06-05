@@ -30,6 +30,9 @@ func is_channel(node: Node, context: String) -> bool:
 	return true
 
 func is_daemon(node: Node, context: String) -> bool:
+	if node == null:
+		push_error("CRITICAL [%s]: node is null" % context)
+		return false
 	if not node is Daemon:
 		push_error("CRITICAL [%s]: node '%s' is not a Daemon" % [context, node.name])
 		return false

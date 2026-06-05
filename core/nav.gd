@@ -41,6 +41,12 @@ func daemon_dismiss(caller: Node) -> void:
 		return
 	caller.daemon_dismiss.emit(caller.get_script().resource_path)
 
+func evict_daemon(caller: Node, dest: String) -> void:
+	if not caller.has_signal("evict_daemon"):
+		push_error("Nav.evict_daemon: caller '%s' has no evict_daemon signal" % caller.name)
+		return
+	caller.evict_daemon.emit(dest)
+
 func channel_dismiss(caller: Node) -> void:
 	if not caller.has_signal("channel_dismiss"):
 		push_error("Nav.channel_dismiss: caller '%s' has no channel_dismiss signal" % caller.name)
