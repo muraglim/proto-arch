@@ -13,7 +13,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Keeper.get_value("_nav_dest_store", "tealwyv_forest_channel")
+	var entry = Keeper.get_value("_nav_dest_store", "tealwyv_forest_channel_dupe")
 	if Guard.is_unresolved(entry, "[Main] _ready()"): return
 # assumes entry is a Dictionary with a "uid" key
 # no structural guard here — correctness depends on store write discipline
@@ -54,8 +54,10 @@ func start_daemon(dest: String) -> void:
 		return
 	under.add_child(daemon_instance)
 	daemon_instance._connect_to_main(self)
+	var channel = front.get_child(0) as Channel
+	if channel:
+		channel.wire_to_daemon(daemon_instance)
 	daemon_instance.daemon_init()
-	_on_daemon_started(daemon_instance)
 	print("[Main] start_daemon(dest: %s): %s started." % [dest, daemon_instance.name])
 
 # dismiss: called by a Daemon self-dismiss from under, or a sibling Daemon triggering sibling dismiss
@@ -145,12 +147,6 @@ func _find_daemon(dest: String) -> Daemon:
 		if daemon and daemon.name == target_name:
 			return daemon
 	return null
-
-#KLDG see: tealwyv_forest_channel set_combat_daemon()
-func _on_daemon_started(daemon: Daemon) -> void:
-	var channel = front.get_child(0) as Channel
-	if channel and channel.has_method("set_combat_daemon"):
-			channel.set_combat_daemon(daemon)
 
 func _on_nav_to_daemon(dest: String) -> void:
 	start_daemon(dest)
