@@ -81,6 +81,9 @@ func _connect_to_main(main: Node) -> void:
 	evict_back_channel.connect(main._on_evict_back_channel) # TODO triage evaluation re: sibling dismiss instead of evict 
 	evict_daemon.connect(main._on_evict_daemon)
 
+func wire_to_daemon(daemon: Daemon) -> void:
+	pass
+
 func _log(msg: String) -> void:
 	if verbose:
 		print("[%s] " % name, msg)
