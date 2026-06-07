@@ -69,9 +69,6 @@ func daemon_dismiss(dest: String) -> void:
 
 # evict: called across container type boundaries (Channel evicting Daemon or vice versa)
 func evict_daemon(dest: String) -> void:
-	print("[Main] evict_daemon(): searching for '%s'", dest.get_file().get_basename())
-	for child in under.get_children():
-		print(" - under child: '%s'" % child.name)
 	var daemon = _find_daemon(dest)
 	if not _is_daemon(daemon, "[Main] start_daemon"): return # belt-and-suspenders, front only receives Daemons via start_daemon()
 	daemon.daemon_shutdown()
@@ -114,7 +111,7 @@ func dismiss_channel() -> void:
 # evict: called across container type boundaries (Channel evicting Daemon or vice versa)
 func evict_back_channel(dest: String) -> void:
 	var channel = _find_back_channel(dest)
-	if not channel:
+	if not channel: # if not push error is known outlier - no Guard method until a second callsite warrants one
 		push_error("[Main] evict_back_channel(dest: %s): no channel found in back." % dest)
 		return
 	back.remove_child(channel)
