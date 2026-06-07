@@ -1,3 +1,4 @@
+class_name _nav_dest_Ledger
 extends Ledger
 
 func _ready() -> void:
@@ -30,20 +31,8 @@ func _ready() -> void:
 			"uid": "uid://bfo2tel1gn5g8",
 			"type": "daemon"
 		},
-		"tealwyv_combat_daemon_dupe": {
-			"uid": "uid://fhmqgxi1wfjh",
+		"tealwyv_text_daemon": {
+			"uid": "uid://d30aw5tdkrn41",
 			"type": "daemon"
-		},
-		"tealwyv_luck_daemon_dupe": {
-			"uid": "uid://buo00jptfjgy",
-			"type": "daemon"
-		},
-		"tealwyv_forest_channel_dupe": {
-			"uid": "uid://b7ma2nj0okgat",
-			"type": "channel"
-		},
-		"tealwyv_text_daemon_dupe": {
-			"uid": "uid://075jx07ggpov",
-			"type": "channel"
 		},
 	}
