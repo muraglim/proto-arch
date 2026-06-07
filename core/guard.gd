@@ -24,18 +24,3 @@ func is_invalid_scene(scene: String, context: String) -> bool:
 		push_error("CRITICAL [%s]: '%s' does not exist as a registered resource." % [context, scene])
 		return true
 	return false
-
-func is_channel(node: Node, context: String) -> bool:
-	if not node is Channel:
-		push_error("CRITICAL [%s]: node '%s' is not a Channel." % [context, node.name])
-		return false
-	return true
-
-func is_daemon(node: Node, context: String) -> bool:
-	if node == null:
-		push_error("CRITICAL [%s]: node is null" % context)
-		return false
-	if not node is Daemon:
-		push_error("CRITICAL [%s]: node '%s' is not a Daemon" % [context, node.name])
-		return false
-	return true

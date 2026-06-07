@@ -49,7 +49,7 @@ func start_daemon(dest: String) -> void:
 	var daemon_instance: Node = Node.new()
 	daemon_instance.set_script(script)
 	daemon_instance.name = script.resource_path.get_file().get_basename()
-	if not Guard.is_daemon(daemon_instance, "[Main] start_daemon()"):
+	if not _is_daemon(daemon_instance, "[Main] start_daemon"):
 		daemon_instance.queue_free()
 		return
 	under.add_child(daemon_instance)
@@ -63,7 +63,7 @@ func start_daemon(dest: String) -> void:
 # dismiss: called by a Daemon self-dismiss from under, or a sibling Daemon triggering sibling dismiss
 func daemon_dismiss(dest: String) -> void:
 	var daemon = _find_daemon(dest)
-	if not Guard.is_daemon(daemon, "[Main] daemon_dismiss()"): return
+	if not _is_daemon(daemon, "[Main] start_daemon"): return # belt-and-suspenders, front only receives Daemons via start_daemon()
 	daemon.daemon_shutdown()
 	under.remove_child(daemon)
 	print("[Main] daemon_dismiss(): %s dismissed." % daemon.name)
@@ -75,7 +75,7 @@ func evict_daemon(dest: String) -> void:
 	for child in under.get_children():
 		print(" - under child: '%s'" % child.name)
 	var daemon = _find_daemon(dest)
-	if not Guard.is_daemon(daemon, "[Main] evict_daemon()"): return
+	if not _is_daemon(daemon, "[Main] start_daemon"): return # belt-and-suspenders, front only receives Daemons via start_daemon()
 	daemon.daemon_shutdown()
 	under.remove_child(daemon)
 	print("[Main] evict_daemon(): %s evicted." % daemon.name)
@@ -85,7 +85,7 @@ func start_channel(dest: String) -> void:
 	var scene: PackedScene = load(dest)
 	if Guard.is_unresolved(scene, "[Main] start_channel()"): return
 	var channel_instance: Node = scene.instantiate()
-	if not Guard.is_channel(channel_instance, "[Main] start_channel()"):
+	if not _is_channel(channel_instance, "[Main] start_channel()"):
 		channel_instance.queue_free()
 		return
 	front.add_child(channel_instance)
@@ -96,7 +96,7 @@ func start_channel(dest: String) -> void:
 
 func swap_channel() -> void:
 	var channel: Channel = front.get_child(0) as Channel
-	if not Guard.is_channel(channel, "[Main] swap_channel()"): return
+	if not _is_channel(channel, "[Main] start_channel()"): return # belt-and-suspenders, front only receives Channels via start_channel()
 	channel.channel_pause()
 	front.remove_child(channel)
 	back.add_child(channel)
@@ -107,7 +107,7 @@ func dismiss_channel() -> void:
 	if front.get_child_count() == 0:
 		return
 	var channel: Channel = front.get_child(0) as Channel
-	if not Guard.is_channel(channel, "[Main] dismiss_channel()"): return
+	if not _is_channel(channel, "[Main] start_channel()"): return # belt-and-suspenders, front only receives Channels via start_channel()
 	channel.channel_shutdown()
 	front.remove_child(channel)
 	print("[Main] dismiss_channel(): %s dismissed." % channel.name)
@@ -129,6 +129,24 @@ func is_in_back(dest: String) -> bool:
 
 func is_in_under(dest: String) -> bool:
 	return _find_daemon(dest) != null
+
+func _is_channel(node: Node, context: String) -> bool:
+	if node == null:
+		push_error("CRITICAL [%s]: node is null" % context)
+		return false
+	if not node is Channel:
+		push_error("CRITICAL [%s]: node '%s' is not a Channel." % [context, node.name])
+		return false
+	return true
+
+func _is_daemon(node: Node, context: String) -> bool:
+	if node == null:
+		push_error("CRITICAL [%s]: node is null" % context)
+		return false
+	if not node is Daemon:
+		push_error("CRITICAL [%s]: node '%s' is not a Daemon" % [context, node.name])
+		return false
+	return true
 
 func _find_back_channel(dest: String) -> Channel:
 	for child in back.get_children():
