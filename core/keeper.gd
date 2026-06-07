@@ -1,7 +1,8 @@
 # Store registration: child nodes of keeper.tscn are auto-registered on ready.
-# Node names use lowercase prefix + capital suffix (e.g. nav_dest_Store) for scene legibility.
-# Dictionary keys are derived via .to_lower() — callsites use lowercase (e.g. "_nav_dest_store").
+# Node names use lowercase prefix + capital suffix (e.g. tealwyv_player_Store) for scene legibility.
+# Dictionary keys are derived via .to_lower() — callsites use lowercase (e.g. "tealwyv_player_store").
 # To add a new store: add a child node to keeper.tscn, then attach the script, naming convention handles the rest.
+#TODO write comment explaining Keeper's responsibility re: mutable state
 
 extends Node
 

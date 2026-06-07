@@ -13,7 +13,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Keeper.get_value("_nav_dest_store", "tealwyv_forest_channel_dupe")
+	var entry = Keeper.get_value("_nav_dest_Ledger", "tealwyv_forest_channel_dupe")
 	if Guard.is_unresolved(entry, "[Main] _ready()"): return
 # assumes entry is a Dictionary with a "uid" key
 # no structural guard here — correctness depends on store write discipline

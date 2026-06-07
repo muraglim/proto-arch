@@ -59,14 +59,14 @@ func channel_show() -> void:
 # get_nav() and get_type() are duplicated from Daemon — residue of a prior Channel extends Daemon 
 # relationship that caused scene construction errors. consolidate if a shared base becomes viable.
 func get_nav(key: String) -> String:
-	var entry = Keeper.get_value("_nav_dest_store", key)
+	var entry = Keeper.get_value("_nav_dest_ledger", key)
 	if entry == null or not entry.has("uid") or entry["uid"].is_empty():
 		_log("get_nav(key: %s): failed to retrieve uid" % key)
 		return ""
 	return entry["uid"]
 
 func get_type(key: String) -> String:
-	var entry = Keeper.get_value("_nav_dest_store", key)
+	var entry = Keeper.get_value("_nav_dest_ledger", key)
 	if entry == null or not entry.has("type"):
 		_log("get_type(key: %s): no type found" % key)
 		return ""
