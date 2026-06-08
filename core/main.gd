@@ -14,9 +14,7 @@ func _ready() -> void:
 		Channel.SwapAction.SWAP: swap_channel
 	}
 	var entry = Firm.get_value("_nav_dest_ledger", "dev_forest_channel")
-	if Guard.is_unresolved(entry, "[Main] _ready()"): return
-# assumes entry is a Dictionary with a "uid" key
-# no structural guard here — correctness depends on store write discipline
+	if Guard.is_invalid_uid(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
 	if Guard.is_unresolved(boot_scene, "[Main] _ready()"): return
 	if Guard.is_invalid_scene(boot_scene, "[Main] _ready()"): return
