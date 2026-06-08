@@ -5,10 +5,14 @@
 [ext_resource type="Script" uid="uid://dug807o48h8hq" path="res://stores/roster_store.gd" id="3_etpyo"]
 [ext_resource type="Script" uid="uid://c571jy2vnvv1d" path="res://stores/_nav_check_Store.gd" id="3_mwap5"]
 [ext_resource type="Script" uid="uid://dw7al5n1t7ui3" path="res://stores/tealwyv_player_store.gd" id="6_1qa4x"]
+[ext_resource type="Script" uid="uid://dah77mrkcmp7c" path="res://stores/_dev_Store.gd" id="7_1qa4x"]
 [ext_resource type="Script" uid="uid://cm70cvnxnh10s" path="res://stores/tealwyv_luck_Store.gd" id="7_trhg3"]
 
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")
+
+[node name="_dev_Store" type="Node" parent="." unique_id=1272858847]
+script = ExtResource("7_1qa4x")
 
 [node name="_json_test_Store" type="Node" parent="." unique_id=1014203657]
 script = ExtResource("2_424vn")

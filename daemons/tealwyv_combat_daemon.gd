@@ -7,6 +7,7 @@ const CRIT_MULTIPLIER: float = 2.0
 var luck_daemon: TealwyvLuckDaemon
 var enemy: Dictionary = {}
 var is_combat_active: bool = false
+var _encounter_snapshot: Dictionary = {}
 
 func daemon_init() -> void:
 	luck_daemon = _get_sibling_daemon("tealwyv_luck_daemon")
@@ -18,11 +19,18 @@ func start_encounter() -> void:
 
 func _roll_encounter() -> void:
 	var all_enemies: Array = Firm.get_value("tealwyv_forest_ledger", "enemies")
-	var pool: Array = all_enemies.filter(func(e): return e["level"] == 1)
+	var dev_level: int = Keeper.get_value("_dev_store", "enemy_level")
+	var target_level: int = dev_level if dev_level > 0 else 1
+	var pool: Array = all_enemies.filter(func(e): return e["level"] == target_level)
 	enemy = pool[randi() % pool.size()].duplicate()
 	enemy["hp"] = ceil(enemy["hp"])
 	enemy["attack"] = floor(enemy["attack"])
 	enemy["defense"] = floor(enemy["defense"])
+	_encounter_snapshot = {
+		"player_atk": Keeper.get_value("tealwyv_player_store", "attack"),
+		"player_def": Keeper.get_value("tealwyv_player_store", "defense"),
+		"player_hp_max": Keeper.get_value("tealwyv_player_store", "hp_max"),
+	}
 	is_combat_active = true
 	# TODO create player naming step, then display it somewhere, likely appropriate for 'view player stats' feature
 	var player_name = Keeper.get_value("tealwyv_player_store", "player_name")
@@ -110,6 +118,8 @@ func _resolve_victory(lines: Array) -> void:
 	offset_value("tealwyv_player_store", "experience", float(exp_gain))
 	offset_value("tealwyv_player_store", "gold", float(gold_gain))
 	luck_daemon.diminish()
+	var player_hp_remaining = Keeper.get_value("tealwyv_player_store", "hp")
+	_write_encounter_result("victory", player_hp_remaining, 0)
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
 		enemy["name"], exp_gain, gold_gain
 	])
@@ -119,8 +129,10 @@ func _resolve_victory(lines: Array) -> void:
 func _resolve_defeat(lines: Array) -> void:
 	is_combat_active = false
 	var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
+	var enemy_hp_remaining = enemy["hp"]
 	Keeper.set_value("tealwyv_player_store", "hp", hp_max)
 	luck_daemon.diminish()
+	_write_encounter_result("defeat", 0, enemy_hp_remaining)
 	lines.append("\nYou have been defeated.\n\n[continue]")
 	combat_update.emit("\n".join(lines))
 	_log("_resolve_defeat(): player defeated.")
@@ -133,6 +145,34 @@ func _get_sibling_daemon(daemon_name: String) -> Node:
 	push_error("[%s] _get_sibling_daemon(): %s not found in under." % [name, daemon_name])
 	return null
 
+func _write_encounter_result(outcome: String, player_hp_remaining: float, enemy_hp_remaining: float) -> void:
+	var path = "user://tealwyv_encounter_log.csv"
+	var write_header = not FileAccess.file_exists(path)
+	var file = FileAccess.open(path, FileAccess.READ_WRITE if not write_header else FileAccess.WRITE)
+	if file == null:
+		push_error("[tealwyv_combat_daemon] _write_encounter_result(): could not open %s" % path)
+		return
+	if write_header:
+		file.store_line("timestamp,enemy_name,enemy_level,enemy_archetype,player_atk,player_def,player_hp_max,outcome,player_hp_remaining,enemy_hp_remaining")
+	else:
+		file.seek_end()
+	var archetype = "_".join(enemy["name"].split("_").slice(1))
+	var row = "%s,%s,%d,%s,%d,%d,%d,%s,%d,%d" % [
+		Time.get_datetime_string_from_system(),
+		enemy["name"],
+		enemy["level"],
+		archetype,
+		_encounter_snapshot["player_atk"],
+		_encounter_snapshot["player_def"],
+		_encounter_snapshot["player_hp_max"],
+		outcome,
+		player_hp_remaining,
+		enemy_hp_remaining
+	]
+	file.store_line(row)
+	file.close()
+	_log("_write_encounter_result(): logged %s vs %s -> %s" % [outcome, enemy["name"], path])
+	
 func daemon_shutdown() -> void:
 	_log("daemon_shutdown(): combat daemon offline.")
 

@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://d0m12nbxa0wbh"]
+
+[ext_resource type="Script" uid="uid://xaumxbrl1gce" path="res://channels/_dev_forest_channel.gd" id="1_gc1fv"]
+
+[node name="_dev_forest_channel" type="Control" unique_id=251528477]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gc1fv")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1919490730]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1866053094]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer" unique_id=1365623814]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/RichTextLabel" unique_id=2052909106]
+layout_mode = 0
+offset_top = 689.0
+offset_right = 1280.0
+offset_bottom = 720.0

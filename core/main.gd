@@ -13,7 +13,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Firm.get_value("_nav_dest_ledger", "tealwyv_forest_channel")
+	var entry = Firm.get_value("_nav_dest_ledger", "dev_forest_channel")
 	if Guard.is_unresolved(entry, "[Main] _ready()"): return
 # assumes entry is a Dictionary with a "uid" key
 # no structural guard here — correctness depends on store write discipline

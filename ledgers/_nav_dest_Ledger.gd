@@ -35,4 +35,8 @@ func _ready() -> void:
 			"uid": "uid://d30aw5tdkrn41",
 			"type": "daemon"
 		},
+		"dev_forest_channel": {
+			"uid": "uid://d0m12nbxa0wbh",
+			"type": "daemon"
+		},
 	}
