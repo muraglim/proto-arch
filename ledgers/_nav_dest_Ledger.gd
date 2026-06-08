@@ -37,6 +37,6 @@ func _ready() -> void:
 		},
 		"dev_forest_channel": {
 			"uid": "uid://d0m12nbxa0wbh",
-			"type": "daemon"
+			"type": "channel"
 		},
 	}
