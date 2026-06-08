@@ -66,7 +66,7 @@ func get_nav(key: String) -> String:
 	return entry["uid"]
 
 func get_type(key: String) -> String:
-	var entry = Keeper.get_value("_nav_dest_ledger", key)
+	var entry = Firm.get_value("_nav_dest_ledger", key)
 	if entry == null or not entry.has("type"):
 		_log("get_type(key: %s): no type found" % key)
 		return ""
