@@ -97,7 +97,8 @@ func swap_channel() -> void:
 	back.add_child(channel)
 	print("[Main] swap_channel(): %s swapped front -> back." % channel.name)
 
-# dismiss: called by a Channel self-dismiss from back, or a sibling Channel triggering sibling dismiss
+# dismiss: called as part of routing when SwapAction is EXIT
+# if a front Channel dismissing a Channel in back need arises, will require a different method.
 func dismiss_channel() -> void:
 	if front.get_child_count() == 0:
 		return
