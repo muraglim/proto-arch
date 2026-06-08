@@ -26,7 +26,7 @@ Main (`main.gd`) is the scene manager and bootstrapper. It is not an autoload �
 
 **Firm** — immutable state facade. Manages child Ledger nodes registered at ready via the scene tree. Read-only by design — no mutation methods. Structurally separate from Keeper; Ledger nodes live in Firm's scene tree, not Keeper's. Child ledger nodes use a `lowercase_prefix_Ledger` naming convention; Firm keys are derived via `.to_lower()`.
 
-**Guard** — validation layer. Provides guard checks used at callsites across the codebase. Returns `true` on error condition (stop/early return pattern), with two exceptions: `is_channel()` and `is_daemon()` are type predicates that return `true` on valid. Inversion is intentional — as container types grow, checking what something *is* scales better than enumerating what it isn't.
+**Guard** — validation layer. Provides guard checks used at callsites across the codebase. Returns `true` on error condition (stop/early return pattern).
 
 ### Base Classes
 
