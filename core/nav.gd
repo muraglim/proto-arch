@@ -47,12 +47,6 @@ func evict_daemon(caller: Node, dest: String) -> void:
 		return
 	caller.evict_daemon.emit(dest)
 
-func channel_dismiss(caller: Node) -> void:
-	if not caller.has_signal("channel_dismiss"):
-		push_error("Nav.channel_dismiss: caller '%s' has no channel_dismiss signal" % caller.name)
-		return
-	caller.channel_dismiss.emit()
-
 func evict_back_channel(caller: Node, dest: String) -> void:
 	if not caller.has_signal("evict_back_channel"):
 		push_error("Nav.evict_back_channel: caller '%s' has no evict_back_channel" % caller.name)
