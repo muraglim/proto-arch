@@ -7,6 +7,11 @@ const BASE_MISS_MOB: float = 0.10
 const DIMINISH_FACTOR: float = 0.25
 var PRD_INITIAL: float = _solve_prd_initial(BASE_CRIT)
 
+func wire_to_channel(channel: Channel) -> void:
+	var forest = channel as TealwyvForestChannel
+	if forest == null: return
+	forest.register_luck_daemon(self)
+
 static func _solve_prd_initial(p: float) -> float:
 	var c: float = p / 10.0
 	var step: float = c

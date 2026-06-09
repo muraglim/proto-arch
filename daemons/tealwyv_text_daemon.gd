@@ -16,6 +16,11 @@ func daemon_init() -> void:
 	_weapon = Keeper.get_value("tealwyv_player_store", "weapon")
 	_armor = Keeper.get_value("tealwyv_player_store", "armor")
 
+func wire_to_channel(channel: Channel) -> void:
+	var forest = channel as Channel as TealwyvForestChannel
+	if forest == null: return
+	forest.register_text_daemon(self)
+
 func on_equipment_changed() -> void:
 	_weapon = Keeper.get_value("tealwyv_player_store", "weapon")
 	_armor = Keeper.get_value("tealwyv_player_store", "armor")
