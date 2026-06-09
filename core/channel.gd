@@ -82,7 +82,7 @@ func _connect_to_main(main: Node) -> void:
 	evict_daemon.connect(main._on_evict_daemon)
 
 func wire_to_daemon(daemon: Daemon) -> void:
-	pass
+	daemon.wire_to_channel(self)
 
 func _log(msg: String) -> void:
 	if verbose:
