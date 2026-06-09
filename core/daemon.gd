@@ -56,6 +56,9 @@ func _connect_to_main(main: Node) -> void:
 	nav_to_swap.connect(main._on_daemon_nav_to_swap)
 	evict_back_channel.connect(main._on_evict_back_channel)
 
+func wire_to_channel(channel: Channel) -> void:
+	pass
+
 func _log(msg: String) -> void:
 	if verbose:
 		print("[%s] " % name, msg)
