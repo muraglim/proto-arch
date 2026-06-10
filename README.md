@@ -48,6 +48,14 @@ SwapAction enum (defined on Channel) controls routing behavior:
 - `EXIT` — current Channel is shut down and freed before the new one starts
 - `SWAP` — current Channel is paused and moved to `back`, available for resume
 
+### Channel/Daemon Wiring
+
+A Channel's daemon dependencies are declared in `_channel_dep_Ledger` as an ordered array keyed by channel name. Each entry specifies a `dest` (nav key into `_nav_dest_Ledger`) and a `role`. On `channel_init()`, the channel's `_boot_daemons()` reads its dependency list from Firm and calls `Nav.to_daemon()` for each entry in order. Main instantiates each daemon and calls `channel.wire_to_daemon(daemon)`, which dispatches to `daemon.wire_to_channel(channel)`. Daemons self-register against the channel by calling the appropriate typed registration method (e.g. `register_luck_daemon()`, `register_combat_daemon()`).
+
+Daemon-to-daemon dependencies (e.g. combat daemon requiring a luck daemon reference) are mediated by the channel: the channel passes the reference through when both sides are registered. The channel owns the introduction - daemons do not reach across to each other directly.
+
+This pattern is the settled template for all future Channel/Daemon relationships in the project.
+
 ### Tooling Layer
 
 **_pComb** — lightweight print/logging helpers for in-development interrogation. Not a debug system — a quick reach for when you need to look at something.
@@ -93,4 +101,4 @@ The codebase trends toward self-documenting and machine-readable. As Python lite
 
 ## Status
 
-Early development. Architecture is stable. Single text-based prototype environment in progress.
+Early development. Architecture is stable. Channel/Daemon wiring pattern is settled and live — dependency declaration via `_channel_dep_Ledger`, self-registration via `wire_to_channel()`, and channel-mediated daemon introductions are the established template. Single text-based prototype environment in progress.
