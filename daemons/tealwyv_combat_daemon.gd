@@ -4,146 +4,151 @@ extends Daemon
 
 const CRIT_MULTIPLIER: float = 2.0
 
-var luck_daemon: TealwyvLuckDaemon
-var enemy: Dictionary = {}
-var is_combat_active: bool = false
+var _luck_daemon: TealwyvLuckDaemon = null
+var _enemy: Dictionary = {}
+var _is_combat_active: bool = false
 var _encounter_snapshot: Dictionary = {}
+var _round_count: int = 0
+var _player_hp: float = 0.0
+
+func wire_to_channel(channel: Channel) -> void:
+	var forest = channel as TealwyvForestChannel
+	if forest == null:
+		push_error("[TealwyvCombatDaemon] wire_to_channel(): unexpected Channel type.")
+		return
+	forest.register_combat_daemon(self)
+
+func wire_to_luck_daemon(daemon: TealwyvLuckDaemon) -> void:
+	_luck_daemon = daemon
 
 func daemon_init() -> void:
-	luck_daemon = _get_sibling_daemon("tealwyv_luck_daemon")
-	start_encounter()
+	pass
+# start_encounter() is now called explicitly by the channel on player input
+# daemon_init() no longer triggers combat - daemon stays resident, resets per encounter
 
 func start_encounter() -> void:
-	if luck_daemon == null: return
+	_round_count = 0
+	_enemy = {}
+	_is_combat_active = false
+	_encounter_snapshot = {}
+	if _luck_daemon == null:
+		push_error("[TealwyvCombatDaemon] start_encounter(): no luck daemon.")
+		return
 	_roll_encounter()
 
 func _roll_encounter() -> void:
-	var all_enemies: Array = Firm.get_value("tealwyv_forest_ledger", "enemies")
+	var all_enemies: Array = Firm.get_value("tealwyv_forest_test_ledger", "enemies")
 	var dev_level: int = Keeper.get_value("_dev_store", "enemy_level")
 	var target_level: int = dev_level if dev_level > 0 else 1
 	var pool: Array = all_enemies.filter(func(e): return e["level"] == target_level)
-	enemy = pool[randi() % pool.size()].duplicate()
-	enemy["hp"] = ceil(enemy["hp"])
-	enemy["attack"] = floor(enemy["attack"])
-	enemy["defense"] = floor(enemy["defense"])
+	_enemy = pool[randi() % pool.size()].duplicate()
+	_enemy["hp"] = ceil(_enemy["hp"])
+	_enemy["attack"] = floor(_enemy["attack"])
+	_enemy["defense"] = floor(_enemy["defense"])
 	_encounter_snapshot = {
 		"player_atk": Keeper.get_value("tealwyv_player_store", "attack"),
 		"player_def": Keeper.get_value("tealwyv_player_store", "defense"),
 		"player_hp_max": Keeper.get_value("tealwyv_player_store", "hp_max"),
 	}
-	is_combat_active = true
-	# TODO create player naming step, then display it somewhere, likely appropriate for 'view player stats' feature
-	var player_name = Keeper.get_value("tealwyv_player_store", "player_name")
-	combat_update.emit("%s stands before you. HP: %d | ATK: %d | DEF: %d\n\nWhat do you do? [attack / run]" % [
-		enemy["name"], enemy["hp"], enemy["attack"], enemy["defense"]
-	])
-	_log("_roll_encounter(): %s spawned." % enemy["name"])
+	_player_hp = Keeper.get_value("tealwyv_player_store", "hp")
+	_is_combat_active = true
+	combat_event.emit({"text": "%s stands before you. HP: %d | ATK: %d | DEF: %d\n\nWhat do you do? [attack / run]" % [_enemy["name"], _enemy["hp"], _enemy["attack"], _enemy["defense"]]})
+	_log("_roll_encounter(): %s spawned." % _enemy["name"])
 
 func take_action(action: String) -> void:
-	if not is_combat_active: return
+	if not _is_combat_active: return
 	match action:
 		"a":
 			_resolve_turn()
 		"r":
 			_resolve_run()
 		_:
-			combat_update.emit("You hestitate. [a]ttack/[r]un")
+			combat_event.emit({"text":"You hestitate. [a]ttack/[r]un"})
 
 func _resolve_turn() -> void:
+	_round_count += 1
 	var result_lines: Array = []
-
 	# player attacks
 	var damage_to_enemy: int = 0
-	if luck_daemon.proc_miss_mob():
-		result_lines.append("The %s stumbles — your attack misses." % enemy["name"])
+	if _luck_daemon.proc_miss_mob():
+		result_lines.append("The %s stumbles — your attack misses." % _enemy["name"])
 	else:
 		var player_attack = Keeper.get_value("tealwyv_player_store", "attack")
-		var is_crit = luck_daemon.proc_crit()
-		damage_to_enemy = _apply_defense(player_attack, enemy["defense"])
+		var is_crit = _luck_daemon.proc_crit()
+		damage_to_enemy = _apply_defense(player_attack, _enemy["defense"])
 		if is_crit:
 			damage_to_enemy = int(damage_to_enemy * CRIT_MULTIPLIER)
 			result_lines.append("Critical hit! You strike for %d damage." % damage_to_enemy)
 		else:
 			result_lines.append("You strike for %d damage." % damage_to_enemy)
-		enemy["hp"] -= damage_to_enemy
+		_enemy["hp"] -= damage_to_enemy
 
-	if enemy["hp"] <= 0:
+	if _enemy["hp"] <= 0:
 		_resolve_victory(result_lines)
 		return
 
-		# enemy attacks
-	if luck_daemon.proc_miss_player():
-		result_lines.append("The %s swings wildly and misses." % enemy["name"])
+	# enemy attacks
+	if _luck_daemon.proc_miss_player():
+		result_lines.append("The %s swings wildly and misses." % _enemy["name"])
 	else:
-		var enemy_damage = _apply_defense(enemy["attack"], Keeper.get_value("tealwyv_player_store", "defense"))
-		result_lines.append("The %s hits you for %d damage." % [enemy["name"], enemy_damage])
-		offset_value("tealwyv_player_store", "hp", -float(enemy_damage))
+		var enemy_damage = _apply_defense(_enemy["attack"], Keeper.get_value("tealwyv_player_store", "defense"))
+		result_lines.append("The %s hits you for %d damage." % [_enemy["name"], enemy_damage])
+		_player_hp -= float(enemy_damage)
 
-	var player_hp = Keeper.get_value("tealwyv_player_store", "hp")
-	if player_hp <= 0:
+	if _player_hp <= 0:
 		_resolve_defeat(result_lines)
 		return
 
 	result_lines.append("\n%s HP: %d | Your HP: %d\n\n[attack / run]" % [
-		enemy["name"], enemy["hp"], player_hp
+		_enemy["name"], _enemy["hp"], _player_hp
 	])
-	combat_update.emit("\n".join(result_lines))
+	combat_event.emit({"text":"\n".join(result_lines)})
 
 func _resolve_run() -> void:
 	var run_chance = 0.4
 	if randf() < run_chance:
-		is_combat_active = false
-		luck_daemon.diminish()
-		combat_update.emit("You slip away into the trees.\n\n[look for fight / return to town]")
+		_is_combat_active = false
+		_luck_daemon.diminish()
+		combat_event.emit({"text":"You slip away into the trees.\n\n[look for fight / return to town]", "state": "resolution"})
 		_log("_resolve_run(): player escaped.")
 	else:
-		var enemy_damage = max(0, enemy["attack"] - Keeper.get_value("tealwyv_player_store", "defense"))
-		offset_value("tealwyv_player_store", "hp", -float(enemy_damage))
-		var player_hp = Keeper.get_value("tealwyv_player_store", "hp")
-		if player_hp <= 0:
-			_resolve_defeat(["You fail to escape. The %s cuts you down." % enemy["name"]])
+		var enemy_damage = _apply_defense(_enemy["attack"], Keeper.get_value("tealwyv_player_store", "defense"))
+		_player_hp -= float(enemy_damage)
+		if _player_hp <= 0:
+			_resolve_defeat(["You fail to escape. The %s cuts you down." % _enemy["name"]])
 			return
-		combat_update.emit("You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [
-			enemy["name"], enemy_damage, player_hp
-		])
+		combat_event.emit({"text":"You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [_enemy["name"], enemy_damage, _player_hp], "state": "resolution"})
 
 func _apply_defense(raw_damage: int, defense: float) -> int:
 	var factor = 1.0 - (0.06 * defense) / (1.0 + 0.06 * abs(defense))
 	return max(1, int(raw_damage * factor))
 
 func _resolve_victory(lines: Array) -> void:
-	is_combat_active = false
-	var exp_gain = enemy["exp"]
-	var gold_gain = enemy["gold"]
+	_is_combat_active = false
+	var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
+	var exp_gain = _enemy["exp"]
+	var gold_gain = _enemy["gold"]
 	offset_value("tealwyv_player_store", "experience", float(exp_gain))
 	offset_value("tealwyv_player_store", "gold", float(gold_gain))
-	luck_daemon.diminish()
-	var player_hp_remaining = Keeper.get_value("tealwyv_player_store", "hp")
-	_write_encounter_result("victory", player_hp_remaining, 0)
+	_luck_daemon.diminish()
+	_write_encounter_result("victory", _player_hp, 0)
+	Keeper.set_value("tealwyv_player_store", "hp", hp_max)
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
-		enemy["name"], exp_gain, gold_gain
+		_enemy["name"], exp_gain, gold_gain
 	])
-	combat_update.emit("\n".join(lines))
-	_log("_resolve_victory(): %s defeated." % enemy["name"])
+	combat_event.emit({"text":"\n".join(lines), "state": "resolution"})
+	_log("_resolve_victory(): %s defeated." % _enemy["name"])
 
 func _resolve_defeat(lines: Array) -> void:
-	is_combat_active = false
+	_is_combat_active = false
 	var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
-	var enemy_hp_remaining = enemy["hp"]
+	var enemy_hp_remaining = _enemy["hp"]
 	Keeper.set_value("tealwyv_player_store", "hp", hp_max)
-	luck_daemon.diminish()
-	_write_encounter_result("defeat", 0, enemy_hp_remaining)
+	_luck_daemon.diminish()
+	_write_encounter_result("defeat", _player_hp, enemy_hp_remaining)
 	lines.append("\nYou have been defeated.\n\n[continue]")
-	combat_update.emit("\n".join(lines))
+	combat_event.emit({"text":"\n".join(lines), "state": "resolution"})
 	_log("_resolve_defeat(): player defeated.")
-
-func _get_sibling_daemon(daemon_name: String) -> Node:
-	var under = get_parent()
-	for child in under.get_children():
-		if child.name == daemon_name:
-			return child
-	push_error("[%s] _get_sibling_daemon(): %s not found in under." % [name, daemon_name])
-	return null
 
 func _write_encounter_result(outcome: String, player_hp_remaining: float, enemy_hp_remaining: float) -> void:
 	var path = "user://tealwyv_encounter_log.csv"
@@ -153,28 +158,29 @@ func _write_encounter_result(outcome: String, player_hp_remaining: float, enemy_
 		push_error("[tealwyv_combat_daemon] _write_encounter_result(): could not open %s" % path)
 		return
 	if write_header:
-		file.store_line("timestamp,enemy_name,enemy_level,enemy_archetype,player_atk,player_def,player_hp_max,outcome,player_hp_remaining,enemy_hp_remaining")
+		file.store_line("timestamp,enemy_name,enemy_level,enemy_archetype,player_atk,player_def,player_hp_max,outcome,player_hp_remaining,enemy_hp_remaining,rounds")
 	else:
 		file.seek_end()
-	var archetype = "_".join(enemy["name"].split("_").slice(1))
-	var row = "%s,%s,%d,%s,%d,%d,%d,%s,%d,%d" % [
+	var archetype = "_".join(_enemy["name"].split("_").slice(1))
+	var row = "%s,%s,%d,%s,%d,%d,%d,%s,%d,%d,%d" % [
 		Time.get_datetime_string_from_system(),
-		enemy["name"],
-		enemy["level"],
+		_enemy["name"],
+		_enemy["level"],
 		archetype,
 		_encounter_snapshot["player_atk"],
 		_encounter_snapshot["player_def"],
 		_encounter_snapshot["player_hp_max"],
 		outcome,
 		player_hp_remaining,
-		enemy_hp_remaining
+		enemy_hp_remaining,
+		_round_count
 	]
 	file.store_line(row)
 	file.close()
-	_log("_write_encounter_result(): logged %s vs %s -> %s" % [outcome, enemy["name"], path])
+	_log("_write_encounter_result(): logged %s vs %s -> %s" % [outcome, _enemy["name"], path])
 	
 func daemon_shutdown() -> void:
 	_log("daemon_shutdown(): combat daemon offline.")
 
 @warning_ignore("unused_signal")
-signal combat_update(text: String)
+signal combat_event(text: Dictionary)
