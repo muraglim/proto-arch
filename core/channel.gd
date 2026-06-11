@@ -1,14 +1,9 @@
-# TODO: channel show/hide lifecycle is incomplete.
-# current: route_channel calls channel_resume() as standin for rehydrating a back->front swap.
-# problem: start_channel calls channel_init() on cold start — if resume path ever calls init,
-# display and input reset on a channel that should be restoring state, not reinitializing.
-# approaches to explore:
-#   1. channel_unhide() as dedicated restore path, main calls it instead of channel_resume on swap
-#   2. a 'ready' signal from the channel back to main, channel self-reports when it's display-ready
-#      rather than main assuming it can call lifecycle methods blindly
-#   3. is_fresh: bool flag on channel, main checks before deciding init vs unhide path
-# constraint: solution must not require main to know anything about channel internals.
-# do not resolve until a concrete case breaks — channel_resume works by accident of idempotent update_menu.
+# channel_show() is the viewport hook — fires from Main on every front promotion,
+# both cold start (start_channel) and back-to-front swap (route_channel).
+# responsible for: anchors, input connection, focus, initial display draw.
+# channel_init() is wiring only — scene refs, signal connections, dep boot. no display.
+# channel_pause() and channel_resume() are stubs — reserved for state save/restore
+# on swap when a future prototype warrants it. do not implement speculatively.
 
 class_name Channel
 extends Control
@@ -43,16 +38,6 @@ func channel_pause() -> void:
 func channel_resume() -> void:
 	pass
 
-# paired with channel_unhide() — swap cycle path (front -> back -> front)
-func channel_hide() -> void:
-	pass
-
-# paired with channel_hide() — restores a previously visible channel from back
-func channel_unhide() -> void:
-	pass
-
-# first render path — channel initialized directly to back, show() fires on first front promotion
-# distinct from unhide() which assumes prior front visibility
 func channel_show() -> void: 
 	pass                    
 
