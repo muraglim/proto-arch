@@ -5,11 +5,13 @@ extends Channel
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/RichTextLabel/LineEdit
 
 func channel_init() -> void:
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	RenderingServer.set_default_clear_color(Color.BLACK)
 	input.placeholder_text = "command..."
 	input.gui_input.connect(_on_gui_input)
 	_draw_menu()
+	Nav.to_back_start(self, get_nav("tealwyv_forest_channel"))
+
+func channel_show() -> void:
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 func _draw_menu() -> void:
 	var attack = Keeper.get_value("tealwyv_player_store", "attack")
@@ -30,7 +32,7 @@ func _on_gui_input(event: InputEvent) -> void:
 	match cmd:
 		"exit":
 			output.text = ""
-			Nav.to_swap(self, get_nav("tealwyv_forest_channel"), Channel.SwapAction.EXIT)
+			Nav.to_swap(self, get_nav("tealwyv_forest_channel"), Channel.SwapAction.SWAP)
 			return
 		"reset":
 			Keeper.set_value("_dev_store", "enemy_level", 0)
