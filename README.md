@@ -30,7 +30,7 @@ Main (`main.gd`) is the scene manager and bootstrapper. It is not an autoload �
 
 ### Base Classes
 
-**Channel** (`channel.gd`) extends Control — display and input handling. Lives in `front` or `back`. Lifecycle methods: `channel_init()`, `channel_shutdown()`, `channel_pause()`, `channel_resume()`, `channel_hide()`, `channel_unhide()`, `channel_show()`. Do not use `_ready()` in subclasses — use `channel_init()`, which fires after scene tree insertion and bootstrapper wiring.
+**Channel** (`channel.gd`) extends Control — display and input handling. Lives in `front` or `back`. Lifecycle methods: `channel_init()`, `channel_shutdown()`, `channel_pause()`, `channel_resume()`, `channel_show()`. Do not use `_ready()` in subclasses — use `channel_init()`, which fires after scene tree insertion and bootstrapper wiring.
 
 **Daemon** (`daemon.gd`) extends Node — logic only, no scene. Lives in `under`. Script-only by design; never attach a scene. Lifecycle methods: `daemon_init()`, `daemon_shutdown()`, `daemon_pause()`, `daemon_resume()`. Do not use `_ready()` in subclasses — use `daemon_init()`.
 
