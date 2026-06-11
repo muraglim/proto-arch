@@ -85,6 +85,19 @@ func start_channel(dest: String) -> void:
 	channel_instance.channel_init()
 	print("[Main] start_channel(dest: %s): %s started." % [dest, channel_instance.name])
 
+func start_channel_in_back(dest: String) -> void:
+	var scene: PackedScene = load(dest)
+	if Guard.is_unresolved(scene, "[Main] start_channel_in_back()"): return
+	var channel_instance: Node = scene.instantiate()
+	if not _is_channel(channel_instance, "[Main] start_channel_in_back()"):
+		channel_instance.queue_free()
+		return
+	back.add_child(channel_instance)
+	channel_instance.channel_dest = dest
+	channel_instance._connect_to_main(self)
+	channel_instance.channel_init()
+	print("[Main] start_channel_in_back(dest: %s): %s started." % [dest, channel_instance.name])
+
 func swap_channel() -> void:
 	var channel: Channel = front.get_child(0) as Channel
 	if not _is_channel(channel, "[Main] start_channel()"): return # belt-and-suspenders, front only receives Channels via start_channel()
@@ -174,3 +187,5 @@ func _on_evict_back_channel(dest: String) -> void:
 	evict_back_channel(dest)
 func _on_evict_daemon(dest: String) -> void:
 	evict_daemon(dest)
+func _on_nav_to_back_start(dest: String) -> void:
+	start_channel_in_back(dest)
