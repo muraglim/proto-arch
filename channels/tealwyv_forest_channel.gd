@@ -17,7 +17,7 @@ var _combat_daemon: TealwyvCombatDaemon = null
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
 
 func channel_init() -> void:
-	_boot_daemons.call_deferred()
+	_boot_daemons()
 
 func channel_show() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
