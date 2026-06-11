@@ -13,7 +13,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Firm.get_value("_nav_dest_ledger", "tealwyv_forest_channel")
+	var entry = Firm.get_value("_nav_dest_ledger", "dev_forest_channel")
 	if Guard.is_invalid_uid(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
 	if Guard.is_unresolved(boot_scene, "[Main] _ready()"): return
@@ -183,7 +183,7 @@ func _on_daemon_nav_to_swap(dest: String) -> void:
 func _on_nav_to_channel(dest: String) -> void:
 	route_channel(dest, Channel.SwapAction.EXIT)
 func _on_channel_nav_to_swap(dest: String, swap: Channel.SwapAction) -> void:
-	route_channel(dest, swap)
+	route_channel.call_deferred(dest, swap)
 func _on_channel_dismiss() -> void:
 	dismiss_channel()
 func _on_evict_back_channel(dest: String) -> void:
@@ -191,4 +191,4 @@ func _on_evict_back_channel(dest: String) -> void:
 func _on_evict_daemon(dest: String) -> void:
 	evict_daemon(dest)
 func _on_nav_to_back_start(dest: String) -> void:
-	start_channel_in_back(dest)
+	start_channel_in_back.call_deferred(dest)
