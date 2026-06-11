@@ -39,7 +39,7 @@ func route_channel(dest: String, swap: Channel.SwapAction) -> void:
 		return
 	start_channel(dest)
 
-func start_daemon(dest: String) -> void:
+func start_daemon(caller: Channel, dest: String) -> void:
 	var script: GDScript = load(dest) # errors when dest is not a valid GDscript file
 	if Guard.is_unresolved(script, "[Main] start_daemon()"): return
 	var daemon_instance: Node = Node.new()
@@ -50,9 +50,7 @@ func start_daemon(dest: String) -> void:
 		return
 	under.add_child(daemon_instance)
 	daemon_instance._connect_to_main(self)
-	var channel = front.get_child(0) as Channel
-	if channel:
-		channel.wire_to_daemon(daemon_instance)
+	caller.wire_to_daemon(daemon_instance)
 	daemon_instance.daemon_init()
 	print("[Main] start_daemon(dest: %s): %s started." % [dest, daemon_instance.name])
 
@@ -160,8 +158,8 @@ func _find_daemon(dest: String) -> Daemon:
 			return daemon
 	return null
 
-func _on_nav_to_daemon(dest: String) -> void:
-	start_daemon(dest)
+func _on_nav_to_daemon(caller: Channel, dest: String) -> void:
+	start_daemon(caller, dest)
 func _on_daemon_dismiss(dest: String) -> void:
 	daemon_dismiss(dest)
 func _on_daemon_nav_to_swap(dest: String) -> void:

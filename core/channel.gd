@@ -96,7 +96,7 @@ signal channel_dismiss
 @warning_ignore("unused_signal")
 signal evict_back_channel(dest: String)
 @warning_ignore("unused_signal")
-signal nav_to_daemon(dest: String)
+signal nav_to_daemon (caller: Channel, dest: String)
 @warning_ignore("unused_signal")
 signal evict_daemon
 # confirmed live — removing this broke routing. cause of confusion not fully parsed.

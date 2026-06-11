@@ -18,14 +18,14 @@ func to_channel(caller: Node, dest: String) -> void:
 		return
 	caller.nav_to_channel.emit(dest)
 
-func to_daemon(caller: Node, dest: String) -> void:
+func to_daemon(caller: Channel, dest: String) -> void:
 # Daemons are script-only, no invalid scene guard needed 
 # TODO: consider guard against passing a scene uid as dest
 	if Guard.is_unresolved(dest, caller.name + ":to_daemon"): return
 	if not caller.has_signal("nav_to_daemon"):
 		push_error("Nav.to_daemon: caller '%s' has no nav_to_daemon signal" % caller.name)
 		return
-	caller.nav_to_daemon.emit(dest)
+	caller.nav_to_daemon.emit(caller, dest)
 
 func to_swap(caller: Node, dest: String, swap: Channel.SwapAction) -> void:
 	if Guard.is_invalid_scene(dest, caller.name): return
