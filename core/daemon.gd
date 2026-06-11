@@ -51,7 +51,6 @@ func get_type(key: String) -> String:
 	return entry["type"]
 
 func _connect_to_main(main: Node) -> void:
-	nav_to_daemon.connect(main._on_nav_to_daemon)
 	daemon_dismiss.connect(main._on_daemon_dismiss)
 	nav_to_swap.connect(main._on_daemon_nav_to_swap)
 	evict_back_channel.connect(main._on_evict_back_channel)
@@ -66,8 +65,6 @@ func _log(msg: String) -> void:
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
 signal daemon_dismiss(dest: String)
-@warning_ignore("unused_signal")
-signal nav_to_daemon(dest: String)
 @warning_ignore("unused_signal")
 signal nav_to_swap(dest: String)
 @warning_ignore("unused_signal")
