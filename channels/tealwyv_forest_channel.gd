@@ -17,17 +17,19 @@ var _combat_daemon: TealwyvCombatDaemon = null
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
 
 func channel_init() -> void:
+	_boot_daemons.call_deferred()
+
+func channel_show() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	RenderingServer.set_default_clear_color(Color.BLACK)
 	input.max_length = 1
 	input.text_changed.connect(_on_input_changed)
-	_boot_daemons.call_deferred()
+	input.grab_focus()
+	_update_hub()
 
 func _boot_daemons() -> void:
 	var deps: Array = Firm.get_value("_channel_dep_ledger", "tealwyv_forest_channel")
 	for dep in deps:
 		Nav.to_daemon(self, get_nav(dep["dest"]))
-	_update_hub()
 
 func wire_to_daemon(daemon: Daemon) -> void:
 	daemon.wire_to_channel(self)
@@ -48,6 +50,7 @@ func register_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
 		_combat_daemon.wire_to_luck_daemon(_luck_daemon)	
 
 func _on_input_changed(text: String) -> void:
+	_pComb.log("_on_input_changed fired: '%s'" % text)
 	input.text = ""
 	var action = text.strip_edges().to_lower()
 	match state:
