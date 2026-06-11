@@ -50,7 +50,6 @@ func register_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
 		_combat_daemon.wire_to_luck_daemon(_luck_daemon)	
 
 func _on_input_changed(text: String) -> void:
-	_pComb.log("_on_input_changed fired: '%s'" % text)
 	input.text = ""
 	var action = text.strip_edges().to_lower()
 	match state:

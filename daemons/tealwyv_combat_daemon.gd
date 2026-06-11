@@ -40,7 +40,7 @@ func start_encounter() -> void:
 	_roll_encounter()
 
 func _roll_encounter() -> void:
-	var all_enemies: Array = Firm.get_value("tealwyv_forest_test_ledger", "enemies")
+	var all_enemies: Array = Firm.get_value("tealwyv_forest_ledger", "enemies")
 	var dev_level: int = Keeper.get_value("_dev_store", "enemy_level")
 	var target_level: int = dev_level if dev_level > 0 else 1
 	var pool: Array = all_enemies.filter(func(e): return e["level"] == target_level)
