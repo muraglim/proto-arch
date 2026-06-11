@@ -52,3 +52,9 @@ func evict_back_channel(caller: Node, dest: String) -> void:
 		push_error("Nav.evict_back_channel: caller '%s' has no evict_back_channel" % caller.name)
 		return
 	caller.evict_back_channel.emit(dest)
+
+func to_back_start(caller: Node, dest: String) -> void:
+	if not caller.has_signal("nav_to_back_start"):
+		push_error("Nav.to_back_start: caller '%s' has no nav_to_back_start signal." % caller.name)
+		return
+	caller.nav_to_back_start.emit(dest)
