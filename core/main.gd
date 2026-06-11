@@ -13,7 +13,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Firm.get_value("_nav_dest_ledger", "dev_forest_channel")
+	var entry = Firm.get_value("_nav_dest_ledger", "tealwyv_forest_channel")
 	if Guard.is_invalid_uid(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
 	if Guard.is_unresolved(boot_scene, "[Main] _ready()"): return
@@ -34,8 +34,9 @@ func route_channel(dest: String, swap: Channel.SwapAction) -> void:
 	var cached = _find_back_channel(dest)
 	if cached:
 		back.remove_child(cached)
+		cached.show()
 		front.add_child(cached)
-		cached.channel_resume()
+		cached.channel_show()
 		return
 	start_channel(dest)
 
@@ -83,6 +84,7 @@ func start_channel(dest: String) -> void:
 	channel_instance.channel_dest = dest
 	channel_instance._connect_to_main(self)
 	channel_instance.channel_init()
+	channel_instance.channel_show()
 	print("[Main] start_channel(dest: %s): %s started." % [dest, channel_instance.name])
 
 func start_channel_in_back(dest: String) -> void:
@@ -102,6 +104,7 @@ func swap_channel() -> void:
 	var channel: Channel = front.get_child(0) as Channel
 	if not _is_channel(channel, "[Main] start_channel()"): return # belt-and-suspenders, front only receives Channels via start_channel()
 	channel.channel_pause()
+	channel.hide()
 	front.remove_child(channel)
 	back.add_child(channel)
 	print("[Main] swap_channel(): %s swapped front -> back." % channel.name)
