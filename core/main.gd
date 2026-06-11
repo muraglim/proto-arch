@@ -183,7 +183,7 @@ func _on_daemon_nav_to_swap(dest: String) -> void:
 func _on_nav_to_channel(dest: String) -> void:
 	route_channel(dest, Channel.SwapAction.EXIT)
 func _on_channel_nav_to_swap(dest: String, swap: Channel.SwapAction) -> void:
-	route_channel.call_deferred(dest, swap)
+	route_channel(dest, swap)
 func _on_channel_dismiss() -> void:
 	dismiss_channel()
 func _on_evict_back_channel(dest: String) -> void:
