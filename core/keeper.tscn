@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dw7al5n1t7ui3" path="res://stores/tealwyv_player_store.gd" id="6_1qa4x"]
 [ext_resource type="Script" uid="uid://dah77mrkcmp7c" path="res://stores/_dev_Store.gd" id="7_1qa4x"]
 [ext_resource type="Script" uid="uid://cm70cvnxnh10s" path="res://stores/tealwyv_luck_Store.gd" id="7_trhg3"]
+[ext_resource type="Script" uid="uid://4iwjgqs37g7t" path="res://stores/profile_Store.gd" id="8_trhg3"]
 
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")
@@ -34,3 +35,6 @@ metadata/_custom_type_script = "uid://ck2m36eivvd13"
 script = ExtResource("7_trhg3")
 verbose = null
 metadata/_custom_type_script = "uid://ck2m36eivvd13"
+
+[node name="profile_Store" type="Node" parent="." unique_id=661357842]
+script = ExtResource("8_trhg3")

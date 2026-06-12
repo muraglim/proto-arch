@@ -39,4 +39,16 @@ func _ready() -> void:
 			"uid": "uid://d0m12nbxa0wbh",
 			"type": "channel"
 		},
+		"profile_selection_channel": {
+			"uid": "uid://cpkl8yxrdjnq8",
+			"type": "channel"
+		},
+		"profile_creation_channel": {
+			"uid": "uid://dptmj2me8xs7t",
+			"type": "channel"
+		},
+		"project_start_channel": {
+			"uid": "uid://dkry5u0nj8atq",
+			"type": "channel"
+		},
 	}

@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dqki0i06ekyd5" path="res://ledgers/_nav_dest_Ledger.gd" id="3_kf056"]
 [ext_resource type="Script" uid="uid://cfwxsg5tc11vt" path="res://ledgers/tealwyv_forest_Ledger.gd" id="4_bfjnt"]
 [ext_resource type="Script" uid="uid://b82fjd2bptfp2" path="res://ledgers/_channel_dep_Ledger.gd" id="5_0mvt0"]
+[ext_resource type="Script" uid="uid://dxmduqcmkv4w4" path="res://ledgers/profile_Ledger.gd" id="5_tv8u2"]
 
 [node name="Firm" type="Node" unique_id=546857787]
 script = ExtResource("1_jvs3s")
@@ -16,3 +17,6 @@ script = ExtResource("4_bfjnt")
 
 [node name="_channel_dep_Ledger" type="Node" parent="." unique_id=1392434175]
 script = ExtResource("5_0mvt0")
+
+[node name="profile_Ledger" type="Node" parent="." unique_id=196129126]
+script = ExtResource("5_tv8u2")
