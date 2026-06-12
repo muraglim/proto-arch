@@ -55,6 +55,7 @@ func _connect_to_main(main: Node) -> void:
 	nav_to_swap.connect(main._on_daemon_nav_to_swap)
 	evict_back_channel.connect(main._on_evict_back_channel)
 
+@warning_ignore("unused_parameter")
 func wire_to_channel(channel: Channel) -> void:
 	pass
 
