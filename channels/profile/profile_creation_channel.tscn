@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dptmj2me8xs7t"]
 
-[ext_resource type="Script" uid="uid://cr7sf04b4utjh" path="res://channels/profile_creation_channel.gd" id="1_4r077"]
+[ext_resource type="Script" uid="uid://cr7sf04b4utjh" path="res://channels/profile/profile_creation_channel.gd" id="1_4r077"]
 
 [node name="ProfileCreationChannel" type="Control" unique_id=953198021]
 layout_mode = 3

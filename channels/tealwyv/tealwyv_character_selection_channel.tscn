@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://46vdeqqhn75t"]
 
-[ext_resource type="Script" uid="uid://dkcqbnkpfcjml" path="res://channels/tealwyv_character_selection_channel.gd" id="1_4884s"]
+[ext_resource type="Script" uid="uid://dkcqbnkpfcjml" path="res://channels/tealwyv/tealwyv_character_selection_channel.gd" id="1_4884s"]
 
 [node name="TealwyvCharacterSelectionChannel" type="Control" unique_id=1271687701]
 layout_mode = 3

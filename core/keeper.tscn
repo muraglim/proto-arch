@@ -4,11 +4,11 @@
 [ext_resource type="Script" uid="uid://ea5607cl0bya" path="res://stores/_json_test_store.gd" id="2_424vn"]
 [ext_resource type="Script" uid="uid://dug807o48h8hq" path="res://stores/roster_store.gd" id="3_etpyo"]
 [ext_resource type="Script" uid="uid://c571jy2vnvv1d" path="res://stores/_nav_check_Store.gd" id="3_mwap5"]
-[ext_resource type="Script" uid="uid://dw7al5n1t7ui3" path="res://stores/tealwyv_player_store.gd" id="6_1qa4x"]
-[ext_resource type="Script" uid="uid://dah77mrkcmp7c" path="res://stores/_dev_Store.gd" id="7_1qa4x"]
-[ext_resource type="Script" uid="uid://cm70cvnxnh10s" path="res://stores/tealwyv_luck_Store.gd" id="7_trhg3"]
-[ext_resource type="Script" uid="uid://4iwjgqs37g7t" path="res://stores/profile_Store.gd" id="8_trhg3"]
-[ext_resource type="Script" uid="uid://dnaj0b86atrx1" path="res://stores/tealwyv_character_Store.gd" id="9_yn3rp"]
+[ext_resource type="Script" uid="uid://dw7al5n1t7ui3" path="res://stores/tealwyv/tealwyv_player_store.gd" id="6_1qa4x"]
+[ext_resource type="Script" uid="uid://dah77mrkcmp7c" path="res://stores/tealwyv/_dev_Store.gd" id="7_1qa4x"]
+[ext_resource type="Script" uid="uid://cm70cvnxnh10s" path="res://stores/tealwyv/tealwyv_luck_Store.gd" id="7_trhg3"]
+[ext_resource type="Script" uid="uid://4iwjgqs37g7t" path="res://stores/profile/profile_Store.gd" id="8_trhg3"]
+[ext_resource type="Script" uid="uid://dnaj0b86atrx1" path="res://stores/tealwyv/tealwyv_character_Store.gd" id="9_yn3rp"]
 
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")

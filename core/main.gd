@@ -13,7 +13,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
-	var entry = Firm.get_value("_nav_dest_ledger", "project_start_channel")
+	var entry = Firm.get_value("_nav_dest_ledger", "dev_forest_channel")
 	if Guard.is_invalid_uid(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
 	if Guard.is_unresolved(boot_scene, "[Main] _ready()"): return

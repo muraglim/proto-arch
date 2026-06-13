@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dkry5u0nj8atq"]
 
-[ext_resource type="Script" uid="uid://chvp13pnlgp5i" path="res://channels/project_start_channel.gd" id="1_skmvw"]
+[ext_resource type="Script" uid="uid://chvp13pnlgp5i" path="res://channels/projectstart/project_start_channel.gd" id="1_skmvw"]
 
 [node name="ProjectStartChannel" type="Control" unique_id=1244238205]
 layout_mode = 3
