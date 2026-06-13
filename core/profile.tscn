@@ -1,3 +1,6 @@
 [gd_scene format=3 uid="uid://cx6bauwj5dtc8"]
 
+[ext_resource type="Script" uid="uid://du747cy1g1bx5" path="res://core/profile.gd" id="1_6igpd"]
+
 [node name="Profile" type="Node" unique_id=341107692]
+script = ExtResource("1_6igpd")

@@ -22,7 +22,7 @@ func _update_display() -> void:
 			if profile["id"] == active_id:
 				active_name = profile["name"]
 				break
-	output.text = "Active profile: %s\n\n[C]reate profile / [S]elect profile" % active_name
+	output.text = "Active profile: %s\n\n[C]reate profile / [S]elect profile / [T]ealwyv" % active_name
 
 func _on_input_changed(text: String) -> void:
 	input.text = ""
@@ -32,6 +32,8 @@ func _on_input_changed(text: String) -> void:
 			Nav.to_swap(self, get_nav("profile_creation_channel"), SwapAction.SWAP)
 		"s":
 			Nav.to_swap(self, get_nav("profile_selection_channel"), SwapAction.SWAP)
+		"t":
+			Nav.to_swap(self, get_nav("tealwyv_start_channel"), SwapAction.EXIT)
 
 func channel_shutdown() -> void:
 	input.text_changed.disconnect(_on_input_changed)

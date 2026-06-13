@@ -51,4 +51,16 @@ func _ready() -> void:
 			"uid": "uid://dkry5u0nj8atq",
 			"type": "channel"
 		},
+		"tealwyv_start_channel": {
+			"uid": "uid://muaa6odsm0ch",
+			"type": "channel"
+		},
+		"tealwyv_character_creation_channel": {
+			"uid": "uid://veegixufvhct",
+			"type": "channel"
+		},
+		"tealwyv_character_selection_channel": {
+			"uid": "uid://46vdeqqhn75t",
+			"type": "channel"
+		},
 	}
