@@ -3,42 +3,12 @@ extends Ledger
 
 func _ready() -> void:
 	data = {
-		"nav_check_channel": {
-			"uid": "uid://q6r1tmxt62gl",
+# ProjectStart Channel
+		"project_start_channel": {
+			"uid": "uid://dkry5u0nj8atq",
 			"type": "channel"
 		},
-		"nav_check_target_channel": {
-			"uid": "uid://bigtqsohrf3g1",
-			"type": "channel"
-		},
-		"nav_check_daemon": {
-			"uid": "uid://v6kjkq4xp532",
-			"type": "daemon"
-		},
-		"json_test_channel": {
-			"uid": "uid://c882gc6fedrvw",
-			"type": "channel"
-		},
-		"tealwyv_luck_daemon": {
-			"uid": "uid://da34umylpsbac",
-			"type": "daemon"
-		},
-		"tealwyv_forest_channel": {
-			"uid": "uid://co124veuxtdt7",
-			"type": "channel"
-		},
-		"tealwyv_combat_daemon": {
-			"uid": "uid://bfo2tel1gn5g8",
-			"type": "daemon"
-		},
-		"tealwyv_text_daemon": {
-			"uid": "uid://d30aw5tdkrn41",
-			"type": "daemon"
-		},
-		"dev_forest_channel": {
-			"uid": "uid://d0m12nbxa0wbh",
-			"type": "channel"
-		},
+# Profile Channels
 		"profile_selection_channel": {
 			"uid": "uid://cpkl8yxrdjnq8",
 			"type": "channel"
@@ -47,10 +17,7 @@ func _ready() -> void:
 			"uid": "uid://dptmj2me8xs7t",
 			"type": "channel"
 		},
-		"project_start_channel": {
-			"uid": "uid://dkry5u0nj8atq",
-			"type": "channel"
-		},
+# Tealwyv Channels
 		"tealwyv_start_channel": {
 			"uid": "uid://muaa6odsm0ch",
 			"type": "channel"
@@ -62,5 +29,26 @@ func _ready() -> void:
 		"tealwyv_character_selection_channel": {
 			"uid": "uid://46vdeqqhn75t",
 			"type": "channel"
+		},
+		"tealwyv_forest_channel": {
+			"uid": "uid://co124veuxtdt7",
+			"type": "channel"
+		},
+		"dev_forest_channel": {
+			"uid": "uid://d0m12nbxa0wbh",
+			"type": "channel"
+		},
+# Tealwyv Daemons
+		"tealwyv_luck_daemon": {
+			"uid": "uid://da34umylpsbac",
+			"type": "daemon"
+		},
+		"tealwyv_combat_daemon": {
+			"uid": "uid://bfo2tel1gn5g8",
+			"type": "daemon"
+		},
+		"tealwyv_text_daemon": {
+			"uid": "uid://d30aw5tdkrn41",
+			"type": "daemon"
 		},
 	}
