@@ -98,7 +98,7 @@ func _on_combat_event(event: Dictionary) -> void:
 func _update_hub() -> void:
 	var flavor = ""
 	if _text_daemon != null:
-		flavor = _text_daemon.get_prompt("hub_flavor")
+		flavor = _text_daemon.get_prompt("forest_hub_flavor")
 	output.text = "%s\n\n[F]ight / [T]own / [H]eal" % flavor
 
 func channel_shutdown() -> void:

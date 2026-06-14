@@ -22,8 +22,8 @@ func wire_to_channel(channel: Channel) -> void:
 	forest.register_text_daemon(self)
 
 func on_equipment_changed() -> void:
-	_weapon = Keeper.get_value("tealwyv_player_store", "weapon")
-	_armor = Keeper.get_value("tealwyv_player_store", "armor")
+	_weapon = Keeper.get_value("tealwyv_character_store", "weapon")
+	_armor = Keeper.get_value("tealwyv_character_store", "armor")
 
 func get_prompt(context: String) -> String:
 	var hp = get_character_value("hp")
@@ -41,7 +41,7 @@ func _weighted_pick(context: String, pool: Array) -> Dictionary:
 	# candidates is the full unfiltered array — needed for stable global indexing.
 	# pool may be a subset of it (tag filtering), so we resolve global index
 	# per entry rather than using pool position directly.
-	var candidates = Firm.get_value("tealwyv_forest_ledger", context)
+	var candidates = Firm.get_value("tealwyv_text_ledger", context)
 	var weights: Array[float] = []
 	for i in pool.size():
 		var global_index = candidates.find(pool[i])
@@ -72,7 +72,7 @@ func _weighted_pick(context: String, pool: Array) -> Dictionary:
 
 # currently dead code for filtering tags/low hp
 func _filter_pool(context: String, hp_ratio: float) -> Array:
-	var candidates = Firm.get_value("tealwyv_forest_ledger", context)
+	var candidates = Firm.get_value("tealwyv_text_ledger", context)
 	if candidates == null:
 		_log("_filter_pool(context: %s): no pool found in Firm" % context)
 		return []
