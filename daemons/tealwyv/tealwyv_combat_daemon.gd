@@ -2,8 +2,6 @@
 class_name TealwyvCombatDaemon
 extends TealwyvDaemon
 
-const CRIT_MULTIPLIER: float = 2.0
-
 enum EncounterState { INACTIVE, ACTIVE, RESOLUTION }
 enum EncounterOutcome { VICTORY, DEFEAT, RUN }
 
@@ -40,7 +38,7 @@ func start_encounter() -> void:
 	_roll_encounter()
 
 func _roll_encounter() -> void:
-	var all_enemies: Array = Firm.get_value("tealwyv_forest_ledger", "enemies")
+	var all_enemies: Array = Firm.get_value("tealwyv_combat_ledger", "enemies")
 	var dev_level: int = Keeper.get_value("_dev_store", "enemy_level")
 	var target_level: int = dev_level if dev_level > 0 else 1
 	var pool: Array = all_enemies.filter(func(e): return e["level"] == target_level)
@@ -80,7 +78,7 @@ func _resolve_turn() -> void:
 		var is_crit = _luck_daemon.proc_crit()
 		damage_to_enemy = _apply_defense(player_attack, _enemy["defense"])
 		if is_crit:
-			damage_to_enemy = int(damage_to_enemy * CRIT_MULTIPLIER)
+			damage_to_enemy = int(damage_to_enemy * get_combat_const("crit_multiplier"))
 			result_lines.append("Critical hit! You strike for %d damage." % damage_to_enemy)
 		else:
 			result_lines.append("You strike for %d damage." % damage_to_enemy)
@@ -108,8 +106,7 @@ func _resolve_turn() -> void:
 	combat_event.emit({"text":"\n".join(result_lines)})
 
 func _resolve_run() -> void:
-	var run_chance = 0.4
-	if randf() < run_chance:
+	if randf() < get_combat_const("run_chance"):
 		_encounter_state = EncounterState.RESOLUTION
 		_luck_daemon.diminish()
 		_write_encounter_result(EncounterOutcome.RUN, _player_hp, _enemy["hp"])
@@ -124,7 +121,8 @@ func _resolve_run() -> void:
 		combat_event.emit({"text":"You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [_enemy["name"], enemy_damage, _player_hp], "state": EncounterState.RESOLUTION})
 
 func _apply_defense(raw_damage: int, defense: float) -> int:
-	var factor = 1.0 - (0.06 * defense) / (1.0 + 0.06 * abs(defense))
+	var mitigation = get_combat_const("defense_mitigation")
+	var factor = 1.0 - (mitigation * defense) / (1.0 + mitigation * abs(defense))
 	return max(1, int(raw_damage * factor))
 
 func _resolve_victory(lines: Array) -> void:
