@@ -25,6 +25,12 @@ func offset_character_value(field: String, delta: float) -> void:
 		return
 	set_character_value(field, float(current) + delta)
 
+func get_combat_const(field: String) -> Variant:
+	var consts = Firm.get_value("tealwyv_combat_ledger", "consts", {})
+	var value = consts.get(field, null)
+	if Guard.is_unresolved(value, name + ":get_combat_const(field: %s)" % field): return null
+	return value
+
 func heal_full_hp() -> void:
 	var hp_max = get_character_value("hp_max")
 	set_character_value("hp", hp_max)
