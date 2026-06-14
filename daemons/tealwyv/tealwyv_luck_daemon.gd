@@ -1,11 +1,7 @@
 class_name TealwyvLuckDaemon
 extends TealwyvDaemon
 
-const BASE_CRIT: float = 0.15
-const BASE_MISS_PLAYER: float = 0.07
-const BASE_MISS_MOB: float = 0.10
-const DIMINISH_FACTOR: float = 0.25
-var PRD_INITIAL: float = _solve_prd_initial(BASE_CRIT)
+var PRD_INITIAL: float = _solve_prd_initial(get_combat_const("base_crit"))
 
 func wire_to_channel(channel: Channel) -> void:
 	var forest = channel as TealwyvForestChannel
@@ -43,7 +39,7 @@ func daemon_init() -> void:
 	var current = Keeper.get_value("tealwyv_luck_store", "crit")
 	if current == 0.0:
 		Keeper.set_value("tealwyv_luck_store", "crit", PRD_INITIAL)
-	_log("daemon_init(): luck daemon online. crit base: %s, prd initial: %s" % [BASE_CRIT, PRD_INITIAL])
+	_log("daemon_init(): luck daemon online. crit base: %s, prd initial: %s" % [get_combat_const("base_crit"), PRD_INITIAL])
 
 func proc_crit() -> bool:
 	var current = Keeper.get_value("tealwyv_luck_store", "crit")
@@ -58,18 +54,18 @@ func proc_crit() -> bool:
 	return false
 
 func proc_miss_player() -> bool:
-	var result = randf() < BASE_MISS_PLAYER
+	var result = randf() < get_combat_const("base_miss_player")
 	_log("proc_miss_player(): %s" % result)
 	return result
 
 func proc_miss_mob() -> bool:
-	var result = randf() < BASE_MISS_MOB
+	var result = randf() < get_combat_const("base_miss_mob")
 	_log("proc_miss_mob(): %s" % result)
 	return result
 
 func diminish() -> void:
 	var current = Keeper.get_value("tealwyv_luck_store", "crit")
-	var diminished = maxf(current * (1.0 - DIMINISH_FACTOR), PRD_INITIAL)
+	var diminished = maxf(current * (1.0 - get_combat_const("diminish_factor")), PRD_INITIAL)
 	Keeper.set_value("tealwyv_luck_store", "crit", diminished)
 	_log("diminish(): %s -> %s" % [current, diminished])
 
