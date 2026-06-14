@@ -25,6 +25,10 @@ func offset_character_value(field: String, delta: float) -> void:
 		return
 	set_character_value(field, float(current) + delta)
 
+func heal_full_hp() -> void:
+	var hp_max = get_character_value("hp_max")
+	set_character_value("hp", hp_max)
+
 func _get_active_character() -> Dictionary:
 	var characters = Keeper.get_value("tealwyv_character_store", "characters", [])
 	var active_id = Keeper.get_value("tealwyv_character_store", "active_character_id")
