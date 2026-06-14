@@ -38,6 +38,10 @@ func _ready() -> void:
 			"uid": "uid://d0m12nbxa0wbh",
 			"type": "channel"
 		},
+		"tealwyv_town_channel": {
+		"uid": "uid://dtn4v2ssij61n",
+		"type": "channel"
+		},
 # Tealwyv Daemons
 		"tealwyv_luck_daemon": {
 			"uid": "uid://da34umylpsbac",

@@ -1,6 +1,6 @@
 #TODO: replace colloquial language in logs with machine-parsable prose. wait for appropriate stage of development.
 class_name TealwyvCombatDaemon
-extends Daemon
+extends TealwyvDaemon
 
 const CRIT_MULTIPLIER: float = 2.0
 
@@ -49,11 +49,11 @@ func _roll_encounter() -> void:
 	_enemy["attack"] = floor(_enemy["attack"])
 	_enemy["defense"] = floor(_enemy["defense"])
 	_encounter_snapshot = {
-		"player_atk": Keeper.get_value("tealwyv_player_store", "attack"),
-		"player_def": Keeper.get_value("tealwyv_player_store", "defense"),
-		"player_hp_max": Keeper.get_value("tealwyv_player_store", "hp_max"),
+		"player_atk": get_character_value("attack"),
+		"player_def": get_character_value("defense"),
+		"player_hp_max": get_character_value("hp_max"),
 	}
-	_player_hp = Keeper.get_value("tealwyv_player_store", "hp")
+	_player_hp = get_character_value("hp")
 	_encounter_state = EncounterState.ACTIVE
 	combat_event.emit({"text": "%s stands before you. HP: %d | ATK: %d | DEF: %d\n\nWhat do you do? [attack / run]" % [_enemy["name"], _enemy["hp"], _enemy["attack"], _enemy["defense"]]})
 	_log("_roll_encounter(): %s spawned." % _enemy["name"])
@@ -76,7 +76,7 @@ func _resolve_turn() -> void:
 	if _luck_daemon.proc_miss_mob():
 		result_lines.append("The %s stumbles — your attack misses." % _enemy["name"])
 	else:
-		var player_attack = Keeper.get_value("tealwyv_player_store", "attack")
+		var player_attack = get_character_value("attack")
 		var is_crit = _luck_daemon.proc_crit()
 		damage_to_enemy = _apply_defense(player_attack, _enemy["defense"])
 		if is_crit:
@@ -94,7 +94,7 @@ func _resolve_turn() -> void:
 	if _luck_daemon.proc_miss_player():
 		result_lines.append("The %s swings wildly and misses." % _enemy["name"])
 	else:
-		var enemy_damage = _apply_defense(_enemy["attack"], Keeper.get_value("tealwyv_player_store", "defense"))
+		var enemy_damage = _apply_defense(_enemy["attack"], get_character_value("defense"))
 		result_lines.append("The %s hits you for %d damage." % [_enemy["name"], enemy_damage])
 		_player_hp -= float(enemy_damage)
 
@@ -116,7 +116,7 @@ func _resolve_run() -> void:
 		combat_event.emit({"text":"You slip away into the trees.\n\n[look for fight / return to town]", "state": EncounterState.RESOLUTION})
 		_log("_resolve_run(): player escaped.")
 	else:
-		var enemy_damage = _apply_defense(_enemy["attack"], Keeper.get_value("tealwyv_player_store", "defense"))
+		var enemy_damage = _apply_defense(_enemy["attack"], get_character_value("defense"))
 		_player_hp -= float(enemy_damage)
 		if _player_hp <= 0:
 			_resolve_defeat(["You fail to escape. The %s cuts you down." % _enemy["name"]])
@@ -129,14 +129,14 @@ func _apply_defense(raw_damage: int, defense: float) -> int:
 
 func _resolve_victory(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
-	var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
+	var hp_max = get_character_value("hp_max")
 	var exp_gain = _enemy["exp"]
 	var gold_gain = _enemy["gold"]
-	offset_value("tealwyv_player_store", "experience", float(exp_gain))
-	offset_value("tealwyv_player_store", "gold", float(gold_gain))
+	offset_character_value("experience", float(exp_gain))
+	offset_character_value("gold", float(gold_gain))
 	_luck_daemon.diminish()
 	_write_encounter_result(EncounterOutcome.VICTORY, _player_hp, 0)
-	Keeper.set_value("tealwyv_player_store", "hp", hp_max)
+	set_character_value("hp", hp_max)
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
 		_enemy["name"], exp_gain, gold_gain
 	])
@@ -145,9 +145,9 @@ func _resolve_victory(lines: Array) -> void:
 
 func _resolve_defeat(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
-	var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
+	var hp_max = get_character_value("hp_max")
 	var enemy_hp_remaining = _enemy["hp"]
-	Keeper.set_value("tealwyv_player_store", "hp", hp_max)
+	set_character_value("hp", hp_max)
 	_luck_daemon.diminish()
 	_write_encounter_result(EncounterOutcome.DEFEAT, _player_hp, enemy_hp_remaining)
 	lines.append("\nYou have been defeated.\n\n[continue]")

@@ -1,5 +1,5 @@
 class_name TealwyvTextDaemon
-extends Daemon
+extends TealwyvDaemon
 
 # Local cache — populated via signal on equipment change.
 # HP evaluated at request time against Keeper, not cached.
@@ -13,8 +13,8 @@ var _draw_count: int = 0
 var _last_used: Dictionary = {}
 
 func daemon_init() -> void:
-	_weapon = Keeper.get_value("tealwyv_player_store", "weapon")
-	_armor = Keeper.get_value("tealwyv_player_store", "armor")
+	_weapon = get_character_value("weapon")
+	_armor = get_character_value("armor")
 
 func wire_to_channel(channel: Channel) -> void:
 	var forest = channel as Channel as TealwyvForestChannel
@@ -26,8 +26,8 @@ func on_equipment_changed() -> void:
 	_armor = Keeper.get_value("tealwyv_player_store", "armor")
 
 func get_prompt(context: String) -> String:
-	var hp = Keeper.get_value("tealwyv_player_store", "hp")
-	var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
+	var hp = get_character_value("hp")
+	var hp_max = get_character_value("hp_max")
 	var hp_ratio: float = float(hp) / float(hp_max) if hp_max > 0 else 1.0
 	var pool = _filter_pool(context, hp_ratio)
 	if pool.is_empty():

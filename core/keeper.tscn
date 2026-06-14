@@ -1,9 +1,6 @@
 [gd_scene format=3 uid="uid://brteb0pj5ikk5"]
 
 [ext_resource type="Script" uid="uid://ckm2kh47rwqyd" path="res://core/keeper.gd" id="1_d8g3g"]
-[ext_resource type="Script" uid="uid://ea5607cl0bya" path="res://stores/_json_test_store.gd" id="2_424vn"]
-[ext_resource type="Script" uid="uid://dug807o48h8hq" path="res://stores/roster_store.gd" id="3_etpyo"]
-[ext_resource type="Script" uid="uid://c571jy2vnvv1d" path="res://stores/_nav_check_Store.gd" id="3_mwap5"]
 [ext_resource type="Script" uid="uid://dw7al5n1t7ui3" path="res://stores/tealwyv/tealwyv_player_store.gd" id="6_1qa4x"]
 [ext_resource type="Script" uid="uid://dah77mrkcmp7c" path="res://stores/tealwyv/_dev_Store.gd" id="7_1qa4x"]
 [ext_resource type="Script" uid="uid://cm70cvnxnh10s" path="res://stores/tealwyv/tealwyv_luck_Store.gd" id="7_trhg3"]
@@ -13,19 +10,11 @@
 [node name="Keeper" type="Node" unique_id=1832446812]
 script = ExtResource("1_d8g3g")
 
+[node name="profile_Store" type="Node" parent="." unique_id=661357842]
+script = ExtResource("8_trhg3")
+
 [node name="_dev_Store" type="Node" parent="." unique_id=1272858847]
 script = ExtResource("7_1qa4x")
-
-[node name="_json_test_Store" type="Node" parent="." unique_id=1014203657]
-script = ExtResource("2_424vn")
-verbose = null
-
-[node name="_nav_check_Store" type="Node" parent="." unique_id=2021893670]
-script = ExtResource("3_mwap5")
-verbose = null
-
-[node name="roster_Store" type="Node" parent="." unique_id=1401507670]
-script = ExtResource("3_etpyo")
 
 [node name="tealwyv_player_Store" type="Node" parent="." unique_id=892096859]
 script = ExtResource("6_1qa4x")
@@ -36,9 +25,6 @@ metadata/_custom_type_script = "uid://ck2m36eivvd13"
 script = ExtResource("7_trhg3")
 verbose = null
 metadata/_custom_type_script = "uid://ck2m36eivvd13"
-
-[node name="profile_Store" type="Node" parent="." unique_id=661357842]
-script = ExtResource("8_trhg3")
 
 [node name="tealwyv_character_Store" type="Node" parent="." unique_id=1308131355]
 script = ExtResource("9_yn3rp")

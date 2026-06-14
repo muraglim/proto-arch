@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dtn4v2ssij61n"]
+
+[ext_resource type="Script" uid="uid://d4ijhun8lg66y" path="res://channels/tealwyv/tealwyv_town_channel.gd" id="1_7jra5"]
+
+[node name="TealwyvTownChannel" type="Control" unique_id=1291966501]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7jra5")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=983057524]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=253044163]
+layout_mode = 2
+
+[node name="Output" type="RichTextLabel" parent="MarginContainer/VBoxContainer" unique_id=95693043]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Input" type="LineEdit" parent="MarginContainer/VBoxContainer" unique_id=587572382]
+layout_mode = 2

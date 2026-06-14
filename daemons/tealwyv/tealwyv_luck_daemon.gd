@@ -1,5 +1,5 @@
 class_name TealwyvLuckDaemon
-extends Daemon
+extends TealwyvDaemon
 
 const BASE_CRIT: float = 0.15
 const BASE_MISS_PLAYER: float = 0.07

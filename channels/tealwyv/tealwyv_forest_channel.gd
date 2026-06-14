@@ -69,7 +69,7 @@ func _handle_hub_input(action: String) -> void:
 			state = ForestState.COMBAT
 			_combat_daemon.start_encounter()
 		"t":
-			output.text = "You wander in the direction of the town.\n\n[F]ight"
+			Nav.to_swap(self, get_nav("tealwyv_town_channel"), SwapAction.EXIT)
 		"h":
 			var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
 			Keeper.set_value("tealwyv_player_store", "hp", hp_max)
