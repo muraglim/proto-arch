@@ -129,14 +129,13 @@ func _apply_defense(raw_damage: int, defense: float) -> int:
 
 func _resolve_victory(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
-	var hp_max = get_character_value("hp_max")
 	var exp_gain = _enemy["exp"]
 	var gold_gain = _enemy["gold"]
 	offset_character_value("experience", float(exp_gain))
 	offset_character_value("gold", float(gold_gain))
 	_luck_daemon.diminish()
 	_write_encounter_result(EncounterOutcome.VICTORY, _player_hp, 0)
-	set_character_value("hp", hp_max)
+	heal_full_hp()
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
 		_enemy["name"], exp_gain, gold_gain
 	])
@@ -145,9 +144,8 @@ func _resolve_victory(lines: Array) -> void:
 
 func _resolve_defeat(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
-	var hp_max = get_character_value("hp_max")
 	var enemy_hp_remaining = _enemy["hp"]
-	set_character_value("hp", hp_max)
+	heal_full_hp()
 	_luck_daemon.diminish()
 	_write_encounter_result(EncounterOutcome.DEFEAT, _player_hp, enemy_hp_remaining)
 	lines.append("\nYou have been defeated.\n\n[continue]")
