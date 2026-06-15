@@ -6,6 +6,7 @@ enum EncounterState { INACTIVE, ACTIVE, RESOLUTION }
 enum EncounterOutcome { VICTORY, DEFEAT, RUN }
 
 var _luck_daemon: TealwyvLuckDaemon = null
+var _reward_daemon: TealwyvRewardDaemon = null
 var _enemy: Dictionary = {}
 var _encounter_state: EncounterState = EncounterState.INACTIVE
 var _encounter_snapshot: Dictionary = {}
@@ -21,6 +22,9 @@ func wire_to_channel(channel: Channel) -> void:
 
 func wire_to_luck_daemon(daemon: TealwyvLuckDaemon) -> void:
 	_luck_daemon = daemon
+
+func wire_to_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
+	_reward_daemon = daemon
 
 func daemon_init() -> void:
 	pass

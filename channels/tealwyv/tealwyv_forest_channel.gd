@@ -13,6 +13,7 @@ var _luck_daemon: TealwyvLuckDaemon = null
 var _text_daemon: TealwyvTextDaemon = null
 var _combat_daemon: TealwyvCombatDaemon = null
 var _event_roll_daemon: TealwyvEventRollDaemon = null
+var _reward_daemon: TealwyvRewardDaemon = null
 
 @onready var output: RichTextLabel = $MarginContainer/VBoxContainer/Output
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
@@ -51,7 +52,14 @@ func register_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
 	_combat_daemon = daemon
 	_combat_daemon.combat_event.connect(_on_combat_event)
 	if _luck_daemon != null:
-		_combat_daemon.wire_to_luck_daemon(_luck_daemon)	
+		_combat_daemon.wire_to_luck_daemon(_luck_daemon)
+	if _reward_daemon != null:
+		_combat_daemon.wire_to_reward_daemon(_reward_daemon)	
+
+func register_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
+	_reward_daemon = daemon
+	if _combat_daemon != null:
+		_combat_daemon.wire_to_reward_daemon(_reward_daemon)
 
 func _on_input_changed(text: String) -> void:
 	input.text = ""

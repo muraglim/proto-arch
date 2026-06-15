@@ -59,4 +59,8 @@ func _ready() -> void:
 			"uid": "uid://d6q8c5bf7021",
 			"type": "daemon"
 		},
+		"tealwyv_reward_daemon": {
+			"uid": "uid://dkvnvl1ucbvnt",
+			"type": "daemon"
+		},
 	}
