@@ -39,6 +39,9 @@ func start_encounter(enemy: Dictionary) -> void:
 	if _luck_daemon == null:
 		push_error("[TealwyvCombatDaemon] start_encounter(): no luck daemon.")
 		return
+	if _reward_daemon == null:
+		push_error("[TealwyvCombatDaemon] start_encounter(): no reward daemon.")
+		return
 	_encounter_snapshot = {
 		"player_atk": get_character_value("attack"),
 		"player_def": get_character_value("defense"),
@@ -123,15 +126,12 @@ func _apply_defense(raw_damage: int, defense: float) -> int:
 
 func _resolve_victory(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
-	var exp_gain = _enemy["exp"]
-	var gold_gain = _enemy["gold"]
-	offset_character_value("experience", float(exp_gain))
-	offset_character_value("gold", float(gold_gain))
+	var reward = _reward_daemon.resolve_reward(_enemy)
 	_luck_daemon.diminish()
 	_write_encounter_result(EncounterOutcome.VICTORY, _player_hp, 0)
 	heal_full_hp()
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
-		_enemy["name"], exp_gain, gold_gain
+		_enemy["name"], reward["experience"], reward["gold"]
 	])
 	combat_event.emit({"text":"\n".join(lines), "state": EncounterState.RESOLUTION})
 	_log("_resolve_victory(): %s defeated." % _enemy["name"])
