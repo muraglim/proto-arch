@@ -31,25 +31,14 @@ func daemon_init() -> void:
 # start_encounter() is now called explicitly by the channel on player input
 # daemon_init() no longer triggers combat - daemon stays resident, resets per encounter
 
-func start_encounter() -> void:
+func start_encounter(enemy: Dictionary) -> void:
 	_round_count = 0
-	_enemy = {}
+	_enemy = enemy
 	_encounter_state = EncounterState.INACTIVE
 	_encounter_snapshot = {}
 	if _luck_daemon == null:
 		push_error("[TealwyvCombatDaemon] start_encounter(): no luck daemon.")
 		return
-	_roll_encounter()
-
-func _roll_encounter() -> void:
-	var all_enemies: Array = Firm.get_value("tealwyv_combat_ledger", "enemies")
-	var dev_level: int = Keeper.get_value("_dev_store", "enemy_level")
-	var target_level: int = dev_level if dev_level > 0 else 1
-	var pool: Array = all_enemies.filter(func(e): return e["level"] == target_level)
-	_enemy = pool[randi() % pool.size()].duplicate()
-	_enemy["hp"] = ceil(_enemy["hp"])
-	_enemy["attack"] = floor(_enemy["attack"])
-	_enemy["defense"] = floor(_enemy["defense"])
 	_encounter_snapshot = {
 		"player_atk": get_character_value("attack"),
 		"player_def": get_character_value("defense"),
@@ -58,7 +47,7 @@ func _roll_encounter() -> void:
 	_player_hp = get_character_value("hp")
 	_encounter_state = EncounterState.ACTIVE
 	combat_event.emit({"text": "%s stands before you. HP: %d | ATK: %d | DEF: %d\n\nWhat do you do? [attack / run]" % [_enemy["name"], _enemy["hp"], _enemy["attack"], _enemy["defense"]]})
-	_log("_roll_encounter(): %s spawned." % _enemy["name"])
+	_log("start_encounter(): %s spawned." % _enemy["name"])
 
 func take_action(action: String) -> void:
 	if _encounter_state != EncounterState.ACTIVE: return

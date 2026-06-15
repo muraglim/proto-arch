@@ -75,11 +75,7 @@ func _on_input_changed(text: String) -> void:
 func _handle_hub_input(action: String) -> void:
 	match action:
 		"f":
-			if _combat_daemon == null:
-				push_error("[tealwyv_forest_channel] _handle_hub_input(): no combat daemon.")
-				return
-			state = ForestState.COMBAT
-			_combat_daemon.start_encounter()
+			_start_combat_encounter()
 		"t":
 			Nav.to_swap(self, get_nav("tealwyv_town_channel"), SwapAction.SWAP)
 		"h":
@@ -96,8 +92,7 @@ func _handle_combat_input(action: String) -> void:
 func _handle_resolution_input(action: String) -> void:
 	match action:
 		"f":
-			state = ForestState.COMBAT
-			_combat_daemon.start_encounter()
+			_start_combat_encounter()
 		"r", "c":
 			state = ForestState.HUB
 			_update_hub()
@@ -106,6 +101,17 @@ func _on_combat_event(event: Dictionary) -> void:
 	output.text = event.get("text", "")
 	if event.get("state") == TealwyvCombatDaemon.EncounterState.RESOLUTION:
 		state = ForestState.RESOLUTION
+
+func _start_combat_encounter() -> void:
+# event_roll_daemon and combat_daemon are not cross-wired - unlike luck/reward,
+# combat never calls back into event_roll mid-encounter. the channel mediates
+# a one-shot handoff: roll here, pass the result into start_encounter().
+	if _combat_daemon == null or _event_roll_daemon == null:
+		push_error("[tealwyv_forest_channel] _start_combat_encounter(): missing combat or event roll daemon.")
+		return
+	state = ForestState.COMBAT
+	var enemy: Dictionary = _event_roll_daemon.roll_event()
+	_combat_daemon.start_encounter(enemy)
 
 func _update_hub() -> void:
 	var flavor = ""
