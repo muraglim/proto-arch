@@ -69,33 +69,13 @@ func take_action(action: String) -> void:
 func _resolve_turn() -> void:
 	_round_count += 1
 	var result_lines: Array = []
-	# player attacks
-	var damage_to_enemy: int = 0
-	if _luck_daemon.proc_miss_mob():
-		result_lines.append("The %s stumbles — your attack misses." % _enemy["name"])
-	else:
-		var player_attack = get_character_value("attack")
-		var is_crit = _luck_daemon.proc_crit()
-		damage_to_enemy = _apply_defense(player_attack, _enemy["defense"])
-		if is_crit:
-			damage_to_enemy = int(damage_to_enemy * get_combat_const("crit_multiplier"))
-			result_lines.append("Critical hit! You strike for %d damage." % damage_to_enemy)
-		else:
-			result_lines.append("You strike for %d damage." % damage_to_enemy)
-		_enemy["hp"] -= damage_to_enemy
 
+	_resolve_player_attack(result_lines)
 	if _enemy["hp"] <= 0:
 		_resolve_victory(result_lines)
 		return
 
-	# enemy attacks
-	if _luck_daemon.proc_miss_player():
-		result_lines.append("The %s swings wildly and misses." % _enemy["name"])
-	else:
-		var enemy_damage = _apply_defense(_enemy["attack"], get_character_value("defense"))
-		result_lines.append("The %s hits you for %d damage." % [_enemy["name"], enemy_damage])
-		_player_hp -= float(enemy_damage)
-
+	_resolve_enemy_attack(result_lines)
 	if _player_hp <= 0:
 		_resolve_defeat(result_lines)
 		return
@@ -104,6 +84,29 @@ func _resolve_turn() -> void:
 		_enemy["name"], _enemy["hp"], _player_hp
 	])
 	combat_event.emit({"text":"\n".join(result_lines)})
+
+
+func _resolve_player_attack(result_lines: Array) -> void:
+	if _luck_daemon.proc_miss_mob():
+		result_lines.append("The %s stumbles — your attack misses." % _enemy["name"])
+		return
+	var player_attack = get_character_value("attack")
+	var is_crit = _luck_daemon.proc_crit()
+	var damage_to_enemy = _apply_defense(player_attack, _enemy["defense"])
+	if is_crit:
+		damage_to_enemy = int(damage_to_enemy * get_combat_const("crit_multiplier"))
+		result_lines.append("Critical hit! You strike for %d damage." % damage_to_enemy)
+	else:
+		result_lines.append("You strike for %d damage." % damage_to_enemy)
+	_enemy["hp"] -= damage_to_enemy
+
+func _resolve_enemy_attack(result_lines: Array) -> void:
+	if _luck_daemon.proc_miss_player():
+		result_lines.append("The %s swings wildly and misses." % _enemy["name"])
+		return
+	var enemy_damage = _apply_defense(_enemy["attack"], get_character_value("defense"))
+	result_lines.append("The %s hits you for %d damage." % [_enemy["name"], enemy_damage])
+	_player_hp -= float(enemy_damage)
 
 func _resolve_run() -> void:
 	if randf() < get_combat_const("run_chance"):
