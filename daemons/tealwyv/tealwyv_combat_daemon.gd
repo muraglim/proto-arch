@@ -117,7 +117,7 @@ func _resolve_run() -> void:
 		if _player_hp <= 0:
 			_resolve_defeat(["You fail to escape. The %s cuts you down." % _enemy["name"]])
 			return
-		combat_event.emit({"text":"You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [_enemy["name"], enemy_damage, _player_hp], "state": EncounterState.RESOLUTION})
+		combat_event.emit({"text":"You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [_enemy["name"], enemy_damage, _player_hp]})
 
 func _apply_defense(raw_damage: int, defense: float) -> int:
 	var mitigation = get_combat_const("defense_mitigation")
