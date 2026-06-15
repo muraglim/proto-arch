@@ -55,4 +55,8 @@ func _ready() -> void:
 			"uid": "uid://d30aw5tdkrn41",
 			"type": "daemon"
 		},
+		"tealwyv_event_roll_daemon": {
+			"uid": "uid://d6q8c5bf7021",
+			"type": "daemon"
+		},
 	}

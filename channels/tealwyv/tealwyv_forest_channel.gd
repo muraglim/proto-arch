@@ -12,6 +12,7 @@ var state: ForestState = ForestState.HUB
 var _luck_daemon: TealwyvLuckDaemon = null
 var _text_daemon: TealwyvTextDaemon = null
 var _combat_daemon: TealwyvCombatDaemon = null
+var _event_roll_daemon: TealwyvEventRollDaemon = null
 
 @onready var output: RichTextLabel = $MarginContainer/VBoxContainer/Output
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
@@ -42,6 +43,9 @@ func register_luck_daemon(daemon: TealwyvLuckDaemon) -> void:
 
 func register_text_daemon(daemon: TealwyvTextDaemon) -> void:
 	_text_daemon = daemon
+
+func register_event_roll_daemon(daemon: TealwyvEventRollDaemon) -> void:
+	_event_roll_daemon = daemon
 
 func register_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
 	_combat_daemon = daemon
