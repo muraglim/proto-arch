@@ -9,5 +9,6 @@ func _ready() -> void:
 			{"dest": "tealwyv_combat_daemon","order": 2, "role": "combat"},
 			{"dest": "tealwyv_event_roll_daemon", "order": 3, "role": "event_roll"},
 			{"dest": "tealwyv_reward_daemon", "order": 3, "role": "reward"}
+# TODO(encounter-logger): order 5, role "log" - tealwyv_encounter_log_daemon
 		],
 	}

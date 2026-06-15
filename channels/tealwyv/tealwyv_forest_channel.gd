@@ -9,6 +9,9 @@ enum ForestState {
 
 var state: ForestState = ForestState.HUB
 
+# registration block - 5 daemon refs + 5 register_*_daemon methods, two with
+# cross-introduction branches (combat<->luck, combat<->reward). candidate for
+# Linker extraction once a second Channel needs daemon registration.
 var _luck_daemon: TealwyvLuckDaemon = null
 var _text_daemon: TealwyvTextDaemon = null
 var _combat_daemon: TealwyvCombatDaemon = null

@@ -108,6 +108,7 @@ func _resolve_run() -> void:
 	if randf() < get_combat_const("run_chance"):
 		_encounter_state = EncounterState.RESOLUTION
 		_luck_daemon.diminish()
+# TODO see comment header for _write_encounter_result()
 		_write_encounter_result(EncounterOutcome.RUN, _player_hp, _enemy["hp"])
 		combat_event.emit({"text":"You slip away into the trees.\n\n[look for fight / return to town]", "state": EncounterState.RESOLUTION})
 		_log("_resolve_run(): player escaped.")
@@ -128,6 +129,7 @@ func _resolve_victory(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
 	var reward = _reward_daemon.resolve_reward(_enemy)
 	_luck_daemon.diminish()
+# TODO see comment header for _write_encounter_result()
 	_write_encounter_result(EncounterOutcome.VICTORY, _player_hp, 0)
 	heal_full_hp()
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
@@ -141,11 +143,20 @@ func _resolve_defeat(lines: Array) -> void:
 	var enemy_hp_remaining = _enemy["hp"]
 	heal_full_hp()
 	_luck_daemon.diminish()
+# TODO see comment header for _write_encounter_result()
 	_write_encounter_result(EncounterOutcome.DEFEAT, _player_hp, enemy_hp_remaining)
 	lines.append("\nYou have been defeated.\n\n[continue]")
 	combat_event.emit({"text":"\n".join(lines), "state": EncounterState.RESOLUTION})
 	_log("_resolve_defeat(): player defeated.")
 
+# TODO(encounter-logger):  extraction target for a dedicated 
+# tealwyv_encounter_log_daemon.gd (extends Daemon).
+# wiring mirrors _luck_daemon/_reward_daemon: new _channel_dep_Ledger entry
+# (role "log") + _nav_dest_Ledger entry, new register_encounter_log_daemon()
+# on tealwyv_forest_channel storing _log_daemon, combat_daemon gains
+# wire_to_encounter_log_daemon()/_log_daemon and calls
+# _log_daemon.write_encounter_result(...) at each of the three call sites
+# below instead of this method directly.
 func _write_encounter_result(outcome: EncounterOutcome, player_hp_remaining: float, enemy_hp_remaining: float) -> void:
 	var outcome_str: String = ""
 	match outcome:
