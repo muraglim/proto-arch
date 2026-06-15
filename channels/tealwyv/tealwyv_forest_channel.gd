@@ -19,11 +19,11 @@ var _event_roll_daemon: TealwyvEventRollDaemon = null
 
 func channel_init() -> void:
 	_boot_daemons()
+	input.text_changed.connect(_on_input_changed)
 
 func channel_show() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	input.max_length = 1
-	input.text_changed.connect(_on_input_changed)
 	input.grab_focus()
 	_update_hub()
 
@@ -73,7 +73,7 @@ func _handle_hub_input(action: String) -> void:
 			state = ForestState.COMBAT
 			_combat_daemon.start_encounter()
 		"t":
-			Nav.to_swap(self, get_nav("tealwyv_town_channel"), SwapAction.EXIT)
+			Nav.to_swap(self, get_nav("tealwyv_town_channel"), SwapAction.SWAP)
 		"h":
 			var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
 			Keeper.set_value("tealwyv_player_store", "hp", hp_max)
