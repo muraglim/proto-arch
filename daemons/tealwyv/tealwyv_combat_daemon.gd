@@ -1,4 +1,3 @@
-#TODO: replace colloquial language in logs with machine-parsable prose. wait for appropriate stage of development.
 class_name TealwyvCombatDaemon
 extends TealwyvDaemon
 
@@ -9,7 +8,7 @@ var _luck_daemon: TealwyvLuckDaemon = null
 var _reward_daemon: TealwyvRewardDaemon = null
 var _enemy: Dictionary = {}
 var _encounter_state: EncounterState = EncounterState.INACTIVE
-var _encounter_snapshot: Dictionary = {}
+var _player_snapshot: Dictionary = {}
 var _round_count: int = 0
 var _player_hp: float = 0.0
 
@@ -28,23 +27,26 @@ func wire_to_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
 
 func daemon_init() -> void:
 	pass
-# start_encounter() is now called explicitly by the channel on player input
-# daemon_init() no longer triggers combat - daemon stays resident, resets per encounter
 
+func daemon_shutdown() -> void:
+	_log("daemon_shutdown(): combat daemon offline.")
+
+# called by tealwyv_forest_channel
 func start_encounter(enemy: Dictionary) -> void:
 	_round_count = 0
 	_enemy = enemy
 	_encounter_state = EncounterState.INACTIVE
-	_encounter_snapshot = {}
+	_player_snapshot = {}
 	if _luck_daemon == null:
 		push_error("[TealwyvCombatDaemon] start_encounter(): no luck daemon.")
 		return
 	if _reward_daemon == null:
 		push_error("[TealwyvCombatDaemon] start_encounter(): no reward daemon.")
 		return
-	_encounter_snapshot = {
+	_player_snapshot = {
 		"player_atk": get_character_value("attack"),
 		"player_def": get_character_value("defense"),
+		"player_starting_hp": get_character_value("hp"),
 		"player_hp_max": get_character_value("hp_max"),
 	}
 	_player_hp = get_character_value("hp")
@@ -65,22 +67,18 @@ func take_action(action: String) -> void:
 func _resolve_turn() -> void:
 	_round_count += 1
 	var result_lines: Array = []
-
 	_resolve_player_attack(result_lines)
 	if _enemy["hp"] <= 0:
 		_resolve_victory(result_lines)
 		return
-
 	_resolve_enemy_attack(result_lines)
 	if _player_hp <= 0:
 		_resolve_defeat(result_lines)
 		return
-
 	result_lines.append("\n%s HP: %d | Your HP: %d\n\n[attack / run]" % [
 		_enemy["name"], _enemy["hp"], _player_hp
 	])
 	combat_event.emit({"text":"\n".join(result_lines)})
-
 
 func _resolve_player_attack(result_lines: Array) -> void:
 	if _luck_daemon.proc_miss_mob():
@@ -104,22 +102,6 @@ func _resolve_enemy_attack(result_lines: Array) -> void:
 	result_lines.append("The %s hits you for %d damage." % [_enemy["name"], enemy_damage])
 	_player_hp -= float(enemy_damage)
 
-func _resolve_run() -> void:
-	if randf() < get_combat_const("run_chance"):
-		_encounter_state = EncounterState.RESOLUTION
-		_luck_daemon.diminish()
-# TODO see comment header for _write_encounter_result()
-		_write_encounter_result(EncounterOutcome.RUN, _player_hp, _enemy["hp"])
-		combat_event.emit({"text":"You slip away into the trees.\n\n[look for fight / return to town]", "state": EncounterState.RESOLUTION})
-		_log("_resolve_run(): player escaped.")
-	else:
-		var enemy_damage = _apply_defense(_enemy["attack"], get_character_value("defense"))
-		_player_hp -= float(enemy_damage)
-		if _player_hp <= 0:
-			_resolve_defeat(["You fail to escape. The %s cuts you down." % _enemy["name"]])
-			return
-		combat_event.emit({"text":"You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [_enemy["name"], enemy_damage, _player_hp]})
-
 func _apply_defense(raw_damage: int, defense: float) -> int:
 	var mitigation = get_combat_const("defense_mitigation")
 	var factor = 1.0 - (mitigation * defense) / (1.0 + mitigation * abs(defense))
@@ -129,8 +111,7 @@ func _resolve_victory(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
 	var reward = _reward_daemon.resolve_reward(_enemy)
 	_luck_daemon.diminish()
-# TODO see comment header for _write_encounter_result()
-	_write_encounter_result(EncounterOutcome.VICTORY, _player_hp, 0)
+	encounter_concluded.emit(_build_encounter_summary(EncounterOutcome.VICTORY, _player_hp, _enemy["hp"]))
 	heal_full_hp()
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
 		_enemy["name"], reward["experience"], reward["gold"]
@@ -143,56 +124,48 @@ func _resolve_defeat(lines: Array) -> void:
 	var enemy_hp_remaining = _enemy["hp"]
 	heal_full_hp()
 	_luck_daemon.diminish()
-# TODO see comment header for _write_encounter_result()
-	_write_encounter_result(EncounterOutcome.DEFEAT, _player_hp, enemy_hp_remaining)
+	encounter_concluded.emit(_build_encounter_summary(EncounterOutcome.DEFEAT, _player_hp, enemy_hp_remaining))
 	lines.append("\nYou have been defeated.\n\n[continue]")
 	combat_event.emit({"text":"\n".join(lines), "state": EncounterState.RESOLUTION})
 	_log("_resolve_defeat(): player defeated.")
 
-# TODO(encounter-logger):  extraction target for a dedicated 
-# tealwyv_encounter_log_daemon.gd (extends Daemon).
-# wiring mirrors _luck_daemon/_reward_daemon: new _channel_dep_Ledger entry
-# (role "log") + _nav_dest_Ledger entry, new register_encounter_log_daemon()
-# on tealwyv_forest_channel storing _log_daemon, combat_daemon gains
-# wire_to_encounter_log_daemon()/_log_daemon and calls
-# _log_daemon.write_encounter_result(...) at each of the three call sites
-# below instead of this method directly.
-func _write_encounter_result(outcome: EncounterOutcome, player_hp_remaining: float, enemy_hp_remaining: float) -> void:
+func _resolve_run() -> void:
+	if randf() < get_combat_const("run_chance"):
+		_encounter_state = EncounterState.RESOLUTION
+		_luck_daemon.diminish()
+		encounter_concluded.emit(_build_encounter_summary(EncounterOutcome.RUN, _player_hp, _enemy["hp"]))
+		combat_event.emit({"text":"You slip away into the trees.\n\n[look for fight / return to town]", "state": EncounterState.RESOLUTION})
+		_log("_resolve_run(): player escaped.")
+	else:
+		var enemy_damage = _apply_defense(_enemy["attack"], get_character_value("defense"))
+		_player_hp -= float(enemy_damage)
+		if _player_hp <= 0:
+			_resolve_defeat(["You fail to escape. The %s cuts you down." % _enemy["name"]])
+			return
+		combat_event.emit({"text":"You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [_enemy["name"], enemy_damage, _player_hp]})
+
+func _build_encounter_summary(outcome: EncounterOutcome, player_hp_remaining: float, enemy_hp_remaining: float) -> Dictionary:
 	var outcome_str: String = ""
 	match outcome:
 		EncounterOutcome.VICTORY: outcome_str = "VICTORY"
 		EncounterOutcome.DEFEAT: outcome_str = "DEFEAT"
 		EncounterOutcome.RUN: outcome_str = "RUN"
-	var path = "user://tealwyv_encounter_log.csv"
-	var write_header = not FileAccess.file_exists(path)
-	var file = FileAccess.open(path, FileAccess.READ_WRITE if not write_header else FileAccess.WRITE)
-	if file == null:
-		push_error("[tealwyv_combat_daemon] _write_encounter_result(): could not open %s" % path)
-		return
-	if write_header:
-		file.store_line("timestamp,enemy_name,enemy_level,enemy_archetype,player_atk,player_def,player_hp_max,outcome,player_hp_remaining,enemy_hp_remaining,rounds")
-	else:
-		file.seek_end()
-	var archetype = "_".join(_enemy["name"].split("_").slice(1))
-	var row = "%s,%s,%d,%s,%d,%d,%d,%s,%d,%d,%d" % [
-		Time.get_datetime_string_from_system(),
-		_enemy["name"],
-		_enemy["level"],
-		archetype,
-		_encounter_snapshot["player_atk"],
-		_encounter_snapshot["player_def"],
-		_encounter_snapshot["player_hp_max"],
-		outcome_str,
-		player_hp_remaining,
-		enemy_hp_remaining,
-		_round_count
-	]
-	file.store_line(row)
-	file.close()
-	_log("_write_encounter_result(): logged %s vs %s -> %s" % [outcome_str, _enemy["name"], path])
-	
-func daemon_shutdown() -> void:
-	_log("daemon_shutdown(): combat daemon offline.")
+	return {
+		"timestamp": Time.get_datetime_string_from_system(),
+		"outcome": outcome_str,
+		"enemy_name": _enemy["name"],
+		"enemy_level": _enemy["level"],
+		"enemy_archetype": "_".join(_enemy["name"].split("_").slice(1)),
+		"player_atk": _player_snapshot["player_atk"],
+		"player_def": _player_snapshot["player_def"],
+		"player_starting_hp": _player_snapshot["player_starting_hp"],
+		"player_hp_max": _player_snapshot["player_hp_max"],
+		"player_hp_remaining": player_hp_remaining,
+		"enemy_hp_remaining": enemy_hp_remaining,
+		"rounds": _round_count,
+	}
 
 @warning_ignore("unused_signal")
 signal combat_event(text: Dictionary)
+@warning_ignore("unused_signal")
+signal encounter_concluded(summary: Dictionary)
