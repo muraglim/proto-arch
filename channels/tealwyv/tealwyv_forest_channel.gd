@@ -60,7 +60,7 @@ func register_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
 	if _reward_daemon != null:
 		_combat_daemon.wire_to_reward_daemon(_reward_daemon)
 	if _log_daemon != null:
-		_combat_daemon.encounter_concluded.connect(_log_daemon._on_encounter_concluded)
+		_combat_daemon.combat_concluded.connect(_log_daemon._on_combat_concluded)
 
 func register_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
 	_reward_daemon = daemon
@@ -70,7 +70,7 @@ func register_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
 func register_log_daemon(daemon: TealwyvLogDaemon) -> void:
 	_log_daemon = daemon
 	if _combat_daemon != null:
-		_combat_daemon.encounter_concluded.connect(_log_daemon._on_encounter_concluded)
+		_combat_daemon.combat_concluded.connect(_log_daemon._on_combat_concluded)
 
 func _on_input_changed(text: String) -> void:
 	input.text = ""

@@ -111,7 +111,7 @@ func _resolve_victory(lines: Array) -> void:
 	_encounter_state = EncounterState.RESOLUTION
 	var reward = _reward_daemon.resolve_reward(_enemy)
 	_luck_daemon.diminish()
-	encounter_concluded.emit(_build_encounter_summary(EncounterOutcome.VICTORY, _player_hp, _enemy["hp"]))
+	combat_concluded.emit(_build_combat_summary(EncounterOutcome.VICTORY, _player_hp, _enemy["hp"]))
 	heal_full_hp()
 	lines.append("\nThe %s falls.\n\nYou gain %d experience and %d gold.\n\n[look for fight / return to town]" % [
 		_enemy["name"], reward["experience"], reward["gold"]
@@ -124,7 +124,7 @@ func _resolve_defeat(lines: Array) -> void:
 	var enemy_hp_remaining = _enemy["hp"]
 	heal_full_hp()
 	_luck_daemon.diminish()
-	encounter_concluded.emit(_build_encounter_summary(EncounterOutcome.DEFEAT, _player_hp, enemy_hp_remaining))
+	combat_concluded.emit(_build_combat_summary(EncounterOutcome.DEFEAT, _player_hp, enemy_hp_remaining))
 	lines.append("\nYou have been defeated.\n\n[continue]")
 	combat_event.emit({"text":"\n".join(lines), "state": EncounterState.RESOLUTION})
 	_log("_resolve_defeat(): player defeated.")
@@ -133,7 +133,7 @@ func _resolve_run() -> void:
 	if randf() < get_combat_const("run_chance"):
 		_encounter_state = EncounterState.RESOLUTION
 		_luck_daemon.diminish()
-		encounter_concluded.emit(_build_encounter_summary(EncounterOutcome.RUN, _player_hp, _enemy["hp"]))
+		combat_concluded.emit(_build_combat_summary(EncounterOutcome.RUN, _player_hp, _enemy["hp"]))
 		combat_event.emit({"text":"You slip away into the trees.\n\n[look for fight / return to town]", "state": EncounterState.RESOLUTION})
 		_log("_resolve_run(): player escaped.")
 	else:
@@ -144,7 +144,7 @@ func _resolve_run() -> void:
 			return
 		combat_event.emit({"text":"You fail to escape. The %s hits you for %d damage.\nYour HP: %d\n\n[attack / run]" % [_enemy["name"], enemy_damage, _player_hp]})
 
-func _build_encounter_summary(outcome: EncounterOutcome, player_hp_remaining: float, enemy_hp_remaining: float) -> Dictionary:
+func _build_combat_summary(outcome: EncounterOutcome, player_hp_remaining: float, enemy_hp_remaining: float) -> Dictionary:
 	var outcome_str: String = ""
 	match outcome:
 		EncounterOutcome.VICTORY: outcome_str = "VICTORY"
@@ -168,4 +168,4 @@ func _build_encounter_summary(outcome: EncounterOutcome, player_hp_remaining: fl
 @warning_ignore("unused_signal")
 signal combat_event(text: Dictionary)
 @warning_ignore("unused_signal")
-signal encounter_concluded(summary: Dictionary)
+signal combat_concluded(summary: Dictionary)
