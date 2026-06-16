@@ -35,6 +35,15 @@ func to_swap(caller: Node, dest: String, swap: Channel.SwapAction) -> void:
 		return
 	caller.nav_to_swap.emit(dest, swap)
 
+func to_swap_return(caller: Node, dest: String, swap: Channel.SwapAction, return_dest: String) -> void:
+	if Guard.is_invalid_scene(dest, caller.name): return
+	if Guard.is_unresolved(dest, caller.name + ":to_swap_return"): return
+	if Guard.is_unresolved(return_dest, caller.name + ":to_swap_return return_dest"): return
+	if not caller.has_signal("nav_to_swap_return"):
+		push_error("Nav.to_swap_return: caller '%s' has no nav_to_swap_return signal" % caller.name)
+		return
+	caller.nav_to_swap_return.emit(dest, swap, return_dest)
+
 func daemon_dismiss(caller: Node) -> void:
 	if not caller.has_signal("daemon_dismiss"):
 		push_error("Nav.daemon_dismiss: caller '%s' has no daemon_dismiss signal" % caller.name)

@@ -40,6 +40,15 @@ func route_channel(dest: String, swap: Channel.SwapAction) -> void:
 		return
 	start_channel(dest)
 
+func route_channel_return(dest: String, swap: Channel.SwapAction, return_dest: String) -> void:
+	if Guard.is_front_empty_after_boot(front, is_booted, "[Main] route_channel_return()"): return
+	if Guard.is_unresolved(dest, "[Main] route_channel_return()"): return
+	if Guard.is_invalid_scene(dest, "[Main] route_channel_return()"): return
+	var current: Channel = front.get_child(0) as Channel if front.get_child_count() > 0 else null
+	if current and swap_actions.has(swap):
+		swap_actions[swap].call()
+	start_channel_return(dest, return_dest)
+
 func start_daemon(caller: Channel, dest: String) -> void:
 	var script: GDScript = load(dest) # errors when dest is not a valid GDscript file
 	if Guard.is_unresolved(script, "[Main] start_daemon()"): return
@@ -86,6 +95,21 @@ func start_channel(dest: String) -> void:
 	channel_instance.channel_init()
 	channel_instance.channel_show()
 	print("[Main] start_channel(dest: %s): %s started." % [dest, channel_instance.name])
+
+func start_channel_return(dest: String, return_dest: String) -> void:
+	var scene: PackedScene = load(dest)
+	if Guard.is_unresolved(scene, "[Main] start_channel_return()"): return
+	var channel_instance: Node = scene.instantiate()
+	if not _is_channel(channel_instance, "[Main] start_channel_return()"):
+		channel_instance.queue_free()
+		return
+	front.add_child(channel_instance)
+	channel_instance.channel_dest = dest
+	channel_instance.return_dest = return_dest
+	channel_instance._connect_to_main(self)
+	channel_instance.channel_init()
+	channel_instance.channel_show()
+	print("[Main] start_channel_return(dest: %s, return_dest: %s): %s started." % [dest, return_dest, channel_instance.name])
 
 func start_channel_in_back(dest: String) -> void:
 	var scene: PackedScene = load(dest)
@@ -184,6 +208,8 @@ func _on_nav_to_channel(dest: String) -> void:
 	route_channel(dest, Channel.SwapAction.EXIT)
 func _on_channel_nav_to_swap(dest: String, swap: Channel.SwapAction) -> void:
 	route_channel(dest, swap)
+func _on_channel_nav_to_swap_return(dest: String, swap: Channel.SwapAction, return_dest: String) -> void:
+	route_channel_return(dest, swap, return_dest)
 func _on_channel_dismiss() -> void:
 	dismiss_channel()
 func _on_evict_back_channel(dest: String) -> void:

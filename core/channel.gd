@@ -25,6 +25,7 @@ enum SwapAction {
 }
 
 var channel_dest: String = ""
+var return_dest: String = ""
 
 func channel_init() -> void:
 	pass
@@ -60,6 +61,7 @@ func get_type(key: String) -> String:
 func _connect_to_main(main: Node) -> void:
 	_main = main
 	nav_to_swap.connect(main._on_channel_nav_to_swap)
+	nav_to_swap_return.connect(main._on_channel_nav_to_swap_return)
 	channel_dismiss.connect(main._on_channel_dismiss)
 	nav_to_channel.connect(main._on_nav_to_channel)
 	nav_to_daemon.connect(main._on_nav_to_daemon)
@@ -77,6 +79,8 @@ func _log(msg: String) -> void:
 # signals are emitted externally via Nav autoload — unused_signal warnings expected
 @warning_ignore("unused_signal")
 signal nav_to_swap(dest: String, swap: SwapAction)
+@warning_ignore("unused_signal")
+signal nav_to_swap_return(dest: String, swap: SwapAction, return_dest: String)
 @warning_ignore("unused_signal")
 signal channel_dismiss
 @warning_ignore("unused_signal")
