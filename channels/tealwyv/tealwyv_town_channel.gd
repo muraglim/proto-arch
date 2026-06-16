@@ -30,7 +30,7 @@ func _update_display() -> void:
 				character_name = character["name"]
 				break
 
-	output.text = "Welcome to Town, %s.\nCharacter: %s\n\n[F]orest / [C]haracter select" % [active_profile_name, character_name]
+	output.text = "Welcome to Town, %s.\nCharacter: %s\n\n[F]orest / [C]haracter select / [S]tats" % [active_profile_name, character_name]
 
 func _on_input_changed(text: String) -> void:
 	input.text = ""
@@ -40,6 +40,8 @@ func _on_input_changed(text: String) -> void:
 			Nav.to_swap(self, get_nav("tealwyv_forest_channel"), SwapAction.SWAP)
 		"c":
 			Nav.to_swap(self, get_nav("tealwyv_start_channel"), SwapAction.SWAP)
+		"s":
+			Nav.to_swap_return(self, get_nav("tealwyv_player_stats_channel"), SwapAction.SWAP, get_nav("tealwyv_town_channel"))
 
 func channel_shutdown() -> void:
 	input.text_changed.disconnect(_on_input_changed)

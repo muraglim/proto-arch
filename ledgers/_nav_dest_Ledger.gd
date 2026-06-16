@@ -42,6 +42,10 @@ func _ready() -> void:
 		"uid": "uid://dtn4v2ssij61n",
 		"type": "channel"
 		},
+		"tealwyv_player_stats_channel": {
+		"uid": "uid://b7jljf0lhfu26",
+		"type": "channel"
+		},
 # Tealwyv Daemons
 		"tealwyv_luck_daemon": {
 			"uid": "uid://da34umylpsbac",

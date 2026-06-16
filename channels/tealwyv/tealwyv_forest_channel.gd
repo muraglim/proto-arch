@@ -93,6 +93,8 @@ func _handle_hub_input(action: String) -> void:
 			var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
 			Keeper.set_value("tealwyv_player_store", "hp", hp_max)
 			output.text = "[DEV] HP restored to %d.\n\n[F]ight / [T]own / [H]eal" % hp_max
+		"s":
+			Nav.to_swap_return(self, get_nav("tealwyv_player_stats_channel"), SwapAction.SWAP, get_nav("tealwyv_forest_channel"))
 
 func _handle_combat_input(action: String) -> void:
 	if _combat_daemon == null:
@@ -128,7 +130,7 @@ func _update_hub() -> void:
 	var flavor = ""
 	if _text_daemon != null:
 		flavor = _text_daemon.get_prompt("forest_hub_flavor")
-	output.text = "%s\n\n[F]ight / [T]own / [H]eal" % flavor
+	output.text = "%s\n\n[F]ight / [T]own / [H]eal / [S]tats" % flavor
 
 func channel_shutdown() -> void:
 	input.text_changed.disconnect(_on_input_changed)
