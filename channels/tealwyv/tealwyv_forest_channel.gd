@@ -9,14 +9,15 @@ enum ForestState {
 
 var state: ForestState = ForestState.HUB
 
-# registration block - 5 daemon refs + 5 register_*_daemon methods, two with
-# cross-introduction branches (combat<->luck, combat<->reward). candidate for
-# Linker extraction once a second Channel needs daemon registration.
+# registration block - 6 daemon refs + 6 register_*_daemon methods, two with
+# cross-introduction branches (combat<->luck, combat<->reward, combat<->log).
+# candidate for Linker extraction once a second Channel needs daemon registration.
 var _luck_daemon: TealwyvLuckDaemon = null
 var _text_daemon: TealwyvTextDaemon = null
 var _combat_daemon: TealwyvCombatDaemon = null
 var _event_roll_daemon: TealwyvEventRollDaemon = null
 var _reward_daemon: TealwyvRewardDaemon = null
+var _log_daemon: TealwyvLogDaemon = null
 
 @onready var output: RichTextLabel = $MarginContainer/VBoxContainer/Output
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
@@ -57,12 +58,19 @@ func register_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
 	if _luck_daemon != null:
 		_combat_daemon.wire_to_luck_daemon(_luck_daemon)
 	if _reward_daemon != null:
-		_combat_daemon.wire_to_reward_daemon(_reward_daemon)	
+		_combat_daemon.wire_to_reward_daemon(_reward_daemon)
+	if _log_daemon != null:
+		_combat_daemon.encounter_concluded.connect(_log_daemon._on_encounter_concluded)
 
 func register_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
 	_reward_daemon = daemon
 	if _combat_daemon != null:
 		_combat_daemon.wire_to_reward_daemon(_reward_daemon)
+
+func register_log_daemon(daemon: TealwyvLogDaemon) -> void:
+	_log_daemon = daemon
+	if _combat_daemon != null:
+		_combat_daemon.encounter_concluded.connect(_log_daemon._on_encounter_concluded)
 
 func _on_input_changed(text: String) -> void:
 	input.text = ""
