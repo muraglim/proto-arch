@@ -49,6 +49,16 @@ func evict(channel: Channel) -> void:
 	if not _registries.has(key):
 		print("[Linker] evict(%s): no registry found, nothing to do." % key)
 		return
+	var registry = _registries[key]
+	for role in registry:
+		if role == "channel": continue
+		var node = registry[role]
+		if node == null or not node is Daemon: continue
+		var daemon = node as Daemon
+		daemon.daemon_shutdown()
+		_under.remove_child(daemon)
+		daemon.queue_free()
+		print("[Linker] evict(%s, role: %s): %s evicted." % [key, role, daemon.name])
 	_registries.erase(key)
 	print("[Linker] evict(%s): registry cleared." % key)
 
@@ -63,8 +73,10 @@ func _boot_dep(channel: Channel, channel_key: String, dep: Dictionary) -> void:
 	var nav_entry = Firm.get_value("_nav_dest_ledger", dest)
 	if Guard.is_invalid_uid(nav_entry, "[Linker] _boot_dep(%s, dest: %s)" % [channel_key, dest]): return
 	var uid = nav_entry["uid"]
-	if _find_daemon_by_role(channel_key, role) != null:
-		print("[Linker] _boot_dep(%s, role: %s): already live, skipping boot." % [channel_key, role])
+	var existing = _find_live_daemon(uid)
+	if existing != null:
+		_registries[channel_key][role] = existing
+		print("[Linker] _boot_dep(%s, role: %s): already live, registering existing instance." % [channel_key, role])
 		_execute_wires(channel_key, dep)
 		return
 	var instance = _instantiate_daemon(uid, channel_key)
@@ -90,6 +102,15 @@ func _instantiate_daemon(uid: String, context: String) -> Daemon:
 		instance.queue_free()
 		return null
 	return instance
+
+func _find_live_daemon(uid: String) -> Daemon:
+	var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
+	var target_name = path.get_file().get_basename()
+	for child in _under.get_children():
+		var daemon = child as Daemon
+		if daemon and daemon.name == target_name:
+			return daemon
+	return null
 
 # — Wires —
 

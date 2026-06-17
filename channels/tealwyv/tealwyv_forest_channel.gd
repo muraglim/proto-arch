@@ -9,21 +9,15 @@ enum ForestState {
 
 var state: ForestState = ForestState.HUB
 
-# registration block - 6 daemon refs + 6 register_*_daemon methods, two with
-# cross-introduction branches (combat<->luck, combat<->reward, combat<->log).
-# candidate for Linker extraction once a second Channel needs daemon registration.
-var _luck_daemon: TealwyvLuckDaemon = null
 var _text_daemon: TealwyvTextDaemon = null
 var _combat_daemon: TealwyvCombatDaemon = null
 var _event_roll_daemon: TealwyvEventRollDaemon = null
-var _reward_daemon: TealwyvRewardDaemon = null
-var _log_daemon: TealwyvLogDaemon = null
 
 @onready var output: RichTextLabel = $MarginContainer/VBoxContainer/Output
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
 
 func channel_init() -> void:
-	_boot_daemons()
+	Linker.register(self)
 	input.text_changed.connect(_on_input_changed)
 
 func channel_show() -> void:
@@ -31,46 +25,6 @@ func channel_show() -> void:
 	input.max_length = 1
 	input.grab_focus()
 	_update_hub()
-
-func _boot_daemons() -> void:
-	var deps: Array = Firm.get_value("_channel_dep_ledger", "tealwyv_forest_channel")
-	for dep in deps:
-		Nav.to_daemon(self, get_nav(dep["dest"]))
-
-func wire_to_daemon(daemon: Daemon) -> void:
-	daemon.wire_to_channel(self)
-
-# called by channel.gd base via wire_to_daemon — daemons self-register by role
-func register_luck_daemon(daemon: TealwyvLuckDaemon) -> void:
-	_luck_daemon = daemon
-	if _combat_daemon != null:
-		_combat_daemon.wire_to_luck_daemon(_luck_daemon)
-
-func register_text_daemon(daemon: TealwyvTextDaemon) -> void:
-	_text_daemon = daemon
-
-func register_event_roll_daemon(daemon: TealwyvEventRollDaemon) -> void:
-	_event_roll_daemon = daemon
-
-func register_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
-	_combat_daemon = daemon
-	_combat_daemon.combat_event.connect(_on_combat_event)
-	if _luck_daemon != null:
-		_combat_daemon.wire_to_luck_daemon(_luck_daemon)
-	if _reward_daemon != null:
-		_combat_daemon.wire_to_reward_daemon(_reward_daemon)
-	if _log_daemon != null:
-		_combat_daemon.combat_concluded.connect(_log_daemon._on_combat_concluded)
-
-func register_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
-	_reward_daemon = daemon
-	if _combat_daemon != null:
-		_combat_daemon.wire_to_reward_daemon(_reward_daemon)
-
-func register_log_daemon(daemon: TealwyvLogDaemon) -> void:
-	_log_daemon = daemon
-	if _combat_daemon != null:
-		_combat_daemon.combat_concluded.connect(_log_daemon._on_combat_concluded)
 
 func _on_input_changed(text: String) -> void:
 	input.text = ""
@@ -88,11 +42,7 @@ func _handle_hub_input(action: String) -> void:
 		"f":
 			_start_combat_encounter()
 		"t":
-			Nav.to_swap(self, get_nav("tealwyv_town_channel"), SwapAction.SWAP)
-		"h":
-			var hp_max = Keeper.get_value("tealwyv_player_store", "hp_max")
-			Keeper.set_value("tealwyv_player_store", "hp", hp_max)
-			output.text = "[DEV] HP restored to %d.\n\n[F]ight / [T]own / [H]eal" % hp_max
+			Nav.to_swap(self, get_nav("tealwyv_town_channel"), SwapAction.EXIT)
 		"s":
 			Nav.to_swap_return(self, get_nav("tealwyv_player_stats_channel"), SwapAction.SWAP, get_nav("tealwyv_forest_channel"))
 
@@ -116,9 +66,9 @@ func _on_combat_event(event: Dictionary) -> void:
 		state = ForestState.RESOLUTION
 
 func _start_combat_encounter() -> void:
-# event_roll_daemon and combat_daemon are not cross-wired - unlike luck/reward,
-# combat never calls back into event_roll mid-encounter. the channel mediates
-# a one-shot handoff: roll here, pass the result into start_encounter().
+# event_roll and combat are not cross-wired - combat never calls back into
+# event_roll mid-encounter. channel mediates a one-shot handoff: roll here,
+# pass result into start_encounter().
 	if _combat_daemon == null or _event_roll_daemon == null:
 		push_error("[tealwyv_forest_channel] _start_combat_encounter(): missing combat or event roll daemon.")
 		return
@@ -130,7 +80,7 @@ func _update_hub() -> void:
 	var flavor = ""
 	if _text_daemon != null:
 		flavor = _text_daemon.get_prompt("forest_hub_flavor")
-	output.text = "%s\n\n[F]ight / [T]own / [H]eal / [S]tats" % flavor
+	output.text = "%s\n\n[F]ight / [T]own / [S]tats" % flavor
 
 func channel_shutdown() -> void:
 	input.text_changed.disconnect(_on_input_changed)

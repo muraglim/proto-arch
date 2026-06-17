@@ -6,7 +6,7 @@ extends Channel
 
 func channel_init() -> void:
 	input.text_changed.connect(_on_input_changed)
-	Nav.to_back_start(self, get_nav("tealwyv_forest_channel"))
+	Linker.register(self)
 
 func channel_show() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -39,12 +39,14 @@ func _on_input_changed(text: String) -> void:
 		"f":
 			Nav.to_swap(self, get_nav("tealwyv_forest_channel"), SwapAction.SWAP)
 		"c":
-			Nav.to_swap(self, get_nav("tealwyv_start_channel"), SwapAction.SWAP)
+			Nav.to_swap(self, get_nav("tealwyv_start_channel"), SwapAction.EXIT)
 		"s":
 			Nav.to_swap_return(self, get_nav("tealwyv_player_stats_channel"), SwapAction.SWAP, get_nav("tealwyv_town_channel"))
 
+
 func channel_shutdown() -> void:
 	input.text_changed.disconnect(_on_input_changed)
+	Linker.evict(self)
 
 func channel_resume() -> void:
 	_update_display()

@@ -29,7 +29,6 @@ func _ready() -> void:
 				"wires": [
 					{"case": "call", "method": "wire_to_luck_daemon", "target": "luck"},
 					{"case": "call", "method": "wire_to_reward_daemon", "target": "reward"},
-					{"case": "signal", "signal": "combat_event", "target": "channel", "method": "_on_combat_event"},
 				]
 			},
 			{
@@ -54,6 +53,7 @@ func _ready() -> void:
 				"role": "combat",
 				"wires": [
 					{"case": "assign", "target": "channel", "property": "_combat_daemon"},
+					{"case": "signal", "signal": "combat_event", "target": "channel", "method": "_on_combat_event"},
 				]
 			},
 			{
@@ -64,5 +64,13 @@ func _ready() -> void:
 					{"case": "assign", "target": "channel", "property": "_event_roll_daemon"},
 				]
 			},
+			{
+				"dest": "tealwyv_text_daemon",
+				"order": 2,
+				"role": "text",
+				"wires": [
+				{"case": "assign", "target": "channel", "property": "_text_daemon"},
+				]
+			},			
 		],
 	}
