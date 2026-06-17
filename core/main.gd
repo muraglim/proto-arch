@@ -13,6 +13,7 @@ func _ready() -> void:
 		Channel.SwapAction.EXIT: dismiss_channel,
 		Channel.SwapAction.SWAP: swap_channel
 	}
+	Linker.register_main(self, front, back, under)
 	var entry = Firm.get_value("_nav_dest_ledger", "project_start_channel")
 	if Guard.is_invalid_uid(entry, "[Main] _ready()"): return
 	var boot_scene = entry["uid"]
