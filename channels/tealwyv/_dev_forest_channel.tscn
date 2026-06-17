@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://xaumxbrl1gce" path="res://channels/tealwyv/_dev_forest_channel.gd" id="1_gc1fv"]
 
-[node name="_dev_forest_channel" type="Control" unique_id=251528477]
+[node name="_dev_forest_Channel" type="Control" unique_id=251528477]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bbgckpv6h87q2" path="res://channels/tealwyv/tealwyv_start_channel.gd" id="1_fa0vt"]
 
-[node name="TealwyvStartChannel" type="Control" unique_id=1988050863]
+[node name="tealwyv_start_Channel" type="Control" unique_id=1988050863]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
