@@ -1,10 +1,8 @@
 class_name TealwyvEventRollDaemon
 extends Daemon
 
-func wire_to_channel(channel: Channel) -> void:
-	var forest = channel as TealwyvForestChannel
-	if forest == null: return
-	forest.register_event_roll_daemon(self)
+func daemon_shutdown() -> void:
+	_log("daemon_shutdown(): event roll daemon offline.")
 
 func roll_event() -> Dictionary:
 # dispatch point for event types - combat is the only branch built out.
@@ -22,6 +20,3 @@ func _roll_combat_encounter() -> Dictionary:
 	enemy["attack"] = floor(enemy["attack"])
 	enemy["defense"] = floor(enemy["defense"])
 	return enemy
-
-func daemon_shutdown() -> void:
-	_log("daemon_shutdown(): event roll daemon offline.")

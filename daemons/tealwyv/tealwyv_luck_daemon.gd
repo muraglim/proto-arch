@@ -3,10 +3,14 @@ extends TealwyvDaemon
 
 var PRD_INITIAL: float = _solve_prd_initial(get_combat_const("base_crit"))
 
-func wire_to_channel(channel: Channel) -> void:
-	var forest = channel as TealwyvForestChannel
-	if forest == null: return
-	forest.register_luck_daemon(self)
+func daemon_init() -> void:
+	var current = Keeper.get_value("tealwyv_luck_store", "crit")
+	if current == 0.0:
+		Keeper.set_value("tealwyv_luck_store", "crit", PRD_INITIAL)
+	_log("daemon_init(): luck daemon online. crit base: %s, prd initial: %s" % [get_combat_const("base_crit"), PRD_INITIAL])
+
+func daemon_shutdown() -> void:
+	_log("daemon_shutdown(): luck daemon offline.")
 
 static func _solve_prd_initial(p: float) -> float:
 	var c: float = p / 10.0
@@ -35,12 +39,6 @@ static func _expected_proc_rate(c: float) -> float:
 		n += 1
 	return 1.0 / expected_attacks
 
-func daemon_init() -> void:
-	var current = Keeper.get_value("tealwyv_luck_store", "crit")
-	if current == 0.0:
-		Keeper.set_value("tealwyv_luck_store", "crit", PRD_INITIAL)
-	_log("daemon_init(): luck daemon online. crit base: %s, prd initial: %s" % [get_combat_const("base_crit"), PRD_INITIAL])
-
 func proc_crit() -> bool:
 	var current = Keeper.get_value("tealwyv_luck_store", "crit")
 	var roll = randf()
@@ -68,6 +66,3 @@ func diminish() -> void:
 	var diminished = maxf(current * (1.0 - get_combat_const("diminish_factor")), PRD_INITIAL)
 	Keeper.set_value("tealwyv_luck_store", "crit", diminished)
 	_log("diminish(): %s -> %s" % [current, diminished])
-
-func daemon_shutdown() -> void:
-	_log("daemon_shutdown(): luck daemon offline.")

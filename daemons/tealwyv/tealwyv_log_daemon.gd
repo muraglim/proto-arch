@@ -8,10 +8,8 @@ extends Daemon
 
 @export var log_to_csv := false
 
-func wire_to_channel(channel: Channel) -> void:
-	var forest = channel as TealwyvForestChannel
-	if forest == null: return
-	forest.register_log_daemon(self)
+func daemon_shutdown() -> void:
+	_log("daemon_shutdown(): log daemon offline.")
 
 func _on_combat_concluded(summary: Dictionary) -> void:
 	if log_to_csv:
@@ -45,6 +43,3 @@ func _log_combat_to_csv(summary: Dictionary) -> void:
 	file.store_line(row)
 	file.close()
 	_log("_log_combat_to_csv(): %s vs %s -> %s" % [summary["outcome"], summary["enemy_name"], path])
-
-func daemon_shutdown() -> void:
-	_log("daemon_shutdown(): log daemon offline.")

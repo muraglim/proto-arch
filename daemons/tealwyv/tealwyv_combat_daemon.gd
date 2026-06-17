@@ -12,24 +12,17 @@ var _player_snapshot: Dictionary = {}
 var _round_count: int = 0
 var _player_hp: float = 0.0
 
-func wire_to_channel(channel: Channel) -> void:
-	var forest = channel as TealwyvForestChannel
-	if forest == null:
-		push_error("[TealwyvCombatDaemon] wire_to_channel(): unexpected Channel type.")
-		return
-	forest.register_combat_daemon(self)
+func daemon_init() -> void:
+	pass
+
+func daemon_shutdown() -> void:
+	_log("daemon_shutdown(): combat daemon offline.")
 
 func wire_to_luck_daemon(daemon: TealwyvLuckDaemon) -> void:
 	_luck_daemon = daemon
 
 func wire_to_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
 	_reward_daemon = daemon
-
-func daemon_init() -> void:
-	pass
-
-func daemon_shutdown() -> void:
-	_log("daemon_shutdown(): combat daemon offline.")
 
 # called by tealwyv_forest_channel
 func start_encounter(enemy: Dictionary) -> void:
