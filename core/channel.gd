@@ -64,13 +64,8 @@ func _connect_to_main(main: Node) -> void:
 	nav_to_swap_return.connect(main._on_channel_nav_to_swap_return)
 	channel_dismiss.connect(main._on_channel_dismiss)
 	nav_to_channel.connect(main._on_nav_to_channel)
-	nav_to_daemon.connect(main._on_nav_to_daemon)
 	evict_back_channel.connect(main._on_evict_back_channel) # TODO triage evaluation re: sibling dismiss instead of evict 
-	evict_daemon.connect(main._on_evict_daemon)
 	nav_to_back_start.connect(main._on_nav_to_back_start)
-
-func wire_to_daemon(daemon: Daemon) -> void:
-	daemon.wire_to_channel(self)
 
 func _log(msg: String) -> void:
 	if verbose:
@@ -85,10 +80,6 @@ signal nav_to_swap_return(dest: String, swap: SwapAction, return_dest: String)
 signal channel_dismiss
 @warning_ignore("unused_signal")
 signal evict_back_channel(dest: String)
-@warning_ignore("unused_signal")
-signal nav_to_daemon (caller: Channel, dest: String)
-@warning_ignore("unused_signal")
-signal evict_daemon
 # confirmed live — removing this broke routing. cause of confusion not fully parsed.
 @warning_ignore("unused_signal")
 signal nav_to_channel(dest: String)
