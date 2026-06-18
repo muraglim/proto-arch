@@ -6,6 +6,9 @@ extends Node
 func geist_init() -> void:
 	pass
 
+func geist_resume() - void:
+	pass
+
 func geist_shutdown() -> void:
 	pass
 
