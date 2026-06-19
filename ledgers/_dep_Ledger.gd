@@ -3,74 +3,58 @@ extends Ledger
 
 func _ready() -> void:
 	data = {
-		"tealwyv_town_channel": [
+		"project_start_lens": [
 			{
-				"dest": "tealwyv_luck_daemon",
+				"dest": "console_channel",
+				"type": "channel",
+				"role": "only",
 				"order": 0,
-				"role": "luck",
-				"wires": []
-			},
-			{
-				"dest": "tealwyv_text_daemon",
-				"order": 1,
-				"role": "text",
-				"wires": []
-			},
-			{
-				"dest": "tealwyv_reward_daemon",
-				"order": 2,
-				"role": "reward",
-				"wires": []
-			},
-			{
-				"dest": "tealwyv_combat_daemon",
-				"order": 3,
-				"role": "combat",
 				"wires": [
-					{"case": "call", "method": "wire_to_luck_daemon", "target": "luck"},
-					{"case": "call", "method": "wire_to_reward_daemon", "target": "reward"},
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
 				]
 			},
 			{
-				"dest": "tealwyv_event_roll_daemon",
-				"order": 4,
-				"role": "event_roll",
-				"wires": []
-			},
-			{
-				"dest": "tealwyv_log_daemon",
-				"order": 5,
-				"role": "log",
+				"dest": "console_medium",
+				"type": "geist",
+				"role": "medium",
+				"order": 1,
 				"wires": [
-					{"case": "signal", "source": "combat", "signal": "combat_concluded", "target": "log", "method": "_on_combat_concluded"},
+					{"case": "call", "method": "set_channel", "target": "only"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "medium"},
 				]
 			},
 		],
-		"tealwyv_forest_channel": [
+		"profile_lens": [
 			{
-				"dest": "tealwyv_combat_daemon",
+				"dest": "console_channel",
+				"type": "channel",
+				"role": "only",
 				"order": 0,
-				"role": "combat",
 				"wires": [
-					{"case": "assign", "target": "channel", "property": "_combat_daemon"},
-					{"case": "signal", "signal": "combat_event", "target": "channel", "method": "_on_combat_event"},
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
 				]
 			},
 			{
-				"dest": "tealwyv_event_roll_daemon",
+				"dest": "console_medium",
+				"type": "geist",
+				"role": "medium",
 				"order": 1,
-				"role": "event_roll",
 				"wires": [
-					{"case": "assign", "target": "channel", "property": "_event_roll_daemon"},
+					{"case": "call", "method": "set_channel", "target": "only"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "medium"},
 				]
 			},
 			{
-				"dest": "tealwyv_text_daemon",
+				"dest": "profile_daemon",
+				"type": "daemon",
+				"role": "daemon",
 				"order": 2,
-				"role": "text",
 				"wires": [
-				{"case": "assign", "target": "channel", "property": "_text_daemon"},
+					{"case": "call", "source": "self", "method": "set_daemon", "target": "daemon"},
+					{"case": "signal", "signal": "creation_failed", "target": "self", "method": "_on_creation_failed"},
+					{"case": "signal", "signal": "creation_succeeded", "target": "self", "method": "_on_creation_succeeded"},
+					{"case": "signal", "signal": "selection_succeeded", "target": "self", "method": "_on_selection_succeeded"},
 				]
-			},			
+			},
 		],
 	}
