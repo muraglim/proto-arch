@@ -2,7 +2,6 @@ class_name Daemon
 extends Node
 
 # Do not use _ready() in Daemon subclasses
-# Daemons are scene tree orphans.
 # Do not place anything that requires a Daemon's dependencies in daemon_init()
 # Dependency wiring happens after daemon_init()
 
