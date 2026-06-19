@@ -1,31 +1,11 @@
-# channel_show() is the viewport hook — fires from Main on every front promotion,
-# both cold start (start_channel) and back-to-front swap (route_channel).
-# responsible for: anchors, input connection, focus, initial display draw.
-# channel_init() is wiring only — scene refs, signal connections, dep boot. no display.
-# channel_pause() and channel_resume() are stubs — reserved for state save/restore
-# on swap when a future prototype warrants it. do not implement speculatively.
-
 class_name Channel
 extends Control
 
 # Do not use _ready() in Channel subclasses.
 # Use channel_init() instead - it fires after the channel
 # is fully added to the scene tree and bootstrapper wiring is complete.
-# daemon_init() is also available but reserved for daemon-specific use.
-
-# Channels interact with persistent state via Keeper directly.
-# Keeper.get_value(), Keeper.set_value(), Keeper.append_value()
-# Do not add data primitive wrappers here.
 
 @export var verbose := false
-var _main: Node = null
-enum SwapAction {
-	EXIT,
-	SWAP
-}
-
-var channel_dest: String = ""
-var return_dest: String = ""
 
 func channel_init() -> void:
 	pass
@@ -33,55 +13,6 @@ func channel_init() -> void:
 func channel_shutdown() -> void:
 	pass
 
-func channel_pause() -> void:
-	pass
-
-func channel_resume() -> void:
-	pass
-
-func channel_show() -> void: 
-	pass                    
-
-# get_nav() and get_type() are duplicated from Daemon — residue of a prior Channel extends Daemon 
-# relationship that caused scene construction errors. consolidate if a shared base becomes viable.
-func get_nav(key: String) -> String:
-	var entry = Firm.get_value("_nav_dest_ledger", key)
-	if entry == null or not entry.has("uid") or entry["uid"].is_empty():
-		_log("get_nav(key: %s): failed to retrieve uid" % key)
-		return ""
-	return entry["uid"]
-
-func get_type(key: String) -> String:
-	var entry = Firm.get_value("_nav_dest_ledger", key)
-	if entry == null or not entry.has("type"):
-		_log("get_type(key: %s): no type found" % key)
-		return ""
-	return entry["type"]
-
-func _connect_to_main(main: Node) -> void:
-	_main = main
-	nav_to_swap.connect(main._on_channel_nav_to_swap)
-	nav_to_swap_return.connect(main._on_channel_nav_to_swap_return)
-	channel_dismiss.connect(main._on_channel_dismiss)
-	nav_to_channel.connect(main._on_nav_to_channel)
-	evict_back_channel.connect(main._on_evict_back_channel) # TODO triage evaluation re: sibling dismiss instead of evict 
-	nav_to_back_start.connect(main._on_nav_to_back_start)
-
 func _log(msg: String) -> void:
 	if verbose:
 		print("[%s] " % name, msg)
-
-# signals are emitted externally via Nav autoload — unused_signal warnings expected
-@warning_ignore("unused_signal")
-signal nav_to_swap(dest: String, swap: SwapAction)
-@warning_ignore("unused_signal")
-signal nav_to_swap_return(dest: String, swap: SwapAction, return_dest: String)
-@warning_ignore("unused_signal")
-signal channel_dismiss
-@warning_ignore("unused_signal")
-signal evict_back_channel(dest: String)
-# confirmed live — removing this broke routing. cause of confusion not fully parsed.
-@warning_ignore("unused_signal")
-signal nav_to_channel(dest: String)
-@warning_ignore("unused_signal")
-signal nav_to_back_start(dest: String)
