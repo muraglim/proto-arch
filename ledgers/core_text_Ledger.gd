@@ -9,5 +9,5 @@ func _ready() -> void:
 	"profile_creation_forbidden": "Name contains a forbidden character. Forbidden characters: {chars}\n\nTry again:",
 	"profile_creation_taken": "That name is already taken. Try again:",
 	"profile_creation_max_length": "Note: {max_len} characters is the maximum length.",
-	"profile_selection_prompt": "\n\nType a profile name to select it:"
+	"profile_selection_prompt": "{profiles}\n\nType a profile name to select it:"
 }
