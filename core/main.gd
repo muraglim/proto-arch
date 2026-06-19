@@ -1,8 +1,12 @@
 extends Node
 
 var _live_nodes: Dictionary = {} # dest -> instance
+var _under: Node = null
 
 func _ready() -> void:
+	_under = Node.new()
+	_under.name = "under"
+	add_child(_under)
 	Linker.register_main(self)
 	var entry = Firm.get_value("_nav_dest_ledger", "project_start_lens")
 	if Guard.is_invalid_uid(entry, "[Main] _ready()"): return
@@ -21,6 +25,7 @@ func start_geist(dest: String) -> Geist:
 	if not _is_correct_node_type(instance, Geist, "[Main] start_geist()"):
 		instance.queue_free()
 		return null
+	_under.add_child(instance)
 	instance.geist_init()
 	_live_nodes[dest] = instance
 	print("[Main] start_geist(dest: %s): %s started." % [dest, instance.name])
@@ -35,6 +40,7 @@ func start_daemon(dest: String) -> Daemon:
 	if not _is_correct_node_type(instance, Daemon, "[Main] start_daemon()"):
 		instance.queue_free()
 		return null
+	_under.add_child(instance)
 	instance.daemon_init()
 	_live_nodes[dest] = instance
 	print("[Main] start_daemon(dest: %s): %s started." % [dest, instance.name])
