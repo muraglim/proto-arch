@@ -29,12 +29,26 @@ func register(lens: Lens) -> void:
 	if deps == null:
 		print("[Linker] register(%s): no dep entry found, nothing to do." % key)
 		return
-	_registries[key] = {}
+	_registries[key] = {"self": {"node": lens, "uid": ""}}
 	print("[Linker] register(%s): registry initialized." % key)
 	var sorted = deps.duplicate()
 	sorted.sort_custom(func(a, b): return a["order"] < b["order"])
 	for dep in sorted:
 		_boot_dep(key, dep)
+	if Scope.active_context == lens.CONTEXT_KEY:
+		lens.geist_resume()
+
+func boot_lens(dest_key: String) -> void:
+	var nav_entry = Firm.get_value("_nav_dest_ledger", dest_key)
+	if Guard.is_invalid_uid(nav_entry, "[Linker] boot_lens(%s)" % dest_key): return
+	var uid = nav_entry["uid"]
+	var existing = _find_live_node(uid)
+	if existing != null:
+		print("[Linker] boot_lens(%s): already live." % dest_key)
+		return
+	var instance = _main.start_geist(uid)
+	if instance == null: return
+	register(instance)
 
 # evict() has no current caller — Lens/Daemon/Medium instances are cheap
 # and stay resident for the session in the current single-prototype scope.
