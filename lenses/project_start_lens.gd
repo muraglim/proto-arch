@@ -18,15 +18,19 @@ func geist_init() -> void:
 func geist_shutdown() -> void:
 	_log("geist_shutdown(): project start lens offline.")
 
-func geist_resume() -> void:
+func geist_resume(hint: String = "") -> void:
 	_request_compose()
 
 func _on_input(text: String) -> void:
 	if Scope.active_context != CONTEXT_KEY: return
 	var action = text.strip_edges().to_lower()
 	match action:
-		"c": Scope.transition("profile_creation")
-		"s": Scope.transition("profile_selection")
+		"c":
+			Linker.boot_lens("profile_lens")
+			Scope.transition.call_deferred("profile", "creation")
+		"s":
+			Linker.boot_lens("profile_lens")
+			Scope.transition.call_deferred("profile", "selection")
 		"t": pass # tealwyv nav, deferred
 
 func _request_compose() -> void:
