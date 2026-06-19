@@ -13,7 +13,7 @@ func transition(to: String, hint: String = "") -> void:
 	if not _registry.has(to):
 		push_error("[Scope] transition(%s): no registered instance for context '%s'." % [active_context, to])
 		return
-	var valid = Firm.get_value("scope_ledger", active_context, [])
+	var valid = Firm.get_value("_scope_ledger", active_context, [])
 	if not to in valid:
 		push_error("[Scope] transition(%s -> %s): invalid transition." % [active_context, to])
 		return
