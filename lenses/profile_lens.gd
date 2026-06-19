@@ -43,9 +43,9 @@ func _on_input(text: String) -> void:
 		ProfileState.SELECTION: _handle_selection(text)
 
 func _handle_creation_prompt(text: String) -> void:
-	var name = text.strip_edges()
+	var profile_name = text.strip_edges()
 	state = ProfileState.CREATION_SUBMIT
-	_daemon.submit_creation(name)
+	_daemon.submit_creation(profile_name)
 
 func _handle_creation_error() -> void:
 	state = ProfileState.CREATION_PROMPT
