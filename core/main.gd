@@ -48,7 +48,6 @@ func start_channel(dest: String) -> Channel:
 		instance.queue_free()
 		return null
 	add_child(instance)
-	instance.channel_dest = dest
 	instance.channel_init()
 	_live_nodes[dest] = instance
 	print("[Main] start_channel(dest: %s): %s started." % [dest, instance.name])
