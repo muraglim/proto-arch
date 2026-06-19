@@ -18,6 +18,7 @@ func geist_init() -> void:
 func geist_shutdown() -> void:
 	_log("geist_shutdown(): project start lens offline.")
 
+@warning_ignore("unused_parameter")
 func geist_resume(hint: String = "") -> void:
 	_request_compose()
 
