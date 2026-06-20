@@ -14,10 +14,18 @@ func set_input_max_length(value: int) -> void:
 
 func display(text: String) -> void:
 	output.text = text
+	output.visible_characters = -1
 
 func _on_text_submitted(text: String) -> void:
 	input.text = ""
 	input_received.emit(text)
 
+func prepare_for_reveal(text: String) -> void:
+	output.text = text
+	output.visible_characters = 0
+
+func set_visible_characters(count: int) -> void:
+	output.visible_characters = count
+	
 @warning_ignore("unused_signal")
 signal input_received(text: String)
