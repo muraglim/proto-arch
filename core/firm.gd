@@ -1,17 +1,33 @@
 extends Node
 
 # Read-only facade for constant data records.
-# Ledger subclasses are registered from Firm's scene tree on ready.
-# Immutability is structural — Ledger subclasses live in Firm's scene tree, not Keeper's.
 # Do not add set_value() or any mutation method here. Do not expose get_ledger().
-# Node names use lowercase_prefix_Ledger convention (e.g. tealwyv_forest_Ledger).
-# Dictionary keys are derived via .to_lower() — callsites use lowercase (e.g. "tealwyv_forest_ledger").
+
+const LEDGER_SCRIPTS: Array[String] = [
+	# infrastructure
+	"uid://dqki0i06ekyd5", # dest_ledger
+	"uid://bjja3ixg755vw", # dep_ledger
+	"uid://dnxiljrr7tsvg", # scope_ledger
+	
+	# project_start/profile
+	"uid://bh5p5wp205m4d", # core_text_ledger
+	"uid://dxmduqcmkv4w4", # profile_ledger
+	
+	# tealwyv
+	"uid://i6liuf46emr2", # tealwyv_combat_ledger
+	"uid://6sutqtwumaq6", # tealwyv_text_ledger
+]
 
 var ledgers: Dictionary = {}
 
 func _ready() -> void:
-	for child in get_children():
-		ledgers[child.name.to_lower()] = child
+	for path in LEDGER_SCRIPTS:
+		var script: GDScript = load(path)
+		var instance := Node.new()
+		instance.set_script(script)
+		instance.name = script.resource_path.get_file().get_basename()
+		add_child(instance)
+		ledgers[instance.name.to_lower()] = instance
 
 func get_value(ledger_node: String, key: String, default_value = null) -> Variant:
 	if not ledgers.has(ledger_node):

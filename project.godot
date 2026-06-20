@@ -18,8 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Keeper="*uid://brteb0pj5ikk5"
+Firm="*uid://gdbdkob8lxf4"
 Echo="*uid://josw8fjbohew"
-Firm="*uid://dyo6ndauakpri"
 Guard="*uid://ccr5a8bvqw2h8"
 Scope="*uid://gnrl0fhvymrl"
 Profile="*uid://cx6bauwj5dtc8"
