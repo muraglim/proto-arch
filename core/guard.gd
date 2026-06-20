@@ -26,6 +26,9 @@ func is_malformed_dest(value: Variant, context: String) -> bool:
 	if value.is_empty():
 		push_error("[Guard] %s: malformed dest - dest value is an empty string." % context)
 		return true
+	if ResourceUID.text_to_id(value) == ResourceUID.INVALID_ID:
+		push_error("[Guard] %s: malformed dest - '%s' is not a valid UID string." % [context, value])
+		return true
 	if not ResourceUID.has_id(ResourceUID.text_to_id(value)):
 		push_error("[Guard] %s: malformed dest - dest UID does not resolve to a local resource." % context)
 		return true
