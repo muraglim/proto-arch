@@ -1,16 +1,27 @@
-# Store registration: child nodes of keeper.tscn are auto-registered on ready.
-# Node names use lowercase prefix + capital suffix (e.g. tealwyv_player_Store) for scene legibility.
-# Dictionary keys are derived via .to_lower() — callsites use lowercase (e.g. "tealwyv_player_store").
-# To add a new store: add a child node to keeper.tscn, then attach the script, naming convention handles the rest.
-#TODO write comment explaining Keeper's responsibility re: mutable state
-
 extends Node
+
+# Mutabale state facade
+
+const STORE_SCRIPTS: Array[String] = [
+	# profile
+	"uid://4iwjgqs37g7t", #profile_store
+	
+	# tealwyv
+	"uid://dah77mrkcmp7c", #tealwyv_dev_store
+	"uid://dnaj0b86atrx1", #tealwyv_character_store
+	"uid://cm70cvnxnh10s", #tealwyv_luck_store
+]
 
 var stores: Dictionary = {}
 
 func _ready() -> void:
-	for child in get_children():
-		stores[child.name.to_lower()] = child
+	for path in STORE_SCRIPTS:
+		var script: GDScript = load(path)
+		var instance := Node.new()
+		instance.set_script(script)
+		instance.name = script.resource_path.get_file().get_basename()
+		add_child(instance)
+		stores[instance.name.to_lower()] = instance
 
 func get_value(store_node: String, key: String, default_value = null) -> Variant:
 	if not stores.has(store_node):
