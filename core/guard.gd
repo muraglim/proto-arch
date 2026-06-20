@@ -4,9 +4,12 @@
 
 extends Node
 
-func is_unresolved(value: Variant, context: String) -> bool:
-	if value == null or (value is String and value.is_empty()):
-		push_error("CRITICAL [%s]: requested resource is unresolved (null or empty)." % context)
+func is_null_or_empty(value: Variant, context: String) -> bool:
+	if value == null:
+		push_error("[Guard] %s: requested resource is null." % context)
+		return true
+	if value is String and value.is_empty():
+		push_error("[Guard] %s: requested resource is an empty string." % context)
 		return true
 	return false
 
