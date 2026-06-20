@@ -15,12 +15,18 @@ func is_null_or_empty(value: Variant, context: String) -> bool:
 
 func is_invalid_scene(scene: String, context: String) -> bool:
 	if not ResourceLoader.exists(scene):
-		push_error("CRITICAL [%s]: '%s' does not exist as a registered resource." % [context, scene])
+		push_error("[Guard] %s: '%s' does not exist as a registered resource." % [context, scene])
 		return true
 	return false
 
-func is_invalid_uid(entry: Variant, context: String) -> bool:
-	if not entry is Dictionary or not entry.has("uid") or entry["uid"].is_empty():
-		push_error("CRITICAL [%s]: nav entry is missing or has empty uid." % context)
+func is_malformed_dest(value: Variant, context: String) -> bool:
+	if not value is String:
+		push_error("[Guard] %s: malformed dest - dest value is not a string." % context)
+		return true
+	if value.is_empty():
+		push_error("[Guard] %s: malformed dest - dest value is an empty string." % context)
+		return true
+	if not ResourceUID.has_id(ResourceUID.text_to_id(value)):
+		push_error("[Guard] %s: malformed dest - dest UID does not resolve to a local resource." % context)
 		return true
 	return false
