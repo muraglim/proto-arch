@@ -28,3 +28,4 @@ size_flags_vertical = 3
 
 [node name="Input" type="LineEdit" parent="MarginContainer/VBoxContainer" unique_id=748030267]
 layout_mode = 2
+keep_editing_on_text_submit = true
