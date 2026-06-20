@@ -6,8 +6,8 @@
 
 extends Node
 
-func verify_dest(value: Variant, key: String, context: String) -> bool:
-	if Guard.is_malformed_dest(value, context):
+func verify_uid(uid: Variant, uid_key: String, context: String) -> bool:
+	if Guard.is_invalid_uid(uid, context):
 		return false
-	Fuss.about_filename_key_mismatch(value, key, context)
+	Fuss.about_filename_key_mismatch(uid, uid_key, context)
 	return true
