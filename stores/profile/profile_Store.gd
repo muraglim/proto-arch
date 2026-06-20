@@ -1,4 +1,4 @@
-class_name profile_Store
+class_name ProfileStore
 extends AutoSaveStore
 
 func _init_defaults() -> void:
