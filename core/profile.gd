@@ -15,7 +15,7 @@ func get_active_profile() -> Dictionary:
 	for profile in profiles:
 		if profile["id"] == active_id:
 			return profile
-	push_error("[Profile] get_active_profile(): active_profile_id '%s' set but no matching profile record found." % active_id)
+	push_error("Profile.get_active_profile(): active_profile_id '%s' set but no matching profile record found." % active_id)
 	return {}
 
 func get_active_profile_id() -> String:
