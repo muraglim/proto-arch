@@ -1,4 +1,4 @@
-class_name DevStore
+class_name TealwyvDevStore
 extends AutoSaveStore
 
 func _init_defaults() -> void:
