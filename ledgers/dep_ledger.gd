@@ -5,47 +5,47 @@ func _ready() -> void:
 	data = {
 		"project_start_lens": [
 			{
-				"dest": "console_channel",
+				"uid_key": "console_channel",
 				"type": "channel",
-				"role": "only",
+				"role": "channel",
 				"order": 0,
 				"wires": [
 					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
 				]
 			},
 			{
-				"dest": "console_medium",
+				"uid_key": "console_medium",
 				"type": "geist",
 				"role": "medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "only"},
+					{"case": "call", "method": "set_channel", "target": "channel"},
 					{"case": "call", "source": "self", "method": "set_medium", "target": "medium"},
 				]
 			},
 		],
 		"profile_lens": [
 			{
-				"dest": "console_channel",
+				"uid_key": "console_channel",
 				"type": "channel",
-				"role": "only",
+				"role": "channel",
 				"order": 0,
 				"wires": [
 					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
 				]
 			},
 			{
-				"dest": "console_medium",
+				"uid_key": "console_medium",
 				"type": "geist",
 				"role": "medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "only"},
+					{"case": "call", "method": "set_channel", "target": "channel"},
 					{"case": "call", "source": "self", "method": "set_medium", "target": "medium"},
 				]
 			},
 			{
-				"dest": "profile_daemon",
+				"uid_key": "profile_daemon",
 				"type": "daemon",
 				"role": "daemon",
 				"order": 2,
