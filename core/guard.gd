@@ -19,17 +19,17 @@ func is_invalid_scene(scene: String, context: String) -> bool:
 		return true
 	return false
 
-func is_malformed_dest(value: Variant, context: String) -> bool:
-	if not value is String:
-		push_error("[Guard] %s: malformed dest - dest value is not a string." % context)
+func is_invalid_uid(uid: Variant, context: String) -> bool:
+	if not uid is String:
+		push_error("[Guard] %s: invalid uid, not a string." % context)
 		return true
-	if value.is_empty():
-		push_error("[Guard] %s: malformed dest - dest value is an empty string." % context)
+	if uid.is_empty():
+		push_error("[Guard] %s: invalid uid, uid is an empty string." % context)
 		return true
-	if ResourceUID.text_to_id(value) == ResourceUID.INVALID_ID:
-		push_error("[Guard] %s: malformed dest - '%s' is not a valid UID string." % [context, value])
+	if ResourceUID.text_to_id(uid) == ResourceUID.INVALID_ID:
+		push_error("[Guard] %s: invalid uid, '%s' is an invalid uid string." % [context, uid])
 		return true
-	if not ResourceUID.has_id(ResourceUID.text_to_id(value)):
-		push_error("[Guard] %s: malformed dest - dest UID does not resolve to a local resource." % context)
+	if not ResourceUID.has_id(ResourceUID.text_to_id(uid)):
+		push_error("[Guard] %s: invalid uid, uid does not resolve to a local resource." % context)
 		return true
 	return false
