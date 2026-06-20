@@ -1,4 +1,4 @@
-class_name _dep_Ledger
+class_name DepLedger
 extends Ledger
 
 func _ready() -> void:
