@@ -1,9 +1,6 @@
-# Predicate design note:
-# is_channel() and is_daemon() are *type predicates* — they return true when
-# the object is of the expected type. This is the opposite of a sentinel,
-# where true signals an error. Inversion is intentional: callers use them as
-# positive guards, e.g. `if is_channel(node): …`.
-# When adding a new container type in Main.gd, add a matching predicate here.
+## Guard — sentinel validation predicates.
+## Low-level data integrity checks (type, null, UID resolution).
+## Returns true on failure, callers halt execution when true.
 
 extends Node
 
