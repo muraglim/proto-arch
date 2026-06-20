@@ -12,7 +12,7 @@ func roll_event() -> Dictionary:
 
 func _roll_combat_encounter() -> Dictionary:
 	var all_enemies: Array = Firm.get_value("tealwyv_combat_ledger", "enemies")
-	var dev_level: int = Keeper.get_value("_dev_store", "enemy_level")
+	var dev_level: int = Keeper.get_value("tealwyv_dev_store", "enemy_level")
 	var target_level: int = dev_level if dev_level > 0 else 1
 	var pool: Array = all_enemies.filter(func(e): return e["level"] == target_level)
 	var enemy: Dictionary = pool[randi() % pool.size()].duplicate()
