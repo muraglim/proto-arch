@@ -1,4 +1,4 @@
-class_name _scope_Ledger
+class_name ScopeLedger
 extends Ledger
 
 func _ready() -> void:
