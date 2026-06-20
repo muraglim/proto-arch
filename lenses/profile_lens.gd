@@ -67,7 +67,7 @@ func _on_selection_succeeded() -> void:
 	Scope.transition("project_start")
 
 func _request_compose() -> void:
-	if Guard.is_unresolved(_medium, name + ":_request_compose"): return
+	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
 	var max_len = Firm.get_value("profile_ledger", "max_name_length")
 	match state:
 		ProfileState.CREATION_PROMPT:

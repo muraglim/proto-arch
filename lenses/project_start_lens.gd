@@ -35,6 +35,6 @@ func _on_input(text: String) -> void:
 		"t": pass # tealwyv nav, deferred
 
 func _request_compose() -> void:
-	if Guard.is_unresolved(_medium, name + ":_request_compose"): return
+	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
 	var active_name = Profile.get_active_profile().get("name", "none")
 	_medium.compose("project_start_main", {"active_name": active_name})
