@@ -22,7 +22,7 @@ func daemon_shutdown() -> void:
 # keeping arithmetic out of the storage facade.
 func offset_value(store: String, key: String, delta: float) -> void:
 	var current = Keeper.get_value(store, key)
-	if Guard.is_unresolved(current, name + ":offset_value"): return
+	if Guard.is_null_or_empty(current, name + ":offset_value"): return
 	if not current is float and not current is int:
 		_log("offset_value(store: %s, key: %s): value is not numeric, got %s" % [store, key, type_string(typeof(current))])
 		return
