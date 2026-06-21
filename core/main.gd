@@ -12,7 +12,7 @@ func _ready() -> void:
 	if not Screener.verify_uid(uid, "project_start_lens", "Main._ready()"): return
 	var instance = start_geist(uid)
 	if instance == null: return
-	Linker.register(instance)
+	Linker.register(instance, uid)
 
 func start_geist(uid: String) -> Geist:
 	var script: GDScript = load(uid)
