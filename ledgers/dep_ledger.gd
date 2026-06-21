@@ -57,4 +57,38 @@ func _ready() -> void:
 				]
 			},
 		],
+		"tealwyv_start_lens": [
+			{
+				"uid_key": "console_channel",
+				"type": "channel",
+				"role": "channel",
+				"order": 0,
+				"wires": [
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
+				]
+			},
+			{
+				"uid_key": "console_medium",
+				"type": "geist",
+				"role": "medium",
+				"order": 1,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "channel"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "medium"},				
+				]
+			},
+			{
+				"uid_key": "tealwyv_character_daemon",
+				"type": "daemon",
+				"role": "daemon",
+				"order": 2,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_daemon", "target": "daemon"},
+					{"case": "signal", "signal": "creation_failed", "target": "self", "method": "_on_creation_failed"},
+					{"case": "signal", "signal": "creation_succeeded", "target": "self", "method": "_on_creation_succeeded"},
+					{"case": "signal", "signal": "selection_failed", "target": "self", "method": "_on_selection_failed"},
+					{"case": "signal", "signal": "selection_succeeded", "target": "self", "method": "_on_selection_succeeded"},
+				]
+			},
+		],
 	}

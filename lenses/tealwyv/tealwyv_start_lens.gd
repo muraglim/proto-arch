@@ -1,0 +1,137 @@
+class_name TealwyvStartLens
+extends Lens
+
+const CONTEXT_KEY = "tealwyv_start"
+
+enum TealwyvStartState {
+	FOYER,
+	CREATION_PROMPT,
+	CREATION_SUBMIT,
+	CREATION_ERROR,
+	SELECTION,
+	SELECTION_ERROR,
+}
+
+var state: TealwyvStartState = TealwyvStartState.FOYER
+var _error_key: String = ""
+
+var _medium: ConsoleMedium = null
+var _channel: ConsoleChannel = null
+var _daemon: TealwyvCharacterDaemon = null
+
+func set_medium(medium: ConsoleMedium) -> void:
+	_medium = medium
+
+func set_channel(channel: ConsoleChannel) -> void:
+	_channel = channel
+
+func set_daemon(daemon: TealwyvCharacterDaemon) -> void:
+	_daemon = daemon
+
+func geist_init() -> void:
+	Scope.register(self)
+
+func geist_shutdown() -> void:
+	_log("geist_shutdown(): tealwyv start lens offline.")
+
+@warning_ignore("unused_parameter")
+func geist_resume(hint: String = "") -> void:
+	state = TealwyvStartState.FOYER
+	_request_compose()
+
+func _on_input(text: String) -> void:
+	if Scope.active_context != CONTEXT_KEY: return
+	match state:
+		TealwyvStartState.FOYER:
+			_handle_foyer(text)
+		TealwyvStartState.CREATION_PROMPT, TealwyvStartState.CREATION_ERROR:
+			_handle_creation_prompt(text)
+		TealwyvStartState.CREATION_SUBMIT:
+			pass
+		TealwyvStartState.SELECTION, TealwyvStartState.SELECTION_ERROR:
+			_handle_selection(text)
+
+func _handle_foyer(text: String) -> void:
+	var action = text.strip_edges().to_lower()
+	match action:
+		"c":
+			state = TealwyvStartState.CREATION_PROMPT
+			_request_compose()
+		"s":
+			state = TealwyvStartState.SELECTION
+			_request_compose()
+		"t":
+			pass # tealwyv_town_lens, deferred
+		"b":
+			Scope.transition("project_start")
+
+func _handle_creation_prompt(text: String) -> void:
+	var character_name = text.strip_edges()
+	state = TealwyvStartState.CREATION_SUBMIT
+	_daemon.submit_creation(character_name)
+
+func _handle_selection(text: String) -> void:
+	_daemon.submit_selection(text.strip_edges())
+
+func _on_creation_failed(error_key: String) -> void:
+	_error_key = error_key
+	state = TealwyvStartState.CREATION_ERROR
+	_request_compose()
+
+func _on_creation_succeeded() -> void:
+	state = TealwyvStartState.FOYER
+	_request_compose()
+
+func _on_selection_failed(error_key: String) -> void:
+	_error_key = error_key
+	state = TealwyvStartState.SELECTION_ERROR
+	_request_compose()
+
+func _on_selection_succeeded() -> void:
+	state = TealwyvStartState.FOYER
+	_request_compose()
+
+func _request_compose() -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
+	var max_len = Firm.get_value("tealwyv_character_ledger", "max_name_length")
+	match state:
+		TealwyvStartState.FOYER:
+			_medium.compose("tealwyv_start_main", {
+				"active_profile_name": Profile.get_active_profile().get("name", "none"),
+				"active_character_name": _get_active_character_name(),
+			})
+		TealwyvStartState.CREATION_PROMPT:
+			_medium.set_input_constraint(max_len)
+			_medium.compose("tealwyv_character_creation_prompt", {"max_len": max_len})
+		TealwyvStartState.CREATION_ERROR:
+			_medium.compose(_error_key, _get_error_data(_error_key))
+		TealwyvStartState.SELECTION:
+			_medium.compose("tealwyv_character_selection_prompt", {"characters": _get_character_list()})
+		TealwyvStartState.SELECTION_ERROR:
+			_medium.compose(_error_key, {"characters": _get_character_list()})
+
+func _get_error_data(error_key: String) -> Dictionary:
+	match error_key:
+		"tealwyv_character_creation_forbidden":
+			return {"chars": " ".join(Firm.get_value("tealwyv_character_ledger", "forbidden_chars"))}
+		_:
+			return {}
+
+func _get_character_list() -> String:
+	var characters = Keeper.get_value("tealwyv_character_store", "characters", [])
+	var active_profile_id = Profile.get_active_profile_id()
+	var lines: Array = []
+	for character in characters:
+		if character.get("profile_id") == active_profile_id:
+			lines.append(character["name"])
+	return "\n".join(lines)
+
+func _get_active_character_name() -> String:
+	var active_character_id = Keeper.get_value("tealwyv_character_store", "active_character_id")
+	if active_character_id == null or active_character_id.is_empty():
+		return "none"
+	var characters = Keeper.get_value("tealwyv_character_store", "characters", [])
+	for character in characters:
+		if character["id"] == active_character_id and character.get("profile_id") == Profile.get_active_profile_id():
+			return character["name"]
+	return "none"

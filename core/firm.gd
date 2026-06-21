@@ -16,6 +16,7 @@ const LEDGER_SCRIPTS: Array[String] = [
 	# tealwyv
 	"uid://i6liuf46emr2", # tealwyv_combat_ledger
 	"uid://6sutqtwumaq6", # tealwyv_text_ledger
+	"uid://bpk1t01kn21d2", # tealwyv_character_daemon
 ]
 
 var ledgers: Dictionary = {}

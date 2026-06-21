@@ -3,6 +3,7 @@ extends Ledger
 
 func _ready() -> void:
 	data = {
-		"project_start": ["profile"],
+		"project_start": ["profile", "tealwyv_start"],
 		"profile": ["project_start"],
+		"tealwyv_start": ["project_start"],
 	}
