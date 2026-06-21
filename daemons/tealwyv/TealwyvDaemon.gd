@@ -19,7 +19,7 @@ func set_character_value(field: String, value: Variant) -> void:
 
 func offset_character_value(field: String, delta: float) -> void:
 	var current = get_character_value(field)
-	if Guard.is_unresolved(current, name + ":offset_character_value"): return
+	if Guard.is_null_or_empty(current, name + ":offset_character_value"): return
 	if not current is float and not current is int:
 		_log("offset_character_value(field: %s): value is not numeric, got %s" % [field, type_string(typeof(current))])
 		return
@@ -28,7 +28,7 @@ func offset_character_value(field: String, delta: float) -> void:
 func get_combat_const(field: String) -> Variant:
 	var consts = Firm.get_value("tealwyv_combat_ledger", "consts", {})
 	var value = consts.get(field, null)
-	if Guard.is_unresolved(value, name + ":get_combat_const(field: %s)" % field): return null
+	if Guard.is_null_or_empty(value, name + ":get_combat_const(field: %s)" % field): return null
 	return value
 
 func heal_full_hp() -> void:

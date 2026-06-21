@@ -218,7 +218,7 @@ func _execute_call_wire(lens_key: String, source: Node, target: Node, wire: Dict
 
 func _execute_assign_wire(lens_key: String, source: Node, target: Node, wire: Dictionary) -> void:
 	var property = wire.get("property", "")
-	if Guard.is_unresolved(property, "Linker._execute_assign_wire(%s)" % lens_key): return
+	if Guard.is_null_or_empty(property, "Linker._execute_assign_wire(%s)" % lens_key): return
 	if not property in target:
 		push_error("Linker._execute_assign_wire(%s): '%s' has no property '%s'." % [lens_key, target.name, property])
 		return
