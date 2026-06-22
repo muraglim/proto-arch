@@ -15,33 +15,21 @@ func _ready() -> void:
 	Linker.register(instance, uid)
 
 func start_geist(uid: String) -> Geist:
-	var script: GDScript = load(uid)
-	if Guard.is_null_or_empty(script, "Main.start_geist()"): return null
-	var instance: Node = Node.new()
-	instance.set_script(script)
-	instance.name = script.resource_path.get_file().get_basename()
+	var instance = _create_sceneless_node(uid)
+	if instance == null: return null
 	if not _is_correct_node_type(instance, Geist, "Main.start_geist()"):
 		instance.queue_free()
 		return null
-	_under.add_child(instance)
-	instance.geist_init()
-	_live_nodes[uid] = instance
-	print("Main.start_geist(uid: %s): %s started." % [uid, instance.name])
+	_complete_boot(instance, uid, "geist_init", _under)
 	return instance
 
 func start_daemon(uid: String) -> Daemon:
-	var script: GDScript = load(uid)
-	if Guard.is_null_or_empty(script, "[Main] start_daemon()"): return null
-	var instance: Node = Node.new()
-	instance.set_script(script)
-	instance.name = script.resource_path.get_file().get_basename()
+	var instance = _create_sceneless_node(uid)
+	if instance == null: return null
 	if not _is_correct_node_type(instance, Daemon, "[Main] start_daemon()"):
 		instance.queue_free()
 		return null
-	_under.add_child(instance)
-	instance.daemon_init()
-	_live_nodes[uid] = instance
-	print("Main.start_daemon(uid: %s): %s started." % [uid, instance.name])
+	_complete_boot(instance, uid, "daemon_init", _under)
 	return instance
 
 func start_channel(uid: String) -> Channel:
@@ -51,10 +39,7 @@ func start_channel(uid: String) -> Channel:
 	if not _is_correct_node_type(instance, Channel, "[Main] start_channel()"):
 		instance.queue_free()
 		return null
-	add_child(instance)
-	instance.channel_init()
-	_live_nodes[uid] = instance
-	print("Main.start_channel(uid: %s): %s started." % [uid, instance.name])
+	_complete_boot(instance, uid, "channel_init", self)
 	return instance
 
 func dismiss_node(uid: String) -> void:
@@ -66,6 +51,20 @@ func dismiss_node(uid: String) -> void:
 	print("Main.dismiss_node(): %s dismissed." % instance.name)
 	instance.queue_free()
 	_live_nodes.erase(uid)
+
+func _create_sceneless_node(uid: String) -> Node:
+	var script: GDScript = load(uid)
+	if script == null: return null
+	var instance: Node = Node.new()
+	instance.set_script(script)
+	instance.name = script.resource_path.get_file().get_basename()
+	return instance
+
+func _complete_boot(instance: Node, uid: String, init_method: String, parent: Node) -> void:
+	parent.add_child(instance)
+	instance.call(init_method)
+	_live_nodes[uid] = instance
+	print("Main.%s(uid: %s): %s started." % [init_method, uid, instance.name])
 
 func _call_shutdown(node: Node) -> void:
 	if node is Daemon:
