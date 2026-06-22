@@ -16,7 +16,7 @@ func daemon_init() -> void:
 func daemon_shutdown() -> void:
 	_log("daemon_shutdown(): character daemon offline.")
 
-func submit_creation(character_name: String) -> void:
+func submit_creation(character_name: String, gender: String) -> void:
 	if character_name.is_empty():
 		creation_failed.emit("tealwyv_character_creation_empty")
 		return
@@ -30,15 +30,16 @@ func submit_creation(character_name: String) -> void:
 		if character["name"].to_lower() == character_name.to_lower():
 			creation_failed.emit("tealwyv_character_creation_taken")
 			return
-	_create_character(character_name)
+	_create_character(character_name, gender)
 
-func _create_character(character_name: String) -> void:
+func _create_character(character_name: String, gender: String) -> void:
 	var characters = Keeper.get_value("tealwyv_character_store", "characters", [])
 	var starting_stats: Dictionary = Firm.get_value("tealwyv_character_ledger", "starting_stats")
 	var new_id = "%d_%d" % [Time.get_unix_time_from_system(), randi()]
 	var new_character = starting_stats.duplicate()
 	new_character["id"] = new_id
 	new_character["name"] = character_name
+	new_character["gender"] = gender
 	new_character["profile_id"] = Profile.get_active_profile_id()
 	characters.append(new_character)
 	Keeper.set_value("tealwyv_character_store", "characters", characters)

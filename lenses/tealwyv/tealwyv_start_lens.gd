@@ -6,6 +6,7 @@ const CONTEXT_KEY = "tealwyv_start"
 enum TealwyvStartState {
 	FOYER,
 	CREATION_PROMPT,
+	CREATION_GENDER,
 	CREATION_SUBMIT,
 	CREATION_ERROR,
 	SELECTION,
@@ -13,6 +14,7 @@ enum TealwyvStartState {
 }
 
 var state: TealwyvStartState = TealwyvStartState.FOYER
+var _pending_name: String = ""
 var _error_key: String = ""
 
 var _medium: ConsoleMedium = null
@@ -42,6 +44,8 @@ func _on_input(text: String) -> void:
 			_handle_foyer(text)
 		TealwyvStartState.CREATION_PROMPT, TealwyvStartState.CREATION_ERROR:
 			_handle_creation_prompt(text)
+		TealwyvStartState.CREATION_GENDER:
+			_handle_creation_gender(text)
 		TealwyvStartState.CREATION_SUBMIT:
 			pass
 		TealwyvStartState.SELECTION, TealwyvStartState.SELECTION_ERROR:
@@ -54,28 +58,54 @@ func _handle_foyer(text: String) -> void:
 			state = TealwyvStartState.CREATION_PROMPT
 			_request_compose()
 		"s":
-			state = TealwyvStartState.SELECTION
-			_request_compose()
+			if _get_character_list().is_empty():
+				pass # [S] not shown — silently ignore
+			elif _is_only_character_selected():
+				_medium.compose("tealwyv_already_selected", {})
+			else:
+				state = TealwyvStartState.SELECTION
+				_request_compose()
 		"t":
-			pass # tealwyv_town_lens, deferred
+			pass # tealwyv_hub_lens, deferred
 		"b":
 			Mount.unmount(self)
 			Scope.transition("project_start")
 
 func _handle_creation_prompt(text: String) -> void:
 	var character_name = text.strip_edges()
+	if character_name.is_empty():
+		state = TealwyvStartState.FOYER
+		_request_compose()
+		return
+	_pending_name = character_name
+	state = TealwyvStartState.CREATION_GENDER
+	_request_compose()
+
+func _handle_creation_gender(text: String) -> void:
+	var input = text.strip_edges().to_lower()
+	if input.is_empty():
+		_pending_name = ""
+		state = TealwyvStartState.FOYER
+		_request_compose()
+		return
+	var valid_genders: Array = Firm.get_value("tealwyv_character_ledger", "genders")
+	if not input in valid_genders:
+		_medium.compose("tealwyv_character_creation_gender_invalid", {})
+		return
 	state = TealwyvStartState.CREATION_SUBMIT
-	_daemon.submit_creation(character_name)
+	_daemon.submit_creation(_pending_name, input)
 
 func _handle_selection(text: String) -> void:
 	_daemon.submit_selection(text.strip_edges())
 
 func _on_creation_failed(error_key: String) -> void:
 	_error_key = error_key
+	_pending_name = ""
 	state = TealwyvStartState.CREATION_ERROR
 	_request_compose()
 
 func _on_creation_succeeded() -> void:
+	_pending_name = ""
 	state = TealwyvStartState.FOYER
 	_request_compose()
 
@@ -93,13 +123,18 @@ func _request_compose() -> void:
 	var max_len = Firm.get_value("tealwyv_character_ledger", "max_name_length")
 	match state:
 		TealwyvStartState.FOYER:
-			_medium.compose("tealwyv_start_main", {
+			var foyer_key = "tealwyv_start_main" if not _get_character_list().is_empty() \
+				else "tealwyv_start_main_no_characters"
+			_medium.compose(foyer_key, {
 				"active_profile_name": Profile.get_active_profile().get("name", "none"),
 				"active_character_name": _get_active_character_name(),
 			})
 		TealwyvStartState.CREATION_PROMPT:
 			_medium.set_input_constraint(max_len)
 			_medium.compose("tealwyv_character_creation_prompt", {"max_len": max_len})
+		TealwyvStartState.CREATION_GENDER:
+			_medium.set_input_constraint(0)
+			_medium.compose("tealwyv_character_creation_gender_prompt", {})
 		TealwyvStartState.CREATION_ERROR:
 			_medium.compose(_error_key, _get_error_data(_error_key))
 		TealwyvStartState.SELECTION:
@@ -132,3 +167,11 @@ func _get_active_character_name() -> String:
 		if character["id"] == active_character_id and character.get("profile_id") == Profile.get_active_profile_id():
 			return character["name"]
 	return "none"
+
+func _is_only_character_selected() -> bool:
+	var characters = Keeper.get_value("tealwyv_character_store", "characters", [])
+	var active_profile_id = Profile.get_active_profile_id()
+	var profile_chars = characters.filter(func(c): return c.get("profile_id") == active_profile_id)
+	if profile_chars.size() != 1: return false
+	var active_id = Keeper.get_value("tealwyv_character_store", "active_character_id", "")
+	return profile_chars[0]["id"] == active_id

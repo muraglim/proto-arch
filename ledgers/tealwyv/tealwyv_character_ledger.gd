@@ -5,6 +5,7 @@ func _ready() -> void:
 	data = {
 		"max_name_length": 16,
 		"forbidden_chars": ["/", "\\", "?", "*", ":", "|", "\"", "<", ">", "~"],
+		"genders": ["m", "f", "o"],
 		"starting_stats": {
 			"hp": 20.0,
 			"hp_max": 20.0,
