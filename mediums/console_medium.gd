@@ -16,6 +16,10 @@ func compose(context_key: String, data: Dictionary = {}) -> void:
 	if Guard.is_null_or_empty(format_string, name + ":compose.%s" % context_key): return
 	_type_out(format_string.format(data))
 
+func display_raw(text: String) -> void:
+	if Guard.is_null_or_empty(_channel, name + ":display_raw"): return
+	_type_out(text)
+
 func set_input_constraint(max_len: int) -> void:
 	if Guard.is_null_or_empty(_channel, name + ":set_input_constraint"): return
 	_channel.set_input_max_length(max_len)

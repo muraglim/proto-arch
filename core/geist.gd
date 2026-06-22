@@ -6,7 +6,8 @@ extends Node
 func geist_init() -> void:
 	pass
 
-func geist_resume() -> void:
+@warning_ignore("unused_parameter")
+func geist_resume(hint: Variant = "") -> void:
 	pass
 
 func geist_shutdown() -> void:

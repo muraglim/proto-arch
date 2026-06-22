@@ -3,10 +3,22 @@ extends Lens
 
 const CONTEXT_KEY = "tealwyv_event"
 
+enum TealwyvEventState {
+	IDLE,
+	ENCOUNTER,
+	RESOLUTION,
+}
+
+var state: TealwyvEventState = TealwyvEventState.IDLE
+
 var _medium: ConsoleMedium = null
+var _combat_daemon: TealwyvCombatDaemon = null
 
 func set_medium(medium: ConsoleMedium) -> void:
 	_medium = medium
+
+func set_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
+	_combat_daemon = daemon
 
 func geist_init() -> void:
 	Scope.register(self)
@@ -14,13 +26,29 @@ func geist_init() -> void:
 func geist_shutdown() -> void:
 	_log("geist_shutdown(): event lens offline.")
 
-@warning_ignore("unused_parameter")
-func geist_resume(hint: String = "") -> void:
-	_request_compose()
+func geist_resume(hint: Variant = "") -> void:
+	if hint is Dictionary:
+		state = TealwyvEventState.ENCOUNTER
+		_combat_daemon.start_encounter(hint)
+	else:
+		_request_compose()
 
 func _on_input(text: String) -> void:
 	if Scope.active_context != CONTEXT_KEY: return
-	pass # event flow deferred
+	match state:
+		TealwyvEventState.IDLE:
+			pass
+		TealwyvEventState.ENCOUNTER:
+			_combat_daemon.take_action(text.strip_edges().to_lower())
+		TealwyvEventState.RESOLUTION:
+			state = TealwyvEventState.IDLE
+			Scope.transition("tealwyv_hub")
+
+func _on_combat_event(payload: Dictionary) -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_on_combat_event"): return
+	_medium.display_raw(payload["text"])
+	if payload.has("state"):
+		state = TealwyvEventState.RESOLUTION
 
 func _request_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return

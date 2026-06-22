@@ -12,7 +12,7 @@ func register(lens: Lens) -> void:
 func unregister(context_key: String) -> void:
 	_registry.erase(context_key)
 
-func transition(to: String, hint: String = "") -> void:
+func transition(to: String, hint: Variant = "") -> void:
 	if not _registry.has(to):
 		push_error("[Scope] transition(%s): no registered instance for context '%s'." % [active_context, to])
 		return

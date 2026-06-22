@@ -21,6 +21,6 @@ func _ready() -> void:
 	"tealwyv_already_selected": "You've only got one character and they're already selected!\n\n[C]reate another one if you'd like.\nor\n[T]ealwyv town\n[B]ack to ProjectStart",
 	"tealwyv_character_creation_gender_prompt": "Select a gender:\n\n[M]ale / [F]emale / [O]ther\n\nLeave blank to cancel.",
 	"tealwyv_character_creation_gender_invalid": "Invalid selection — choose [M]ale, [F]emale, or [O]ther.\n\nLeave blank to cancel.",
-	"tealwyv_hub_main": "[TEALWYV HUB — skeleton]\n\n[B]ack",
+	"tealwyv_hub_main": "{flavor}\n\n[F]orest\n[B]ack",
 	"tealwyv_event_main": "[TEALWYV EVENT — skeleton]",
 }

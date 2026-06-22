@@ -33,7 +33,7 @@ func geist_shutdown() -> void:
 	_log("geist_shutdown(): tealwyv start lens offline.")
 
 @warning_ignore("unused_parameter")
-func geist_resume(hint: String = "") -> void:
+func geist_resume(hint: Variant = "") -> void:
 	state = TealwyvStartState.FOYER
 	_request_compose()
 
