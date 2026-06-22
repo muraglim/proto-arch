@@ -20,15 +20,15 @@ extends Node
 #               recurses into register() so the sibling's own dep_ledger entry
 #               (its own channel/medium/daemons) comes up too. Shared leaf deps
 #               (e.g. a console_channel referenced by both the parent and the
-#               sibling) dedupe via _find_live_node(), same as any other shared dep.
+#               sibling) dedupe via _live_by_uid, same as any other shared dep.
 #
 # Explicit "source" field required only when wire caller is not the current dep.
 # Daemons do not register sub-daemons in this architecture.
 #
 # Shared deps are refcounted (_ref_counts, keyed by uid). A dep is only actually
 # torn down via Main.dismiss_node() once every registry role referencing it has
-# released it via Linker.evict(). "lens"-type deps release by cascading evict() 
-# onto the sibling itself, so the sibling's own shared holds get released in 
+# released it via Linker.evict(). "lens"-type deps release by cascading evict()
+# onto the sibling itself, so the sibling's own shared holds get released in
 # turn before anything underneath it is actually freed.
 
 var _main: Node = null
@@ -44,6 +44,10 @@ var _lens_registry: Dictionary = {}
 # reuse), decremented via _release(). A node is only dismissed once its count
 # reaches zero — see evict().
 var _ref_counts: Dictionary = {}
+
+# uid -> Node. Keyed by uid for O(1) lookup and uid-based identity.
+# Populated on fresh boot in _boot_dep(), cleared in _release() when refcount
+# hits zero.
 var _live_by_uid: Dictionary = {}
 
 func register_main(main: Node) -> void:
@@ -65,11 +69,24 @@ func register(lens: Lens, uid: String) -> void:
 	if Scope.active_context == lens.CONTEXT_KEY:
 		lens.geist_resume()
 
-# Tears down a Lens and releases its hold on everything in its dep list.
-# Shared deps (console_channel, etc.) only actually get dismissed once every
-# lens_key referencing them has released - see _release(). "lens"-type deps
-# cascade into evict() on the sibling itself rather than being bare-dismissed,
-# so the sibling's own registry gets cleared and its own shared holds released too.
+func boot_lens(uid_key: String) -> void:
+	var uid = Firm.get_value("uid_ledger", uid_key)
+	if not Screener.verify_uid(uid, uid_key, "Linker.boot_lens(%s)" % uid_key): return
+	var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
+	var lens_key = path.get_file().get_basename().to_lower()
+	if _lens_registry.has(lens_key):
+		print("Linker.boot_lens(%s): already live." % uid)
+		return
+	var instance = _main.start_geist(uid)
+	if instance == null: return
+	register(instance, uid)
+
+# tears down a Lens, unregisters it from Scope, and releases its hold on
+# everything in its dep list. Shared deps only actually get dismissed once
+# every lens_key referencing them has released - see _release(). "lens"-type
+# deps cascade into evict() on the sibling itself rather than being
+# bare-dismissed, so the sibling's own registry gets cleared and its own
+# shared holds released too.
 func evict(lens: Lens) -> void:
 	var lens_key = lens.name.to_lower()
 	if not _lens_registry.has(lens_key):
@@ -128,28 +145,23 @@ func _boot_dep(lens_key: String, dep: Dictionary) -> void:
 		print("Linker._boot_dep(%s, role: %s): already live, registering existing instance. refcount: %d" % [lens_key, role, _ref_counts[uid]])
 	_execute_wires(lens_key, dep)
 
-func boot_lens(uid_key: String) -> void:
-	var uid = Firm.get_value("uid_ledger", uid_key)
-	if not Screener.verify_uid(uid, uid_key, "Linker.boot_lens(%s)" % uid_key): return
-	var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
-	var lens_key = path.get_file().get_basename().to_lower()
-	if _lens_registry.has(lens_key):
-		print("Linker.boot_lens(%s): already live." % uid)
-		return
-	var instance = _main.start_geist(uid)
-	if instance == null: return
-	register(instance, uid)
-
 func _resolve_dep(dep: Dictionary, lens_key: String) -> Dictionary:
 	var uid_key = dep.get("uid_key", "")
 	var role = dep.get("role", "")
 	var type = dep.get("type", "")
-	if Guard.is_null_or_empty(uid_key, "Linker._boot_dep(%s)" % lens_key): return {}
-	if Guard.is_null_or_empty(role, "Linker._boot_dep(%s)" % lens_key): return {}
-	if Guard.is_null_or_empty(type, "Linker._boot_dep(%s)" % lens_key): return {}
+	if Guard.is_null_or_empty(uid_key, "Linker._resolve_dep(%s)" % lens_key): return {}
+	if Guard.is_null_or_empty(role, "Linker._resolve_dep(%s)" % lens_key): return {}
+	if Guard.is_null_or_empty(type, "Linker._resolve_dep(%s)" % lens_key): return {}
 	var uid = Firm.get_value("uid_ledger", uid_key)
-	if not Screener.verify_uid(uid, uid_key, "Linker._boot_dep(%s)" % uid_key): return {}
+	if not Screener.verify_uid(uid, uid_key, "Linker._resolve_dep(%s)" % uid_key): return {}
 	return {"uid_key": uid_key, "uid": uid, "role": role, "type": type}
+
+func _obtain_node(uid: String, type: String) -> Dictionary:
+	var existing = _live_by_uid.get(uid, null)
+	if existing != null:
+		return {"node": existing, "is_new": false}
+	var instance = _boot_via_main(uid, type)
+	return {"node": instance, "is_new": instance != null}
 
 func _boot_via_main(uid: String, type: String) -> Node:
 	match type:
@@ -159,13 +171,6 @@ func _boot_via_main(uid: String, type: String) -> Node:
 		_:
 			push_error("Linker._boot_via_main(): unknown type '%s'" % type)
 			return null
-
-func _obtain_node(uid: String, type: String) -> Dictionary:
-	var existing = _live_by_uid.get(uid, null)
-	if existing != null:
-		return {"node": existing, "is_new": false}
-	var instance = _boot_via_main(uid, type)
-	return {"node": instance, "is_new": instance != null}
 
 # — wires —
 
@@ -240,6 +245,7 @@ func _resolve_role(lens_key: String, role: String) -> Node:
 	if entry == null: return null
 	return entry.get("node", null)
 
+# no live call sites currently.
 func _find_daemon_by_role(lens_key: String, role: String) -> Daemon:
 	if not _lens_registry.has(lens_key): return null
 	var entry = _lens_registry[lens_key].get(role, null)
