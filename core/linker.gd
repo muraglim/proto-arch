@@ -108,14 +108,12 @@ func _release(uid: String, type: String) -> void:
 # — boot —
 
 func _boot_dep(lens_key: String, dep: Dictionary) -> void:
-	var uid_key = dep.get("uid_key", "")
-	var role = dep.get("role", "")
-	var type = dep.get("type", "")
-	if Guard.is_null_or_empty(uid_key, "Linker._boot_dep(%s)" % lens_key): return
-	if Guard.is_null_or_empty(role, "Linker._boot_dep(%s)" % lens_key): return
-	if Guard.is_null_or_empty(type, "Linker._boot_dep(%s)" % lens_key): return
-	var uid = Firm.get_value("uid_ledger", uid_key)
-	if not Screener.verify_uid(uid, uid_key, "Linker._boot_dep(%s)" % uid_key): return
+	var context = _resolve_dep(dep, lens_key)
+	if context.is_empty(): return
+	var uid_key = context["uid_key"]
+	var uid = context["uid"]
+	var role = context["role"]
+	var type = context["type"]
 	var result = _obtain_node(uid, type)
 	if result.node == null: return
 	_lens_registry[lens_key][role] = {"node": result.node, "uid": uid, "type": type}
@@ -141,6 +139,17 @@ func boot_lens(uid_key: String) -> void:
 	var instance = _main.start_geist(uid)
 	if instance == null: return
 	register(instance, uid)
+
+func _resolve_dep(dep: Dictionary, lens_key: String) -> Dictionary:
+	var uid_key = dep.get("uid_key", "")
+	var role = dep.get("role", "")
+	var type = dep.get("type", "")
+	if Guard.is_null_or_empty(uid_key, "Linker._boot_dep(%s)" % lens_key): return {}
+	if Guard.is_null_or_empty(role, "Linker._boot_dep(%s)" % lens_key): return {}
+	if Guard.is_null_or_empty(type, "Linker._boot_dep(%s)" % lens_key): return {}
+	var uid = Firm.get_value("uid_ledger", uid_key)
+	if not Screener.verify_uid(uid, uid_key, "Linker._boot_dep(%s)" % uid_key): return {}
+	return {"uid_key": uid_key, "uid": uid, "role": role, "type": type}
 
 func _boot_via_main(uid: String, type: String) -> Node:
 	match type:
