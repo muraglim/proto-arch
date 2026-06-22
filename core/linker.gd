@@ -1,194 +1,32 @@
 extends Node
 
-# Linker — dependency orchestration autoload.
-# Linker reads dep_ledger, boots deps in order via Main, executes wiring declarations.
-# Main calls Linker.register_main() in _ready() before any Lens boots.
-# register() is called externally by whoever boots a top-level Lens
-# (Main, boot_lens(), or a "lens"-type dep cascading into a sibling) —
-# a Lens does not call Linker.register(self) itself; it only self-registers
-# with Scope in its own geist_init().
+# Linker — pure wire executor.
+# Receives a registry slice from Mount and executes declared wiring.
+# Stateless: owns no registry, no refcounts, no live-node tracking.
+# Called only by Mount._mount_dep(); no external call sites.
 #
 # Wire case types:
 #   "signal" — connects a signal on source to a method on target
 #   "call"   — calls a method on source, passing target as argument
 #   "assign" — sets a named property on target to the source instance
 #
-# Dep "type" values:
-#   "channel" / "daemon" — leaf dependency, booted via Main, no further recursion
-#   "geist"   — leaf dependency that happens to be a Geist (currently: Medium)
-#   "lens"    — a sibling Lens. Boots the same way as "geist", but additionally
-#               recurses into register() so the sibling's own dep_ledger entry
-#               (its own channel/medium/daemons) comes up too. Shared leaf deps
-#               (e.g. a console_channel referenced by both the parent and the
-#               sibling) dedupe via _live_by_uid, same as any other shared dep.
-#
 # Explicit "source" field required only when wire caller is not the current dep.
-# Daemons do not register sub-daemons in this architecture.
-#
-# Shared deps are refcounted (_ref_counts, keyed by uid). A dep is only actually
-# torn down via Main.dismiss_node() once every registry role referencing it has
-# released it via Linker.evict(). "lens"-type deps release by cascading evict()
-# onto the sibling itself, so the sibling's own shared holds get released in
-# turn before anything underneath it is actually freed.
 
-var _main: Node = null
-
-# _lens_registry: lens_key -> { role: {"node": Node, "uid": String, "type": String} }
-# only Lens instances register top-level entries (register()); _boot_dep()
-# only ever writes into an entry a Lens already created.
-# populated on register(), cleared on evict()
-var _lens_registry: Dictionary = {}
-
-# uid -> int. Count of registry roles, across all lens_keys, currently holding
-# a reference to this node. Incremented in _boot_dep() (fresh boot or shared
-# reuse), decremented via _release(). A node is only dismissed once its count
-# reaches zero — see evict().
-var _ref_counts: Dictionary = {}
-
-# uid -> Node. Keyed by uid for O(1) lookup and uid-based identity.
-# Populated on fresh boot in _boot_dep(), cleared in _release() when refcount
-# hits zero.
-var _live_by_uid: Dictionary = {}
-
-func register_main(main: Node) -> void:
-	_main = main
-	print("Linker.register_main(Main): wired.")
-
-func register(lens: Lens, uid: String) -> void:
-	var lens_key = lens.name.to_lower()
-	var deps = Firm.get_value("dep_ledger", lens_key)
-	if deps == null:
-		print("Linker.register(%s): no dep entry found, nothing to do." % lens_key)
-		return
-	_lens_registry[lens_key] = {"self": {"node": lens, "uid": uid, "type": "lens"}}
-	print("Linker.register(%s): registry initialized." % lens_key)
-	var sorted = deps.duplicate()
-	sorted.sort_custom(func(a, b): return a["order"] < b["order"])
-	for dep in sorted:
-		_boot_dep(lens_key, dep)
-	if Scope.active_context == lens.CONTEXT_KEY:
-		lens.geist_resume()
-
-func boot_lens(uid_key: String) -> void:
-	var uid = Firm.get_value("uid_ledger", uid_key)
-	if not Screener.verify_uid(uid, uid_key, "Linker.boot_lens(%s)" % uid_key): return
-	var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
-	var lens_key = path.get_file().get_basename().to_lower()
-	if _lens_registry.has(lens_key):
-		print("Linker.boot_lens(%s): already live." % uid)
-		return
-	var instance = _main.start_geist(uid)
-	if instance == null: return
-	register(instance, uid)
-
-# tears down a Lens, unregisters it from Scope, and releases its hold on
-# everything in its dep list. Shared deps only actually get dismissed once
-# every lens_key referencing them has released - see _release(). "lens"-type
-# deps cascade into evict() on the sibling itself rather than being
-# bare-dismissed, so the sibling's own registry gets cleared and its own
-# shared holds released too.
-func evict(lens: Lens) -> void:
-	var lens_key = lens.name.to_lower()
-	if not _lens_registry.has(lens_key):
-		print("Linker.evict(%s): no registry found, nothing to do." % lens_key)
-		return
-	var registry = _lens_registry[lens_key]
-	for role in registry:
-		if role == "self": continue
-		var entry = registry[role]
-		if entry == null or entry.get("node") == null: continue
-		print("Linker.evict(%s, role: %s): releasing %s." % [lens_key, role, entry["node"].name])
-		_release(entry["uid"], entry.get("type", ""))
-	var self_entry = registry.get("self", null)
-	_lens_registry.erase(lens_key)
-	if self_entry != null and self_entry.get("node") != null and not String(self_entry["uid"]).is_empty():
-		Scope.unregister(lens.CONTEXT_KEY)
-		_main.dismiss_node(self_entry["uid"])
-		print("Linker.evict(%s): %s evicted." % [lens_key, self_entry["node"].name])
-	print("Linker.evict(%s): registry cleared." % lens_key)
-
-func _release(uid: String, type: String) -> void:
-	_ref_counts[uid] = _ref_counts.get(uid, 1) - 1
-	if _ref_counts[uid] > 0:
-		print("Linker._release(uid: %s): refcount now %d, still in use." % [uid, _ref_counts[uid]])
-		return
-	_ref_counts.erase(uid)
-	_live_by_uid.erase(uid)
-	if type == "lens":
-		var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
-		var lens_key = path.get_file().get_basename().to_lower()
-		if _lens_registry.has(lens_key):
-			evict(_lens_registry[lens_key]["self"]["node"])
-			return
-	_main.dismiss_node(uid)
-
-# — boot —
-
-func _boot_dep(lens_key: String, dep: Dictionary) -> void:
-	var context = _resolve_dep(dep, lens_key)
-	if context.is_empty(): return
-	var uid_key = context["uid_key"]
-	var uid = context["uid"]
-	var role = context["role"]
-	var type = context["type"]
-	var result = _obtain_node(uid, type)
-	if result.node == null: return
-	_lens_registry[lens_key][role] = {"node": result.node, "uid": uid, "type": type}
-	_ref_counts[uid] = _ref_counts.get(uid, 0) + 1
-	if result.is_new:
-		_live_by_uid[uid] = result.node
-		Echo.log_list([uid_key, uid, lens_key, dep])
-		print("Linker._boot_dep(%s, role: %s): %s booted." % [lens_key, role, result.node.name])
-		if type == "lens":
-			register(result.node as Lens, uid)
-	else:
-		print("Linker._boot_dep(%s, role: %s): already live, registering existing instance. refcount: %d" % [lens_key, role, _ref_counts[uid]])
-	_execute_wires(lens_key, dep)
-
-func _resolve_dep(dep: Dictionary, lens_key: String) -> Dictionary:
-	var uid_key = dep.get("uid_key", "")
-	var role = dep.get("role", "")
-	var type = dep.get("type", "")
-	if Guard.is_null_or_empty(uid_key, "Linker._resolve_dep(%s)" % lens_key): return {}
-	if Guard.is_null_or_empty(role, "Linker._resolve_dep(%s)" % lens_key): return {}
-	if Guard.is_null_or_empty(type, "Linker._resolve_dep(%s)" % lens_key): return {}
-	var uid = Firm.get_value("uid_ledger", uid_key)
-	if not Screener.verify_uid(uid, uid_key, "Linker._resolve_dep(%s)" % uid_key): return {}
-	return {"uid_key": uid_key, "uid": uid, "role": role, "type": type}
-
-func _obtain_node(uid: String, type: String) -> Dictionary:
-	var existing = _live_by_uid.get(uid, null)
-	if existing != null:
-		return {"node": existing, "is_new": false}
-	var instance = _boot_via_main(uid, type)
-	return {"node": instance, "is_new": instance != null}
-
-func _boot_via_main(uid: String, type: String) -> Node:
-	match type:
-		"daemon": return _main.start_daemon(uid)
-		"geist", "lens": return _main.start_geist(uid)
-		"channel": return _main.start_channel(uid)
-		_:
-			push_error("Linker._boot_via_main(): unknown type '%s'" % type)
-			return null
-
-# — wires —
-
-func _execute_wires(lens_key: String, dep: Dictionary) -> void:
+func execute_wires(lens_key: String, dep: Dictionary, registry: Dictionary) -> void:
 	var wires = dep.get("wires", [])
 	if wires.is_empty(): return
 	var role = dep.get("role", "")
 	for wire in wires:
-		_execute_wire(lens_key, role, wire)
+		_execute_wire(lens_key, role, wire, registry)
 
-func _execute_wire(lens_key: String, current_role: String, wire: Dictionary) -> void:
+func _execute_wire(lens_key: String, current_role: String, wire: Dictionary, registry: Dictionary) -> void:
 	var case_type = wire.get("case", "")
 	var source_role = wire.get("source", current_role)
 	var target_role = wire.get("target", "")
 	if Guard.is_null_or_empty(case_type, "Linker._execute_wire(%s)" % lens_key): return
 	if Guard.is_null_or_empty(target_role, "Linker._execute_wire(%s)" % lens_key): return
-	var source = _resolve_role(lens_key, source_role)
-	var target = _resolve_role(lens_key, target_role)
+	var source = _resolve_role(registry, source_role)
+	var target = _resolve_role(registry, target_role)
 	if source == null:
 		push_error("Linker._execute_wire(%s): could not resolve source role '%s'." % [lens_key, source_role])
 		return
@@ -196,14 +34,10 @@ func _execute_wire(lens_key: String, current_role: String, wire: Dictionary) -> 
 		push_error("Linker._execute_wire(%s): could not resolve target role '%s'." % [lens_key, target_role])
 		return
 	match case_type:
-		"signal":
-			_execute_signal_wire(lens_key, source, target, wire)
-		"call":
-			_execute_call_wire(lens_key, source, target, wire)
-		"assign":
-			_execute_assign_wire(lens_key, source, target, wire)
-		_:
-			push_error("Linker._execute_wire(%s): unknown case type '%s'." % [lens_key, case_type])
+		"signal": _execute_signal_wire(lens_key, source, target, wire)
+		"call":   _execute_call_wire(lens_key, source, target, wire)
+		"assign": _execute_assign_wire(lens_key, source, target, wire)
+		_: push_error("Linker._execute_wire(%s): unknown case type '%s'." % [lens_key, case_type])
 
 func _execute_signal_wire(lens_key: String, source: Node, target: Node, wire: Dictionary) -> void:
 	var signal_name = wire.get("signal", "")
@@ -237,17 +71,7 @@ func _execute_assign_wire(lens_key: String, source: Node, target: Node, wire: Di
 	target.set(property, source)
 	print("Linker._execute_assign_wire: %s -> %s.%s" % [source.name, target.name, property])
 
-# — resolution —
-
-func _resolve_role(lens_key: String, role: String) -> Node:
-	if not _lens_registry.has(lens_key): return null
-	var entry = _lens_registry[lens_key].get(role, null)
+func _resolve_role(registry: Dictionary, role: String) -> Node:
+	var entry = registry.get(role, null)
 	if entry == null: return null
 	return entry.get("node", null)
-
-# no live call sites currently.
-func _find_daemon_by_role(lens_key: String, role: String) -> Daemon:
-	if not _lens_registry.has(lens_key): return null
-	var entry = _lens_registry[lens_key].get(role, null)
-	if entry == null: return null
-	return entry.get("node", null) as Daemon

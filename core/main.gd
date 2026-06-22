@@ -7,12 +7,12 @@ func _ready() -> void:
 	_under = Node.new()
 	_under.name = "under"
 	add_child(_under)
-	Linker.register_main(self)
+	Mount.register_main(self)
 	var uid = Firm.get_value("uid_ledger", "project_start_lens")
 	if not Screener.verify_uid(uid, "project_start_lens", "Main._ready()"): return
 	var instance = start_geist(uid)
 	if instance == null: return
-	Linker.register(instance, uid)
+	Mount.register(instance, uid)
 
 func start_geist(uid: String) -> Geist:
 	var instance = _create_sceneless_node(uid)

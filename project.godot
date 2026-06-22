@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Mount="*uid://1xn4o502v2f3"
 Linker="*uid://ba1sjby7xb0y0"
 Keeper="*uid://ckm2kh47rwqyd"
 Firm="*uid://gdbdkob8lxf4"

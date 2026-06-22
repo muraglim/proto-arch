@@ -27,13 +27,13 @@ func _on_input(text: String) -> void:
 	var action = text.strip_edges().to_lower()
 	match action:
 		"c":
-			Linker.boot_lens("profile_lens")
+			Mount.mount_lens("profile_lens")
 			Scope.transition.call_deferred("profile", "creation")
 		"s":
-			Linker.boot_lens("profile_lens")
+			Mount.mount_lens("profile_lens")
 			Scope.transition.call_deferred("profile", "selection")
 		"t":
-			Linker.boot_lens("tealwyv_start_lens")
+			Mount.mount_lens("tealwyv_start_lens")
 			Scope.transition.call_deferred("tealwyv_start")
 
 func _request_compose() -> void:

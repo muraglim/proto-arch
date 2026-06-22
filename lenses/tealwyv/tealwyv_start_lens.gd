@@ -63,7 +63,7 @@ func _handle_foyer(text: String) -> void:
 		"t":
 			pass # tealwyv_town_lens, deferred
 		"b":
-			Linker.evict(self)
+			Mount.unmount(self)
 			Scope.transition("project_start")
 
 func _handle_creation_prompt(text: String) -> void:
