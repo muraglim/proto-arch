@@ -111,24 +111,20 @@ func _boot_dep(lens_key: String, dep: Dictionary) -> void:
 	var type = dep.get("type", "")
 	if Guard.is_null_or_empty(uid_key, "Linker._boot_dep(%s)" % lens_key): return
 	if Guard.is_null_or_empty(role, "Linker._boot_dep(%s)" % lens_key): return
-	if Guard.is_null_or_empty(type, "Linker._boot_dep(%s)" % lens_key): return	
+	if Guard.is_null_or_empty(type, "Linker._boot_dep(%s)" % lens_key): return
 	var uid = Firm.get_value("uid_ledger", uid_key)
 	if not Screener.verify_uid(uid, uid_key, "Linker._boot_dep(%s)" % uid_key): return
-	var existing = _find_live_node(uid)
-	if existing != null:
-		_lens_registry[lens_key][role] = {"node": existing, "uid": uid, "type": type}
-		_ref_counts[uid] = _ref_counts.get(uid, 0) + 1
+	var result = _obtain_node(uid, type)
+	if result.node == null: return
+	_lens_registry[lens_key][role] = {"node": result.node, "uid": uid, "type": type}
+	_ref_counts[uid] = _ref_counts.get(uid, 0) + 1
+	if result.is_new:
+		Echo.log_list([uid_key, uid, lens_key, dep])
+		print("Linker._boot_dep(%s, role: %s): %s booted." % [lens_key, role, result.node.name])
+		if type == "lens":
+			register(result.node as Lens, uid)
+	else:
 		print("Linker._boot_dep(%s, role: %s): already live, registering existing instance. refcount: %d" % [lens_key, role, _ref_counts[uid]])
-		_execute_wires(lens_key, dep)
-		return
-	var instance = _boot_via_main(uid, type)
-	if instance == null: return
-	Echo.log_list([uid_key, uid, lens_key, dep])
-	_lens_registry[lens_key][role] = {"node": instance, "uid": uid, "type": type}
-	_ref_counts[uid] = 1
-	print("Linker._boot_dep(%s, role: %s): %s booted." % [lens_key, role, instance.name])
-	if type == "lens":
-		register(instance as Lens, uid)
 	_execute_wires(lens_key, dep)
 
 func boot_lens(uid_key: String) -> void:
@@ -150,6 +146,13 @@ func _boot_via_main(uid: String, type: String) -> Node:
 		_:
 			push_error("Linker._boot_via_main(): unknown type '%s'" % type)
 			return null
+
+func _obtain_node(uid: String, type: String) -> Dictionary:
+	var existing = _find_live_node(uid)
+	if existing != null:
+		return {"node": existing, "is_new": false}
+	var instance = _boot_via_main(uid, type)
+	return {"node": instance, "is_new": instance != null}
 
 func _find_live_node(uid: String) -> Node:
 	var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
