@@ -4,13 +4,9 @@ extends Lens
 const CONTEXT_KEY = "project_start"
 
 var _medium: ConsoleMedium = null
-var _channel: ConsoleChannel = null
 
 func set_medium(medium: ConsoleMedium) -> void:
 	_medium = medium
-
-func set_channel(channel: ConsoleChannel) -> void:
-	_channel = channel
 
 func geist_init() -> void:
 	Scope.register(self)
