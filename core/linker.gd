@@ -84,6 +84,7 @@ func evict(lens: Lens) -> void:
 	var self_entry = registry.get("self", null)
 	_lens_registry.erase(lens_key)
 	if self_entry != null and self_entry.get("node") != null and not String(self_entry["uid"]).is_empty():
+		Scope.unregister(lens.CONTEXT_KEY)
 		_main.dismiss_node(self_entry["uid"])
 		print("Linker.evict(%s): %s evicted." % [lens_key, self_entry["node"].name])
 	print("Linker.evict(%s): registry cleared." % lens_key)
