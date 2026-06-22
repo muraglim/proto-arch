@@ -44,6 +44,7 @@ var _lens_registry: Dictionary = {}
 # reuse), decremented via _release(). A node is only dismissed once its count
 # reaches zero — see evict().
 var _ref_counts: Dictionary = {}
+var _live_by_uid: Dictionary = {}
 
 func register_main(main: Node) -> void:
 	_main = main
@@ -95,6 +96,7 @@ func _release(uid: String, type: String) -> void:
 		print("Linker._release(uid: %s): refcount now %d, still in use." % [uid, _ref_counts[uid]])
 		return
 	_ref_counts.erase(uid)
+	_live_by_uid.erase(uid)
 	if type == "lens":
 		var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
 		var lens_key = path.get_file().get_basename().to_lower()
@@ -119,6 +121,7 @@ func _boot_dep(lens_key: String, dep: Dictionary) -> void:
 	_lens_registry[lens_key][role] = {"node": result.node, "uid": uid, "type": type}
 	_ref_counts[uid] = _ref_counts.get(uid, 0) + 1
 	if result.is_new:
+		_live_by_uid[uid] = result.node
 		Echo.log_list([uid_key, uid, lens_key, dep])
 		print("Linker._boot_dep(%s, role: %s): %s booted." % [lens_key, role, result.node.name])
 		if type == "lens":
@@ -130,8 +133,9 @@ func _boot_dep(lens_key: String, dep: Dictionary) -> void:
 func boot_lens(uid_key: String) -> void:
 	var uid = Firm.get_value("uid_ledger", uid_key)
 	if not Screener.verify_uid(uid, uid_key, "Linker.boot_lens(%s)" % uid_key): return
-	var existing = _find_live_node(uid)
-	if existing != null:
+	var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
+	var lens_key = path.get_file().get_basename().to_lower()
+	if _lens_registry.has(lens_key):
 		print("Linker.boot_lens(%s): already live." % uid)
 		return
 	var instance = _main.start_geist(uid)
@@ -148,21 +152,11 @@ func _boot_via_main(uid: String, type: String) -> Node:
 			return null
 
 func _obtain_node(uid: String, type: String) -> Dictionary:
-	var existing = _find_live_node(uid)
+	var existing = _live_by_uid.get(uid, null)
 	if existing != null:
 		return {"node": existing, "is_new": false}
 	var instance = _boot_via_main(uid, type)
 	return {"node": instance, "is_new": instance != null}
-
-func _find_live_node(uid: String) -> Node:
-	var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
-	var target_name = path.get_file().get_basename()
-	for lens_key in _lens_registry:
-		for role in _lens_registry[lens_key]:
-			var entry = _lens_registry[lens_key][role]
-			if entry != null and entry.get("node") != null and entry["node"].name == target_name:
-				return entry["node"]
-	return null
 
 # — wires —
 
