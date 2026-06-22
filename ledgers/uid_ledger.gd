@@ -10,4 +10,6 @@ func _ready() -> void:
 		"console_channel": "uid://bxh8a4u7p5usq",
 		"tealwyv_start_lens": "uid://bec03hm2ey0hh",
 		"tealwyv_character_daemon": "uid://gxypocvk7hln",
+		"tealwyv_hub_lens": "uid://bqnrf7w46yhe1",
+		"tealwyv_event_lens": "uid://m6urtdn0rlhn",
 }

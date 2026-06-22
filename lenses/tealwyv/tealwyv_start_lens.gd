@@ -66,7 +66,8 @@ func _handle_foyer(text: String) -> void:
 				state = TealwyvStartState.SELECTION
 				_request_compose()
 		"t":
-			pass # tealwyv_hub_lens, deferred
+			Mount.mount_lens("tealwyv_hub_lens")
+			Scope.transition.call_deferred("tealwyv_hub")
 		"b":
 			Mount.unmount(self)
 			Scope.transition("project_start")

@@ -91,4 +91,53 @@ func _ready() -> void:
 				]
 			},
 		],
+		"tealwyv_hub_lens": [
+			{
+				"uid_key": "console_channel",
+				"type": "channel",
+				"role": "channel",
+				"order": 0,
+				"wires": [
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
+				]
+			},
+			{
+				"uid_key": "console_medium",
+				"type": "geist",
+				"role": "medium",
+				"order": 1,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "channel"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "medium"},
+				]
+			},
+			{
+				"uid_key": "tealwyv_event_lens",
+				"type": "lens",
+				"role": "event",
+				"order": 2,
+				"wires": []
+			},
+		],
+		"tealwyv_event_lens": [
+			{
+				"uid_key": "console_channel",
+				"type": "channel",
+				"role": "channel",
+				"order": 0,
+				"wires": [
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
+				]
+			},
+			{
+				"uid_key": "console_medium",
+				"type": "geist",
+				"role": "medium",
+				"order": 1,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "channel"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "medium"},
+				]
+			},
+		],
 	}

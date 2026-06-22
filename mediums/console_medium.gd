@@ -11,9 +11,9 @@ func set_channel(channel: ConsoleChannel) -> void:
 	_channel = channel
 
 func compose(context_key: String, data: Dictionary = {}) -> void:
-	if Guard.is_null_or_empty(_channel, name + ":compose"): return
+	if Guard.is_null_or_empty(_channel, name + ":compose._channel"): return
 	var format_string = Firm.get_value("core_text_ledger", context_key)
-	if Guard.is_null_or_empty(format_string, name + ":compose"): return
+	if Guard.is_null_or_empty(format_string, name + ":compose.%s" % context_key): return
 	_type_out(format_string.format(data))
 
 func set_input_constraint(max_len: int) -> void:
