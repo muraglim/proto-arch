@@ -4,9 +4,7 @@ A modular sandbox architecture for housing and interconnecting game prototypes, 
 
 ## Concept
 
-Proto-Arch is a design research platform. Individual prototypes live as self-contained modules within a shared architecture, interoperating through a central state facade and a signal-based navigation system.
-
-Long-term goal: a carousel of game contexts where characters and progression cross game boundaries meaningfully.
+Proto-Arch is a design research platform: a shared architecture housing multiple game prototypes under one roof, with the long-term goal of a carousel where characters and progression cross game boundaries meaningfully.
 
 ## Architecture
 
@@ -22,7 +20,8 @@ Control signals (completion, readiness, raw input) can travel between any wired 
 
 **Orchestration:**
 - `Main` — bootstrapper, instantiated once as the root scene (not an autoload).
-- `Linker` — dependency injection and signal wiring, driven by Ledger-declared dep lists.
+- `Mount` — dep orchestration; boots deps via Main, manages registry and refcounts, delegates wire execution to Linker.
+- `Linker` — stateless wire executor; no registry, no refcounts, no call sites outside Mount.
 - `Scope` — focus manager; gates which Lens receives input via `active_context`.
 
 **Facades:**
