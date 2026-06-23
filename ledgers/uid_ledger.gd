@@ -28,4 +28,14 @@ func _ready() -> void:
 		"tealwyv_reward_daemon": "uid://dkvnvl1ucbvnt",
 		"tealwyv_log_daemon": "uid://b2pk3o8m4bb5u",
 		"tealwyv_text_daemon": "uid://d30aw5tdkrn41",
+		
+		# paloelith suite
+		## lenses
+		"paleolith_hub_lens": "uid://w6kjf8d4qqwg",
+		
+		## mediums
+		"paleolith_medium": "uid://c7afnrqh8v8jj",
+		## daemons
+		"paleolith_tick_daemon": "uid://cgtlhahjqjhwt",
+		"paleolith_gather_daemon": "uid://18vg8d01ndxe",
 }

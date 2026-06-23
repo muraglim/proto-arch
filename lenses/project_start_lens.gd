@@ -31,6 +31,9 @@ func _on_input(text: String) -> void:
 		"t":
 			Mount.mount_lens("tealwyv_start_lens")
 			Scope.transition.call_deferred("tealwyv_start")
+		"p":
+			Mount.mount_lens("paleolith_hub_lens")
+			Scope.transition.call_deferred("paleolith_hub")
 
 func _request_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return

@@ -3,7 +3,7 @@ extends Ledger
 
 func _ready() -> void:
 	data = {
-	"project_start_main": "Active profile: {active_name}\n\n[C]reate profile / [S]elect profile / [T]ealwyv",
+	"project_start_main": "Active profile: {active_name}\n\n[C]reate profile\n[S]elect profile\n[T]ealwyv\n[P]aleolith",
 	"profile_creation_prompt": "Enter a name for your new profile (max {max_len} characters):",
 	"profile_creation_empty": "Name cannot be empty. Try again:",
 	"profile_creation_forbidden": "Name contains a forbidden character. Forbidden characters: {chars}\n\nTry again:",

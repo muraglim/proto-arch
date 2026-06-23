@@ -195,4 +195,45 @@ func _ready() -> void:
 				]
 			},
 		],
+		"paleolith_hub_lens": [
+			{
+				"uid_key": "console_channel",
+				"type": "channel",
+				"role": "console_channel",
+				"order": 0,
+				"wires": [
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
+				]
+			},
+			{
+				"uid_key": "paleolith_medium",
+				"type": "geist",
+				"role": "paleolith_medium",
+				"order": 1,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "console_channel"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+				]
+			},
+			{
+				"uid_key": "paleolith_tick_daemon",
+				"type": "daemon",
+				"role": "paleolith_tick_daemon",
+				"order": 2,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_tick_daemon", "target": "paleolith_tick_daemon"},
+				]
+			},
+			{
+				"uid_key": "paleolith_gather_daemon",
+				"type": "daemon",
+				"role": "paleolith_gather_daemon",
+				"order": 3,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_gather_daemon", "target": "paleolith_gather_daemon"},
+					{"case": "signal", "signal": "gather_succeeded", "target": "self", "method": "_on_gather_succeeded"},
+					{"case": "signal", "signal": "gather_failed", "target": "self", "method": "_on_gather_failed"},
+				]
+			},
+		],
 	}

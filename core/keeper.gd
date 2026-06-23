@@ -10,6 +10,10 @@ const STORE_SCRIPTS: Array[String] = [
 	"uid://dah77mrkcmp7c", #tealwyv_dev_store
 	"uid://dnaj0b86atrx1", #tealwyv_character_store
 	"uid://cm70cvnxnh10s", #tealwyv_luck_store
+	
+	# paleolith
+	"uid://btfwwyjtecol5", #paleolith_store
+	"uid://brubxwj4wqt3p", #paleolith_dev_store
 ]
 
 var stores: Dictionary = {}
