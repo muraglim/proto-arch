@@ -32,10 +32,13 @@ func _ready() -> void:
 		# paloelith suite
 		## lenses
 		"paleolith_hub_lens": "uid://w6kjf8d4qqwg",
-		
+		"paleolith_pocket_lens": "uid://cxva6iy1fs8b4",
 		## mediums
 		"paleolith_medium": "uid://c7afnrqh8v8jj",
 		## daemons
 		"paleolith_tick_daemon": "uid://cgtlhahjqjhwt",
 		"paleolith_gather_daemon": "uid://18vg8d01ndxe",
+		"paleolith_fire_daemon": "uid://b1ofrwj5igp3q",
+		"paleolith_deity_daemon": "uid://3fygn4iogmfj",
+		
 }

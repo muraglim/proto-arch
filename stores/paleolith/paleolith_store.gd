@@ -8,4 +8,5 @@ func _init_defaults() -> void:
 		"flint": 0,
 		"tinder": 0,
 		"has_fire": false,
+		"revealed_deities": [],
 	}

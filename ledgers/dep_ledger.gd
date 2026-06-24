@@ -235,5 +235,48 @@ func _ready() -> void:
 					{"case": "signal", "signal": "gather_failed", "target": "self", "method": "_on_gather_failed"},
 				]
 			},
+			{
+				"uid_key": "paleolith_fire_daemon",
+				"type": "daemon",
+				"role": "paleolith_fire_daemon",
+				"order": 4,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_fire_daemon", "target": "paleolith_fire_daemon"},
+					{"case": "signal", "signal": "fire_succeeded", "target": "self", "method": "_on_fire_succeeded"},
+					{"case": "signal", "signal": "fire_failed", "target": "self", "method": "_on_fire_failed"},
+				]
+			},
+			{
+				"uid_key": "paleolith_deity_daemon",
+				"type": "daemon",
+				"role": "paleolith_deity_daemon",
+				"order": 5,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_deity_daemon", "target": "paleolith_deity_daemon"},
+					{"case": "signal", "source": "paleolith_fire_daemon", "signal": "fire_succeeded", "target": "paleolith_deity_daemon", "method": "on_fire_lit"},
+					{"case": "signal", "signal": "deity_revealed", "target": "self", "method": "_on_deity_revealed"},
+				]
+			},
+		],
+		"paleolith_pocket_lens": [
+			{
+				"uid_key": "console_channel",
+				"type": "channel",
+				"role": "console_channel",
+				"order": 0,
+				"wires": [
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
+				]
+			},
+			{
+				"uid_key": "paleolith_medium",
+				"type": "geist",
+				"role": "paleolith_medium",
+				"order": 1,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "console_channel"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+				]
+			},
 		],
 	}
