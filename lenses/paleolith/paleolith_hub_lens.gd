@@ -5,9 +5,12 @@ const CONTEXT_KEY = "paleolith_hub"
 
 enum HubState {
 	HUB,
+	SITE_SELECTION,
 	GATHERING,
 	GATHER_ANIMATING,
 	GATHER_RESULT,
+	SHELTER_TRIP,
+	SHELTER_RESULT,
 	FIRE_ATTEMPT,
 	FIRE_RESULT,
 	DEITY_REVEAL,
@@ -21,6 +24,7 @@ var _tick_daemon: PaleolithTickDaemon = null
 var _gather_daemon: PaleolithGatherDaemon = null
 var _fire_daemon: PaleolithFireDaemon = null
 var _deity_daemon: PaleolithDeityDaemon = null
+var _shelter_daemon: PaleolithShelterDaemon = null
 
 func set_medium(medium: PaleolithMedium) -> void:
 	_medium = medium
@@ -37,6 +41,9 @@ func set_fire_daemon(daemon: PaleolithFireDaemon) -> void:
 func set_deity_daemon(daemon: PaleolithDeityDaemon) -> void:
 	_deity_daemon = daemon
 
+func set_shelter_daemon(daemon: PaleolithShelterDaemon) -> void:
+	_shelter_daemon = daemon
+
 func geist_init() -> void:
 	Scope.register(self)
 
@@ -45,6 +52,11 @@ func geist_shutdown() -> void:
 
 @warning_ignore("unused_parameter")
 func geist_resume(hint: Variant = "") -> void:
+	var site: String = Keeper.get_value("paleolith_store", "shelter_location", "")
+	if site.is_empty():
+		state = HubState.SITE_SELECTION
+		_medium.compose("paleolith_site_selection", {})
+		return
 	state = HubState.HUB
 	_request_compose()
 
@@ -53,12 +65,25 @@ func _on_input(text: String) -> void:
 	match state:
 		HubState.HUB:
 			_handle_hub(text.strip_edges().to_lower())
+		HubState.SITE_SELECTION:
+			_handle_site_selection(text.strip_edges().to_lower())
 		HubState.GATHERING, HubState.FIRE_ATTEMPT, HubState.GATHER_ANIMATING:
 			pass
-		HubState.GATHER_RESULT, HubState.FIRE_RESULT:
+		HubState.GATHER_RESULT, HubState.FIRE_RESULT, HubState.SHELTER_TRIP, HubState.SHELTER_RESULT:
 			_handle_continue()
 		HubState.DEITY_REVEAL:
 			_pending_deity = {}
+			state = HubState.HUB
+			_request_compose()
+
+func _handle_site_selection(action: String) -> void:
+	match action:
+		"1":
+			_shelter_daemon.select_site("exposed_ridge")
+			state = HubState.HUB
+			_request_compose()
+		"2":
+			_shelter_daemon.select_site("sheltered_hollow")
 			state = HubState.HUB
 			_request_compose()
 
@@ -69,6 +94,9 @@ func _handle_hub(action: String) -> void:
 	var tinder_cap: int = Firm.get_value("paleolith_ledger", "tinder_cap")
 	var has_fire: bool = Keeper.get_value("paleolith_store", "has_fire", false)
 	var revealed: Array = Keeper.get_value("paleolith_store", "revealed_deities", [])
+	var shelter_exists: bool = Keeper.get_value("paleolith_store", "shelter_exists", false)
+	var stockpile: int = Keeper.get_value("paleolith_store", "shelter_stockpile", 0)
+	var harvest_count: int = Firm.get_value("paleolith_ledger", "shelter_harvest_count")
 	match action:
 		"r":
 			if flint >= flint_cap: return
@@ -80,6 +108,17 @@ func _handle_hub(action: String) -> void:
 			state = HubState.GATHERING
 			_medium.compose("paleolith_gathering_start_scrubland", {})
 			_gather_daemon.start_gather("scrubland")
+		"a":
+			if stockpile >= harvest_count: return
+			state = HubState.SHELTER_TRIP
+			var result: Dictionary = _shelter_daemon.do_harvest_trip()
+			var new_stockpile: int = Keeper.get_value("paleolith_store", "shelter_stockpile", 0)
+			var key: String = "paleolith_shelter_trip_lost" if result["lost"] else "paleolith_shelter_trip_clear"
+			_medium.compose(key, {"stockpile": new_stockpile, "harvest_count": harvest_count})
+		"c":
+			if stockpile < harvest_count or shelter_exists: return
+			_shelter_daemon.attempt_build()
+			# state set in _on_shelter_built
 		"f":
 			if has_fire or flint <= 0 or tinder <= 0: return
 			state = HubState.FIRE_ATTEMPT
@@ -105,7 +144,25 @@ func _handle_continue() -> void:
 		state = HubState.HUB
 		_request_compose()
 
+# — shelter signal handlers —
+
+func _on_shelter_built(quality: float) -> void:
+	state = HubState.SHELTER_RESULT
+	_medium.compose("paleolith_shelter_built", {"quality_label": _get_quality_label(quality)})
+
+func _on_shelter_degraded(_quality: float) -> void:
+	pass  # skeleton: reflected on next hub compose. add passive feedback here later.
+
+func _on_shelter_destroyed() -> void:
+	if state == HubState.HUB:
+		state = HubState.SHELTER_RESULT
+		_medium.compose("paleolith_shelter_destroyed", {})
+	# otherwise reflected on next hub compose
+
+# — gather / fire / deity handlers —
+
 func _on_gather_succeeded(location: String, new_count: int) -> void:
+	state = HubState.GATHER_RESULT
 	var is_flint: bool = location == "riverbank"
 	var key: String = "paleolith_gather_success_flint" if is_flint else "paleolith_gather_success_tinder"
 	var cap: int = Firm.get_value("paleolith_ledger", "flint_cap" if is_flint else "tinder_cap")
@@ -137,6 +194,8 @@ func _on_animation_complete() -> void:
 	if state != HubState.GATHER_ANIMATING: return
 	state = HubState.GATHER_RESULT
 
+# — compose helpers —
+
 func _request_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
 	if Guard.is_null_or_empty(_tick_daemon, name + ":_request_compose"): return
@@ -145,29 +204,56 @@ func _request_compose() -> void:
 	var tinder: int = Keeper.get_value("paleolith_store", "tinder", 0)
 	var flint_cap: int = Firm.get_value("paleolith_ledger", "flint_cap")
 	var tinder_cap: int = Firm.get_value("paleolith_ledger", "tinder_cap")
+	var stockpile: int = Keeper.get_value("paleolith_store", "shelter_stockpile", 0)
+	var harvest_count: int = Firm.get_value("paleolith_ledger", "shelter_harvest_count")
 	_medium.compose("paleolith_hub", {
-		"day":        tick["day"],
-		"time_label": tick["time_label"],
-		"weather":    tick["weather"],
-		"temp_grade": tick["temp_grade"],
-		"flint":      flint,
-		"flint_cap":  flint_cap,
-		"tinder":     tinder,
-		"tinder_cap": tinder_cap,
-		"options":    _build_options(flint, tinder, flint_cap, tinder_cap),
+		"day":          tick["day"],
+		"time_label":   tick["time_label"],
+		"weather":      tick["weather"],
+		"temp_grade":   tick["temp_grade"],
+		"flint":        flint,
+		"flint_cap":    flint_cap,
+		"tinder":       tinder,
+		"tinder_cap":   tinder_cap,
+		"stockpile":    stockpile,
+		"harvest_count": harvest_count,
+		"shelter_status": _get_shelter_status(),
+		"options":      _build_options(flint, tinder, flint_cap, tinder_cap),
 	})
 
 func _build_options(flint: int, tinder: int, flint_cap: int, tinder_cap: int) -> String:
 	var has_fire: bool = Keeper.get_value("paleolith_store", "has_fire", false)
 	var revealed: Array = Keeper.get_value("paleolith_store", "revealed_deities", [])
+	var shelter_exists: bool = Keeper.get_value("paleolith_store", "shelter_exists", false)
+	var stockpile: int = Keeper.get_value("paleolith_store", "shelter_stockpile", 0)
+	var harvest_count: int = Firm.get_value("paleolith_ledger", "shelter_harvest_count")
 	var lines: Array = []
+	if stockpile < harvest_count:
+		lines.append("[A]cacia thicket")
 	if flint < flint_cap:
 		lines.append("[R]iverbank")
 	if tinder < tinder_cap:
 		lines.append("[S]crubland")
+	if stockpile >= harvest_count and not shelter_exists:
+		lines.append("[C]onstruct shelter")
 	if not has_fire and flint > 0 and tinder > 0:
 		lines.append("[F]ire")
 	if has_fire and not revealed.is_empty():
 		lines.append("[P]ocket")
 	lines.append("[B]ack")
 	return "\n".join(lines)
+
+func _get_shelter_status() -> String:
+	if Keeper.get_value("paleolith_store", "shelter_exists", false):
+		var quality: float = Keeper.get_value("paleolith_store", "shelter_quality", 0.0)
+		return "Shelter: %s (%d%%)" % [_get_quality_label(quality), int(quality * 100)]
+	if not Keeper.get_value("paleolith_store", "shelter_location", "").is_empty():
+		return "No shelter"
+	return ""
+
+func _get_quality_label(quality: float) -> String:
+	var grades: Array = Firm.get_value("paleolith_ledger", "shelter_quality_grades")
+	for grade in grades:
+		if quality < grade["max"]:
+			return grade["label"]
+	return "Unknown"

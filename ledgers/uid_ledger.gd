@@ -40,6 +40,7 @@ func _ready() -> void:
 		"paleolith_gather_daemon": "uid://18vg8d01ndxe",
 		"paleolith_fire_daemon": "uid://b1ofrwj5igp3q",
 		"paleolith_deity_daemon": "uid://3fygn4iogmfj",
+		"paleolith_shelter_daemon": "uid://ceq1b8vdynejw",
 		
 		# fonts
 		"perfect_dos_vga_437": "uid://i4bmveojir7s",

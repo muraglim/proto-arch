@@ -118,6 +118,28 @@ func _get_temp_grade(temp: float) -> String:
 			return entry["label"]
 	return "Hot"
 
+func advance_time(seconds: float) -> void:
+	# advances the game clock by the given game-time seconds.
+	# handles day boundary crossing; may trigger _advance_day() once.
+	var remaining: float = seconds
+	while remaining > 0.0:
+		var to_day_end: float = _day_duration - _elapsed
+		if remaining >= to_day_end:
+			remaining -= to_day_end
+			_elapsed = 0.0
+			_advance_day()
+		else:
+			_elapsed += remaining
+			remaining = 0.0
+	_time_of_day = _elapsed / _day_duration
+	_update_ambient_temp()
+	_log("advance_time(%.1fs): day %d | tod %.2f | %s" % [
+		seconds,
+		Keeper.get_value("paleolith_store", "day", 1),
+		_time_of_day,
+		_get_time_label(),
+	])
+
 @warning_ignore("unused_signal")
 signal tick(payload: Dictionary)
 @warning_ignore("unused_signal")

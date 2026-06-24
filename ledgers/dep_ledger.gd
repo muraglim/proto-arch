@@ -258,6 +258,21 @@ func _ready() -> void:
 					{"case": "signal", "signal": "deity_revealed", "target": "self", "method": "_on_deity_revealed"},
 				]
 			},
+			{
+				"uid_key": "paleolith_shelter_daemon",
+				"type": "daemon",
+				"role": "paleolith_shelter_daemon",
+				"order": 6,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_shelter_daemon", "target": "paleolith_shelter_daemon"},
+					{"case": "call", "source": "paleolith_shelter_daemon", "method": "set_tick_daemon", "target": "paleolith_tick_daemon"},
+					{"case": "signal", "signal": "shelter_built", "target": "self", "method": "_on_shelter_built"},
+					{"case": "signal", "signal": "shelter_degraded", "target": "self", "method": "_on_shelter_degraded"},
+					{"case": "signal", "signal": "shelter_destroyed", "target": "self", "method": "_on_shelter_destroyed"},
+					{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_shelter_daemon", "method": "on_tick"},
+					{"case": "signal", "source": "paleolith_tick_daemon", "signal": "day_rolled", "target": "paleolith_shelter_daemon", "method": "on_day_rolled"},
+				]
+			},
 		],
 		"paleolith_pocket_lens": [
 			{

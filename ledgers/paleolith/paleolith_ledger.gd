@@ -63,5 +63,52 @@ func _ready() -> void:
 			"paleolith_fire_fail":     			   {"chars_per_second": 60.0, "initial_delay": 0.0},
 			"paleolith_deity_reveal":  			   {"chars_per_second": 35.0, "initial_delay": 1.2},
 			"paleolith_pocket_stub":   			   {"chars_per_second": 60.0, "initial_delay": 0.0},
+			"paleolith_site_selection":        {"chars_per_second": 50.0, "initial_delay": 0.0},
+			"paleolith_shelter_trip_clear":    {"chars_per_second": 55.0, "initial_delay": 0.0},
+			"paleolith_shelter_trip_lost":     {"chars_per_second": 45.0, "initial_delay": 0.3},
+			"paleolith_shelter_built":         {"chars_per_second": 40.0, "initial_delay": 0.6},
+			"paleolith_shelter_destroyed":     {"chars_per_second": 50.0, "initial_delay": 0.3},
 		},
-	}
+# shelter sites
+		"shelter_sites": {
+			"exposed_ridge": {
+				"label": "Exposed Ridge",
+				"degradation_rate_modifier": 1.5,
+				"travel_time_base": 300.0,
+			},
+			"sheltered_hollow": {
+				"label": "Sheltered Hollow",
+				"degradation_rate_modifier": 0.7,
+				"travel_time_base": 500.0,
+			},
+		},
+		"shelter_harvest_time": 120.0,
+		"shelter_harvest_count": 3,
+		"shelter_degradation_base": 0.0003,
+		"shelter_weather_degradation": {
+			"clear":    0.0,
+			"overcast": 0.0,
+			"rain":     0.10,
+			"storm":    0.30,
+		},
+		"shelter_build_quality_min": 0.4,
+		"shelter_build_quality_max": 1.0,
+		"shelter_quality_grades": [
+			{"label": "Precarious", "max": 0.25},
+			{"label": "Rough",      "max": 0.50},
+			{"label": "Solid",      "max": 0.75},
+			{"label": "Sturdy",     "max": 1.01},
+		],
+
+		# familiarity
+		"familiarity_increment": 0.25,
+		"familiarity_decay_per_day": 0.15,
+		"familiarity_travel_reduction": 0.4,
+
+		# night travel
+		"night_threshold": 0.82,
+		"night_lost_chance": 0.35,
+		"night_lost_familiarity_reduction": 0.20,
+		"night_penalty_min": 60.0,
+		"night_penalty_max": 200.0,
+		}
