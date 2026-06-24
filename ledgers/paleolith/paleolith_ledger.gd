@@ -44,7 +44,7 @@ func _ready() -> void:
 		"gather_duration_scrubland": 2.0,
 		"gather_base_success_rate": 0.6,
 		# caps live here until upgrade mechanics warrant moving them to paleolith_store
-		"flint_cap": 3,
+		"flint_cap": 10,
 		"tinder_cap": 5,
 
 		# typewriter dispatch — keyed by compose context_key, fallback to "default"

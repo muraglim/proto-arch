@@ -22,6 +22,16 @@ func display_raw(text: String) -> void:
 	if Guard.is_null_or_empty(_channel, name + ":display_raw"): return
 	_type_out(text, _get_typewriter_config("default"))
 
+func show_overlay(asset_key: String) -> void:
+	if Guard.is_null_or_empty(_channel, name + ":show overlay"): return
+	var assets: Array = Firm.get_value("paleolith_asset_ledger", asset_key, [])
+	if assets.is_empty(): return
+	_channel.show_overlay(assets[randi() % assets.size()].get("text", ""))
+
+func hide_overlay() -> void:
+	if Guard.is_null_or_empty(_channel, name + ":hide_overlay"): return
+	_channel.hide_overlay()
+
 func _get_typewriter_config(context_key: String) -> Dictionary:
 	var configs: Dictionary = Firm.get_value("paleolith_ledger", "typewriter_configs", {})
 	if configs.has(context_key):

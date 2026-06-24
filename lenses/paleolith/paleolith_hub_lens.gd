@@ -93,6 +93,7 @@ func _handle_hub(action: String) -> void:
 			Scope.transition("project_start")
 
 func _handle_continue() -> void:
+	_medium.hide_overlay()
 	if not _pending_deity.is_empty():
 		state = HubState.DEITY_REVEAL
 		_medium.compose("paleolith_deity_reveal", {
@@ -109,6 +110,8 @@ func _on_gather_succeeded(location: String, new_count: int) -> void:
 	var key: String = "paleolith_gather_success_flint" if is_flint else "paleolith_gather_success_tinder"
 	var cap: int = Firm.get_value("paleolith_ledger", "flint_cap" if is_flint else "tinder_cap")
 	_medium.compose(key, {"count": new_count, "cap": cap})
+	if is_flint:
+		_medium.show_overlay("flints")
 
 func _on_gather_failed(location: String) -> void:
 	state = HubState.GATHER_RESULT

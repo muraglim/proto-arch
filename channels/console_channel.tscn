@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://bxh8a4u7p5usq"]
 
 [ext_resource type="Script" uid="uid://bwc1okjag2uk3" path="res://channels/console_channel.gd" id="1_qo0kx"]
+[ext_resource type="FontFile" uid="uid://i4bmveojir7s" path="res://fonts/perfect_dos_vga_437/Perfect DOS VGA 437 Win.ttf" id="2_w0i4v"]
+[ext_resource type="FontFile" uid="uid://c2fnwc4exih82" path="res://fonts/perfect_dos_vga_437/Perfect DOS VGA 437.ttf" id="3_l6l33"]
 
 [node name="console_channel" type="Control" unique_id=1627616477]
 layout_mode = 3
@@ -25,7 +27,31 @@ layout_mode = 2
 [node name="Output" type="RichTextLabel" parent="MarginContainer/VBoxContainer" unique_id=30300673]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_fonts/normal_font = ExtResource("2_w0i4v")
 
 [node name="Input" type="LineEdit" parent="MarginContainer/VBoxContainer" unique_id=748030267]
 layout_mode = 2
 keep_editing_on_text_submit = true
+
+[node name="OverlayLayer" type="CanvasLayer" parent="." unique_id=551118393]
+visible = false
+
+[node name="OverlayPanel" type="Panel" parent="OverlayLayer" unique_id=1086920104]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="OverlayLayer/OverlayPanel" unique_id=1231280728]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OverlayLabel" type="Label" parent="OverlayLayer/OverlayPanel/CenterContainer" unique_id=1837808770]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_l6l33")
+theme_override_font_sizes/font_size = 8

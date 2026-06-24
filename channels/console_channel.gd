@@ -3,6 +3,8 @@ extends Channel
 
 @onready var output: RichTextLabel = $MarginContainer/VBoxContainer/Output
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
+@onready var overlay_layer: CanvasLayer = $OverlayLayer
+@onready var overlay_label: Label = $OverlayLayer/OverlayPanel/CenterContainer/OverlayLabel
 
 func channel_init() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -26,6 +28,13 @@ func prepare_for_reveal(text: String) -> void:
 
 func set_visible_characters(count: int) -> void:
 	output.visible_characters = count
-	
+
+func show_overlay(text: String) -> void:
+	overlay_label.text = text.replace("\r", "")
+	overlay_layer.visible = true
+
+func hide_overlay() -> void:
+	overlay_layer.visible = false
+
 @warning_ignore("unused_signal")
 signal input_received(text: String)
