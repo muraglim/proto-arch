@@ -4,10 +4,16 @@ extends Channel
 @onready var output: RichTextLabel = $MarginContainer/VBoxContainer/Output
 @onready var input: LineEdit = $MarginContainer/VBoxContainer/Input
 @onready var overlay_layer: CanvasLayer = $OverlayLayer
-@onready var overlay_label: Label = $OverlayLayer/OverlayPanel/CenterContainer/OverlayLabel
+@onready var overlay_label: RichTextLabel = $OverlayLayer/OverlayPanel/CenterContainer/OverlayLabel
 
 func channel_init() -> void:
+	if not is_node_ready():
+		await ready
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var font_uid = Firm.get_value("uid_ledger", "perfect_dos_vga_437")
+	var font = load(font_uid)
+	overlay_label.add_theme_font_override("font", font)
+	overlay_label.add_theme_font_size_override("font_size", 6)
 	input.grab_focus()
 	input.text_submitted.connect(_on_text_submitted)
 

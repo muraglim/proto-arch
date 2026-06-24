@@ -11,7 +11,7 @@ func _ready() -> void:
 
 		# fire
 		"fire_duration": 3.0,
-		"fire_base_success_rate": 0.65,
+		"fire_base_success_rate": 1,
 
 		"weather_table": [
 			{"weather": "clear",    "weight": 40.0, "temp_modifier":   5.0},
@@ -44,7 +44,7 @@ func _ready() -> void:
 		"gather_duration_scrubland": 2.0,
 		"gather_base_success_rate": 0.6,
 		# caps live here until upgrade mechanics warrant moving them to paleolith_store
-		"flint_cap": 10,
+		"flint_cap": 1000,
 		"tinder_cap": 5,
 
 		# typewriter dispatch — keyed by compose context_key, fallback to "default"

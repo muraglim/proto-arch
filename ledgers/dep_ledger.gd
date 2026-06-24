@@ -213,6 +213,7 @@ func _ready() -> void:
 				"wires": [
 					{"case": "call", "method": "set_channel", "target": "console_channel"},
 					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+					{"case": "signal", "signal": "animation_complete", "target": "self", "method": "_on_animation_complete"},
 				]
 			},
 			{

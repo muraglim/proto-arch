@@ -6,6 +6,7 @@ const CONTEXT_KEY = "paleolith_hub"
 enum HubState {
 	HUB,
 	GATHERING,
+	GATHER_ANIMATING,
 	GATHER_RESULT,
 	FIRE_ATTEMPT,
 	FIRE_RESULT,
@@ -52,7 +53,7 @@ func _on_input(text: String) -> void:
 	match state:
 		HubState.HUB:
 			_handle_hub(text.strip_edges().to_lower())
-		HubState.GATHERING, HubState.FIRE_ATTEMPT:
+		HubState.GATHERING, HubState.FIRE_ATTEMPT, HubState.GATHER_ANIMATING:
 			pass
 		HubState.GATHER_RESULT, HubState.FIRE_RESULT:
 			_handle_continue()
@@ -105,13 +106,16 @@ func _handle_continue() -> void:
 		_request_compose()
 
 func _on_gather_succeeded(location: String, new_count: int) -> void:
-	state = HubState.GATHER_RESULT
 	var is_flint: bool = location == "riverbank"
 	var key: String = "paleolith_gather_success_flint" if is_flint else "paleolith_gather_success_tinder"
 	var cap: int = Firm.get_value("paleolith_ledger", "flint_cap" if is_flint else "tinder_cap")
 	_medium.compose(key, {"count": new_count, "cap": cap})
 	if is_flint:
-		_medium.show_overlay("flints")
+		state = HubState.GATHER_ANIMATING
+		var frames: Array = Firm.get_value("paleolith_asset_ledger", "flint_animation_frames", [])
+		_medium.show_animated_overlay(frames)
+	else:
+		state = HubState.GATHER_RESULT
 
 func _on_gather_failed(location: String) -> void:
 	state = HubState.GATHER_RESULT
@@ -128,6 +132,10 @@ func _on_fire_failed() -> void:
 
 func _on_deity_revealed(deity: Dictionary) -> void:
 	_pending_deity = deity
+
+func _on_animation_complete() -> void:
+	if state != HubState.GATHER_ANIMATING: return
+	state = HubState.GATHER_RESULT
 
 func _request_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return

@@ -3,9 +3,13 @@ extends Medium
 
 var _channel: ConsoleChannel = null
 var _type_tween: Tween = null
+var _animation_tween: Tween = null
+
+signal animation_complete
 
 func geist_shutdown() -> void:
 	_kill_tween()
+	_kill_animation_tween()
 	_log("geist_shutdown(): offline.")
 
 func set_channel(channel: ConsoleChannel) -> void:
@@ -31,6 +35,25 @@ func show_overlay(asset_key: String) -> void:
 func hide_overlay() -> void:
 	if Guard.is_null_or_empty(_channel, name + ":hide_overlay"): return
 	_channel.hide_overlay()
+
+func show_animated_overlay(frames: Array, interval: float = 0.6) -> void:
+	if Guard.is_null_or_empty(_channel, name + ":show_animated_overlay"): return
+	_kill_animation_tween()
+	if frames.is_empty():
+		animation_complete.emit()
+		return
+	_channel.show_overlay(frames[0])
+	_animation_tween = create_tween()
+	for i in range(1, frames.size()):
+		_animation_tween.tween_interval(interval)
+		_animation_tween.tween_callback(_channel.show_overlay.bind(frames[i]))
+	_animation_tween.tween_interval(interval)
+	_animation_tween.tween_callback(func(): animation_complete.emit())
+
+func _kill_animation_tween() -> void:
+	if _animation_tween != null and _animation_tween.is_valid():
+		_animation_tween.kill()
+	_animation_tween = null
 
 func _get_typewriter_config(context_key: String) -> Dictionary:
 	var configs: Dictionary = Firm.get_value("paleolith_ledger", "typewriter_configs", {})
