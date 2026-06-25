@@ -28,7 +28,7 @@ func geist_init() -> void:
 func geist_shutdown() -> void:
 	_log("geist_shutdown(): profile lens offline.")
 
-func geist_resume(hint: String = "") -> void:
+func geist_resume(hint: Variant = "") -> void:
 	match hint:
 		"creation": state = ProfileState.CREATION_PROMPT
 		"selection": state = ProfileState.SELECTION
