@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://dp3kkau4gvja4"]
+
+[ext_resource type="Script" uid="uid://m4uf5sy4xh3x" path="res://channels/paleolith/paleolith_channel.gd" id="1_c4dq6"]
+[ext_resource type="FontFile" uid="uid://c2fnwc4exih82" path="res://fonts/perfect_dos_vga_437/Perfect DOS VGA 437.ttf" id="2_xrnvc"]
+
+[node name="paleolith_channel" type="Control" unique_id=448293776]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c4dq6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1513272174]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=14975910]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=1030024821]
+layout_mode = 2
+
+[node name="Output" type="RichTextLabel" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=608595599]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Input" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=115326200]
+layout_mode = 2
+keep_editing_on_text_submit = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1888852878]
+layout_mode = 2
+
+[node name="StatusBar" type="RichTextLabel" parent="VBoxContainer/HBoxContainer" unique_id=1187766846]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ArcPanel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer" unique_id=1797130755]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1645383791]
+
+[node name="Panel" type="Panel" parent="CanvasLayer" unique_id=627789137]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Panel" unique_id=355761214]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OverlayLabel" type="RichTextLabel" parent="CanvasLayer/Panel/CenterContainer" unique_id=816248145]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_xrnvc")
+bbcode_enabled = true
+fit_content = true
+autowrap_mode = 0

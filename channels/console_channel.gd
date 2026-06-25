@@ -16,6 +16,7 @@ func channel_init() -> void:
 	overlay_label.add_theme_font_size_override("font_size", 6)
 	input.grab_focus()
 	input.text_submitted.connect(_on_text_submitted)
+	Auteur.register("console_channel", self, ["project_start"])
 
 func set_input_max_length(value: int) -> void:
 	input.max_length = value

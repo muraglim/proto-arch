@@ -35,6 +35,8 @@ func _ready() -> void:
 		"paleolith_pocket_lens": "uid://cxva6iy1fs8b4",
 		## mediums
 		"paleolith_medium": "uid://c7afnrqh8v8jj",
+		## channels
+		"paleolith_channel": "uid://dp3kkau4gvja4",
 		## daemons
 		"paleolith_tick_daemon": "uid://cgtlhahjqjhwt",
 		"paleolith_gather_daemon": "uid://18vg8d01ndxe",

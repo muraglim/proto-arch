@@ -13,6 +13,13 @@ func channel_init() -> void:
 func channel_shutdown() -> void:
 	pass
 
+@warning_ignore("unused_parameter")
+func show_overlay(text: String) -> void:
+	pass
+
+func hide_overlay() -> void:
+	pass
+
 func _log(msg: String) -> void:
 	if verbose:
 		print("[%s] " % name, msg)

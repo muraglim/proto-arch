@@ -21,4 +21,5 @@ func transition(to: String, hint: Variant = "") -> void:
 		push_error("[Scope] transition(%s -> %s): invalid transition." % [active_context, to])
 		return
 	active_context = to
+	Auteur.on_transition(to)
 	_registry[to].geist_resume(hint)

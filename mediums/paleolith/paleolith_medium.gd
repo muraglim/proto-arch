@@ -1,7 +1,7 @@
 class_name PaleolithMedium
 extends Medium
 
-var _channel: ConsoleChannel = null
+var _channel: Channel = null
 var _type_tween: Tween = null
 var _animation_tween: Tween = null
 
@@ -12,7 +12,7 @@ func geist_shutdown() -> void:
 	_kill_animation_tween()
 	_log("geist_shutdown(): offline.")
 
-func set_channel(channel: ConsoleChannel) -> void:
+func set_channel(channel: Channel) -> void:
 	_channel = channel
 
 func compose(context_key: String, data: Dictionary = {}) -> void:

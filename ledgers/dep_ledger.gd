@@ -197,9 +197,9 @@ func _ready() -> void:
 		],
 		"paleolith_hub_lens": [
 			{
-				"uid_key": "console_channel",
+				"uid_key": "paleolith_channel",
 				"type": "channel",
-				"role": "console_channel",
+				"role": "paleolith_channel",
 				"order": 0,
 				"wires": [
 					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
@@ -211,7 +211,7 @@ func _ready() -> void:
 				"role": "paleolith_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "console_channel"},
+					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
 					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
 					{"case": "signal", "signal": "animation_complete", "target": "self", "method": "_on_animation_complete"},
 				]
@@ -276,9 +276,9 @@ func _ready() -> void:
 		],
 		"paleolith_pocket_lens": [
 			{
-				"uid_key": "console_channel",
+				"uid_key": "paleolith_channel",
 				"type": "channel",
-				"role": "console_channel",
+				"role": "paleolith_channel",
 				"order": 0,
 				"wires": [
 					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
@@ -290,7 +290,7 @@ func _ready() -> void:
 				"role": "paleolith_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "console_channel"},
+					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
 					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
 				]
 			},
