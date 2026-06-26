@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://m4uf5sy4xh3x" path="res://channels/paleolith/paleolith_channel.gd" id="1_c4dq6"]
 [ext_resource type="FontFile" uid="uid://c2fnwc4exih82" path="res://fonts/perfect_dos_vga_437/Perfect DOS VGA 437.ttf" id="2_xrnvc"]
+[ext_resource type="FontFile" uid="uid://b278khluoy3sm" path="res://fonts/vcr_osd_mono/VCR_OSD_MONO_1.001.ttf" id="3_y2adw"]
 
 [node name="paleolith_channel" type="Control" unique_id=448293776]
 layout_mode = 3
@@ -46,10 +47,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/normal_font = ExtResource("2_xrnvc")
 
-[node name="ArcPanel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer" unique_id=1797130755]
-custom_minimum_size = Vector2(200, 150)
+[node name="ArcPanel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer" unique_id=476586597]
+custom_minimum_size = Vector2(450, 225)
 layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("2_xrnvc")
+theme_override_fonts/normal_font = ExtResource("3_y2adw")
+theme_override_font_sizes/normal_font_size = 12
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1645383791]
 

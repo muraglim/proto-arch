@@ -23,6 +23,7 @@ const LEDGER_SCRIPTS: Array[String] = [
 	"uid://u613hticam7w", #paleolith_text_ledger
 	"uid://oyn4dg5uaodl", #paleolith_asset_ledger
 	"uid://bsu8sr44wb447", #paleolith_deity_ledger
+	"uid://ctyumklh1qnp3", #paloelith_arc_animation_ledger_2
 ]
 
 var ledgers: Dictionary = {}
