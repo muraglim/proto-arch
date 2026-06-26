@@ -273,6 +273,26 @@ func _ready() -> void:
 					{"case": "signal", "source": "paleolith_tick_daemon", "signal": "day_rolled", "target": "paleolith_shelter_daemon", "method": "on_day_rolled"},
 				]
 			},
+			{
+    			"uid_key": "paleolith_arc_medium",
+    			"type": "geist",
+    			"role": "paleolith_arc_medium",
+    			"order": 7,
+    			"wires": [
+        			{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+        			{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_arc_medium", "method": "on_tick"},
+    			]
+			},
+			{
+    			"uid_key": "paleolith_status_medium",
+    			"type": "geist",
+    			"role": "paleolith_status_medium",
+    			"order": 8,
+    			"wires": [
+        			{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+        			{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_status_medium", "method": "on_tick"},
+    			]
+			},
 		],
 		"paleolith_pocket_lens": [
 			{

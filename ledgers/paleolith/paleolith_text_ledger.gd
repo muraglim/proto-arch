@@ -3,7 +3,7 @@ extends Ledger
 
 func _ready() -> void:
 	data = {
-		"paleolith_hub": "Day {day} | {time_label} | {weather}\n{temp_grade}\n\nFlint: {flint}/{flint_cap}  Tinder: {tinder}/{tinder_cap}\nBranches: {stockpile}/{harvest_count}\n{shelter_status}\n{options}",
+		"paleolith_hub": "weather: {weather}\n\nFlint: {flint}/{flint_cap}  Tinder: {tinder}/{tinder_cap}\nBranches: {stockpile}/{harvest_count}\n{shelter_status}\n{options}",
 		"paleolith_site_selection": "The valley opens before you. Where will you make camp?\n\n[1] Exposed Ridge — close to the thicket, open to the weather\n[2] Sheltered Hollow — protected from wind and rain, a longer walk",
 		"paleolith_shelter_trip_clear": "You push through the dry scrub to the acacia thicket and return with an armful of thorn branches.\n\nBranches: {stockpile}/{harvest_count}\n\n[continue]",
 		"paleolith_shelter_trip_lost": "The path back blurs in the low light. You find your way eventually, but the dark cost you time.\n\nBranches: {stockpile}/{harvest_count}\n\n[continue]",

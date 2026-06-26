@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/Perfect DOS VGA 437.ttf-fd498bc1ff55e7127a025
 [params]
 
 Rendering=null
-antialiasing=0
+antialiasing=2
 generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false

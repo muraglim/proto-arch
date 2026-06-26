@@ -210,7 +210,6 @@ func _request_compose() -> void:
 		"day":          tick["day"],
 		"time_label":   tick["time_label"],
 		"weather":      tick["weather"],
-		"temp_grade":   tick["temp_grade"],
 		"flint":        flint,
 		"flint_cap":    flint_cap,
 		"tinder":       tinder,

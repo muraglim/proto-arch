@@ -30,9 +30,12 @@ layout_mode = 2
 [node name="Output" type="RichTextLabel" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=608595599]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_fonts/normal_font = ExtResource("2_xrnvc")
+bbcode_enabled = true
 
 [node name="Input" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=115326200]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_xrnvc")
 keep_editing_on_text_submit = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1888852878]
@@ -41,10 +44,12 @@ layout_mode = 2
 [node name="StatusBar" type="RichTextLabel" parent="VBoxContainer/HBoxContainer" unique_id=1187766846]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/normal_font = ExtResource("2_xrnvc")
 
 [node name="ArcPanel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer" unique_id=1797130755]
 custom_minimum_size = Vector2(200, 150)
 layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_xrnvc")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1645383791]
 
