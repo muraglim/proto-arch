@@ -30,12 +30,14 @@ func daemon_init() -> void:
 	_temp_base_min = range_data["min"]
 	_temp_base_max = range_data["max"]
 	_weather = Keeper.get_value("paleolith_store", "weather", "clear")
+	_elapsed = Keeper.get_value("paleolith_store", "elapsed", 0.0)
 	_update_ambient_temp()
 	_character_temp = _ambient_temp
 	_log("daemon_init(): online. ambient: %.1f° | character: %.1f°" % [_ambient_temp, _character_temp])
 
 func daemon_shutdown() -> void:
 	set_process(false)
+	Keeper.set_value("paleolith_store", "elapsed", _elapsed)
 	_log("daemon_shutdown(): offline.")
 
 func _process(delta: float) -> void:

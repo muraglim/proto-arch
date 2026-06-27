@@ -4,6 +4,7 @@ extends AutoSaveStore
 func _init_defaults() -> void:
 	data = {
 		"day": 1,
+		"elapsed": 0.0,
 		"weather": "clear",
 		"flint": 0,
 		"tinder": 0,
