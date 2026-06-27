@@ -24,6 +24,9 @@ const LEDGER_SCRIPTS: Array[String] = [
 	"uid://oyn4dg5uaodl", #paleolith_asset_ledger
 	"uid://bsu8sr44wb447", #paleolith_deity_ledger
 	"uid://ctyumklh1qnp3", #paloelith_arc_animation_ledger_2
+	"uid://dga5pvhwc537f", #paleolith_event_ledger
+	"uid://vthbp1fahnb3", #paleolith_location_ledger
+	"uid://c8m2qmgj1j3yv" #paleolith_resource_ledger
 ]
 
 var ledgers: Dictionary = {}

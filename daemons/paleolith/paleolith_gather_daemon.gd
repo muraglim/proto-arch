@@ -1,19 +1,14 @@
 class_name PaleolithGatherDaemon
 extends Daemon
 
-var _duration_riverbank: float = 0.0
-var _duration_scrubland: float = 0.0
-var _base_success_rate: float = 0.0
-
 var _elapsed: float = 0.0
 var _active_duration: float = 0.0
 var _active_location: String = ""
+var _active_resource: String = ""
+var _base_success_rate: float = 0.0
 
 func daemon_init() -> void:
 	set_process(false)
-	_duration_riverbank = Firm.get_value("paleolith_ledger", "gather_duration_riverbank")
-	_duration_scrubland = Firm.get_value("paleolith_ledger", "gather_duration_scrubland")
-	_base_success_rate = Firm.get_value("paleolith_ledger", "gather_base_success_rate")
 	_log("daemon_init(): online.")
 
 func daemon_shutdown() -> void:
@@ -21,11 +16,17 @@ func daemon_shutdown() -> void:
 	_log("daemon_shutdown(): offline.")
 
 func start_gather(location: String) -> void:
+	var locations: Dictionary = Firm.get_value("paleolith_location_ledger", "locations")
+	var loc: Dictionary = locations.get(location, {})
+	var resource_key: String = loc.get("material_node", "")
+	var resource: Dictionary = Firm.get_value("paleolith_resource_ledger", resource_key)
 	_active_location = location
-	_active_duration = _duration_riverbank if location == "riverbank" else _duration_scrubland
+	_active_resource = resource_key
+	_active_duration = resource.get("gather_duration", 2.0)
+	_base_success_rate = resource.get("base_success_rate", 0.6)
 	_elapsed = 0.0
 	set_process(true)
-	_log("start_gather(): %s (%.1fs)" % [location, _active_duration])
+	_log("start_gather(): %s → %s (%.1fs)" % [location, resource_key, _active_duration])
 
 func _process(delta: float) -> void:
 	_elapsed += delta
@@ -39,24 +40,23 @@ func _resolve() -> void:
 	if randf() < threshold:
 		_grant_yield()
 	else:
-		gather_failed.emit(_active_location)
+		gather_failed.emit(_active_location, _active_resource)
 		_log("_resolve(): fail at %s" % _active_location)
 
 func _grant_yield() -> void:
-	var yield_key: String = "flint" if _active_location == "riverbank" else "tinder"
-	var cap_key: String = "flint_cap" if _active_location == "riverbank" else "tinder_cap"
-	var current: int = Keeper.get_value("paleolith_store", yield_key, 0)
-	var cap: int = Firm.get_value("paleolith_ledger", cap_key)
+	var resource: Dictionary = Firm.get_value("paleolith_resource_ledger", _active_resource)
+	var store_key: String = resource.get("store_key", _active_resource)
+	var cap: int = resource.get("cap", 0)
+	var current: int = Keeper.get_value("paleolith_store", store_key, 0)
 	if current >= cap:
-		# lens should prevent reaching here via UI gates, but daemon is authoritative
-		gather_failed.emit(_active_location)
-		_log("_grant_yield(): %s already at cap (%d)" % [yield_key, cap])
+		gather_failed.emit(_active_location, _active_resource)
+		_log("_grant_yield(): %s at cap (%d)" % [store_key, cap])
 		return
-	Keeper.set_value("paleolith_store", yield_key, current + 1)
-	gather_succeeded.emit(_active_location, current + 1)
-	_log("_grant_yield(): +1 %s (%d/%d)" % [yield_key, current + 1, cap])
+	Keeper.set_value("paleolith_store", store_key, current + 1)
+	gather_succeeded.emit(_active_location, _active_resource, current + 1)
+	_log("_grant_yield(): +1 %s (%d/%d)" % [store_key, current + 1, cap])
 
 @warning_ignore("unused_signal")
-signal gather_succeeded(location: String, new_count: int)
+signal gather_succeeded(location: String, resource: String, new_count: int)
 @warning_ignore("unused_signal")
-signal gather_failed(location: String)
+signal gather_failed(location: String, resource: String)

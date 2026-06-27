@@ -100,8 +100,8 @@ func _handle_site_selection(action: String) -> void:
 func _handle_hub(action: String) -> void:
 	var flint: int = Keeper.get_value("paleolith_store", "flint", 0)
 	var tinder: int = Keeper.get_value("paleolith_store", "tinder", 0)
-	var flint_cap: int = Firm.get_value("paleolith_ledger", "flint_cap")
-	var tinder_cap: int = Firm.get_value("paleolith_ledger", "tinder_cap")
+	var flint_cap: int = Firm.get_value("paleolith_resource_ledger", "flint").get("cap", 0)
+	var tinder_cap: int = Firm.get_value("paleolith_resource_ledger", "tinder").get("cap", 0)
 	var has_fire: bool = Keeper.get_value("paleolith_store", "has_fire", false)
 	var revealed: Array = Keeper.get_value("paleolith_store", "revealed_deities", [])
 	var shelter_exists: bool = Keeper.get_value("paleolith_store", "shelter_exists", false)
@@ -167,22 +167,19 @@ func _on_shelter_destroyed() -> void:
 		state = HubState.SHELTER_RESULT
 		_medium.compose("paleolith_shelter_destroyed", {})
 
-func _on_gather_succeeded(location: String, new_count: int) -> void:
-	var is_flint: bool = location == "riverbank"
-	var key: String = "paleolith_gather_success_flint" if is_flint else "paleolith_gather_success_tinder"
-	var cap: int = Firm.get_value("paleolith_ledger", "flint_cap" if is_flint else "tinder_cap")
-	_medium.compose(key, {"count": new_count, "cap": cap})
-	if is_flint:
+func _on_gather_succeeded(_location: String, resource: String, new_count: int) -> void:
+	var cap: int = Firm.get_value("paleolith_resource_ledger", resource).get("cap", 0)
+	_medium.compose("paleolith_gather_success_%s" % resource, {"count": new_count, "cap": cap})
+	if resource == "flint":
 		state = HubState.GATHER_ANIMATING
 		var frames: Array = Firm.get_value("paleolith_asset_ledger", "flint_animation_frames", [])
 		_medium.show_animated_overlay(frames)
 	else:
 		state = HubState.GATHER_RESULT
 
-func _on_gather_failed(location: String) -> void:
+func _on_gather_failed(_location: String, resource: String) -> void:
 	state = HubState.GATHER_RESULT
-	var key: String = "paleolith_gather_fail_flint" if location == "riverbank" else "paleolith_gather_fail_tinder"
-	_medium.compose(key, {})
+	_medium.compose("paleolith_gather_fail_%s" % resource, {})
 
 func _on_fire_succeeded() -> void:
 	state = HubState.FIRE_RESULT
@@ -207,8 +204,8 @@ func _request_compose() -> void:
 	var tick: Dictionary = _tick_daemon.build_tick_payload()
 	var flint: int = Keeper.get_value("paleolith_store", "flint", 0)
 	var tinder: int = Keeper.get_value("paleolith_store", "tinder", 0)
-	var flint_cap: int = Firm.get_value("paleolith_ledger", "flint_cap")
-	var tinder_cap: int = Firm.get_value("paleolith_ledger", "tinder_cap")
+	var flint_cap: int = Firm.get_value("paleolith_resource_ledger", "flint").get("cap", 0)
+	var tinder_cap: int = Firm.get_value("paleolith_resource_ledger", "tinder").get("cap", 0)
 	var stockpile: int = Keeper.get_value("paleolith_store", "shelter_stockpile", 0)
 	var harvest_count: int = Firm.get_value("paleolith_ledger", "shelter_harvest_count")
 	_medium.compose("paleolith_hub", {
