@@ -69,8 +69,8 @@ func _handle_foyer(text: String) -> void:
 			Mount.mount_lens("tealwyv_hub_lens")
 			Scope.transition.call_deferred("tealwyv_hub")
 		"b":
-			Mount.unmount(self)
 			Scope.transition("project_start")
+			Mount.unmount(self)
 
 func _handle_creation_prompt(text: String) -> void:
 	var character_name = text.strip_edges()
