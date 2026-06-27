@@ -88,7 +88,10 @@ func _release(uid: String, type: String) -> void:
 		print("Mount._release(uid: %s): refcount now %d, still in use." % [uid, _ref_counts[uid]])
 		return
 	_ref_counts.erase(uid)
+	var node = _live_by_uid.get(uid, null)  # capture before erase
 	_live_by_uid.erase(uid)
+	if type == "channel" and node != null:
+		Auteur.deregister_node(node)
 	if type == "lens":
 		var path = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
 		var lens_key = path.get_file().get_basename().to_lower()
