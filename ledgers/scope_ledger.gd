@@ -8,6 +8,7 @@ func _ready() -> void:
 		"tealwyv_start": ["project_start", "tealwyv_hub"],
 		"tealwyv_hub": ["tealwyv_start", "tealwyv_event"],
 		"tealwyv_event": ["tealwyv_hub"],
-		"paleolith_hub": ["project_start", "paleolith_pocket"],
+		"paleolith_hub": ["project_start", "paleolith_pocket", "paleolith_gather"],
+		"paleolith_gather": ["paleolith_hub"],
 		"paleolith_pocket": ["paleolith_hub"],
 	}

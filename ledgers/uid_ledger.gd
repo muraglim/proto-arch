@@ -33,6 +33,7 @@ func _ready() -> void:
 		## lenses
 		"paleolith_hub_lens": "uid://w6kjf8d4qqwg",
 		"paleolith_pocket_lens": "uid://cxva6iy1fs8b4",
+		"paleolith_gather_lens": "uid://xmnf2lp2as5",
 		## mediums
 		"paleolith_medium": "uid://c7afnrqh8v8jj",
 		"paleolith_arc_medium": "uid://cpx7hu0c2rsf1",

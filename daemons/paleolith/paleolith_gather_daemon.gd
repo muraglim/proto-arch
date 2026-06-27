@@ -3,7 +3,6 @@ extends Daemon
 
 var _elapsed: float = 0.0
 var _active_duration: float = 0.0
-var _active_location: String = ""
 var _active_resource: String = ""
 var _base_success_rate: float = 0.0
 
@@ -15,18 +14,15 @@ func daemon_shutdown() -> void:
 	set_process(false)
 	_log("daemon_shutdown(): offline.")
 
-func start_gather(location: String) -> void:
-	var locations: Dictionary = Firm.get_value("paleolith_location_ledger", "locations")
-	var loc: Dictionary = locations.get(location, {})
-	var resource_key: String = loc.get("material_node", "")
+func start_gather(resource_key: String) -> void:
 	var resource: Dictionary = Firm.get_value("paleolith_resource_ledger", resource_key)
-	_active_location = location
+	if Guard.is_null_or_empty(resource, name + ":start_gather(%s)" % resource_key): return
 	_active_resource = resource_key
 	_active_duration = resource.get("gather_duration", 2.0)
 	_base_success_rate = resource.get("base_success_rate", 0.6)
 	_elapsed = 0.0
 	set_process(true)
-	_log("start_gather(): %s → %s (%.1fs)" % [location, resource_key, _active_duration])
+	_log("start_gather(): %s (%.1fs)" % [resource_key, _active_duration])
 
 func _process(delta: float) -> void:
 	_elapsed += delta
@@ -40,8 +36,8 @@ func _resolve() -> void:
 	if randf() < threshold:
 		_grant_yield()
 	else:
-		gather_failed.emit(_active_location, _active_resource)
-		_log("_resolve(): fail at %s" % _active_location)
+		gather_failed.emit(_active_resource)
+		_log("_resolve(): fail — %s" % _active_resource)
 
 func _grant_yield() -> void:
 	var resource: Dictionary = Firm.get_value("paleolith_resource_ledger", _active_resource)
@@ -49,14 +45,14 @@ func _grant_yield() -> void:
 	var cap: int = resource.get("cap", 0)
 	var current: int = Keeper.get_value("paleolith_store", store_key, 0)
 	if current >= cap:
-		gather_failed.emit(_active_location, _active_resource)
+		gather_failed.emit(_active_resource)
 		_log("_grant_yield(): %s at cap (%d)" % [store_key, cap])
 		return
 	Keeper.set_value("paleolith_store", store_key, current + 1)
-	gather_succeeded.emit(_active_location, _active_resource, current + 1)
+	gather_succeeded.emit(_active_resource, current + 1)
 	_log("_grant_yield(): +1 %s (%d/%d)" % [store_key, current + 1, cap])
 
 @warning_ignore("unused_signal")
-signal gather_succeeded(location: String, resource: String, new_count: int)
+signal gather_succeeded(resource: String, new_count: int)
 @warning_ignore("unused_signal")
-signal gather_failed(location: String, resource: String)
+signal gather_failed(resource: String)

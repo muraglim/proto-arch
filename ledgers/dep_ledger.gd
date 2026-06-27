@@ -213,7 +213,6 @@ func _ready() -> void:
 				"wires": [
 					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
 					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
-					{"case": "signal", "signal": "animation_complete", "target": "self", "method": "_on_animation_complete"},
 				]
 			},
 			{
@@ -226,21 +225,10 @@ func _ready() -> void:
 				]
 			},
 			{
-				"uid_key": "paleolith_gather_daemon",
-				"type": "daemon",
-				"role": "paleolith_gather_daemon",
-				"order": 3,
-				"wires": [
-					{"case": "call", "source": "self", "method": "set_gather_daemon", "target": "paleolith_gather_daemon"},
-					{"case": "signal", "signal": "gather_succeeded", "target": "self", "method": "_on_gather_succeeded"},
-					{"case": "signal", "signal": "gather_failed", "target": "self", "method": "_on_gather_failed"},
-				]
-			},
-			{
 				"uid_key": "paleolith_fire_daemon",
 				"type": "daemon",
 				"role": "paleolith_fire_daemon",
-				"order": 4,
+				"order": 3,
 				"wires": [
 					{"case": "call", "source": "self", "method": "set_fire_daemon", "target": "paleolith_fire_daemon"},
 					{"case": "signal", "signal": "fire_succeeded", "target": "self", "method": "_on_fire_succeeded"},
@@ -251,7 +239,7 @@ func _ready() -> void:
 				"uid_key": "paleolith_deity_daemon",
 				"type": "daemon",
 				"role": "paleolith_deity_daemon",
-				"order": 5,
+				"order": 4,
 				"wires": [
 					{"case": "call", "source": "self", "method": "set_deity_daemon", "target": "paleolith_deity_daemon"},
 					{"case": "signal", "source": "paleolith_fire_daemon", "signal": "fire_succeeded", "target": "paleolith_deity_daemon", "method": "on_fire_lit"},
@@ -262,10 +250,9 @@ func _ready() -> void:
 				"uid_key": "paleolith_shelter_daemon",
 				"type": "daemon",
 				"role": "paleolith_shelter_daemon",
-				"order": 6,
+				"order": 5,
 				"wires": [
 					{"case": "call", "source": "self", "method": "set_shelter_daemon", "target": "paleolith_shelter_daemon"},
-					{"case": "call", "source": "paleolith_shelter_daemon", "method": "set_tick_daemon", "target": "paleolith_tick_daemon"},
 					{"case": "signal", "signal": "shelter_built", "target": "self", "method": "_on_shelter_built"},
 					{"case": "signal", "signal": "shelter_degraded", "target": "self", "method": "_on_shelter_degraded"},
 					{"case": "signal", "signal": "shelter_destroyed", "target": "self", "method": "_on_shelter_destroyed"},
@@ -274,24 +261,64 @@ func _ready() -> void:
 				]
 			},
 			{
-    			"uid_key": "paleolith_arc_medium",
-    			"type": "geist",
-    			"role": "paleolith_arc_medium",
-    			"order": 7,
-    			"wires": [
-        			{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
-        			{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_arc_medium", "method": "on_tick"},
-    			]
+				"uid_key": "paleolith_arc_medium",
+				"type": "geist",
+				"role": "paleolith_arc_medium",
+				"order": 6,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+					{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_arc_medium", "method": "on_tick"},
+				]
 			},
 			{
-    			"uid_key": "paleolith_status_medium",
-    			"type": "geist",
-    			"role": "paleolith_status_medium",
-    			"order": 8,
-    			"wires": [
-        			{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
-        			{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_status_medium", "method": "on_tick"},
-    			]
+				"uid_key": "paleolith_status_medium",
+				"type": "geist",
+				"role": "paleolith_status_medium",
+				"order": 7,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+					{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_status_medium", "method": "on_tick"},
+				]
+			},
+			{
+				"uid_key": "paleolith_gather_lens",
+				"type": "lens",
+				"role": "paleolith_gather_lens",
+				"order": 8,
+				"wires": []
+			},
+		],
+		"paleolith_gather_lens": [
+			{
+				"uid_key": "paleolith_channel",
+				"type": "channel",
+				"role": "paleolith_channel",
+				"order": 0,
+				"wires": [
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
+				]
+			},
+			{
+				"uid_key": "paleolith_medium",
+				"type": "geist",
+				"role": "paleolith_medium",
+				"order": 1,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+					{"case": "signal", "source": "paleolith_medium", "signal": "animation_complete", "target": "self", "method": "_on_animation_complete"},
+				]
+			},
+			{
+				"uid_key": "paleolith_gather_daemon",
+				"type": "daemon",
+				"role": "paleolith_gather_daemon",
+				"order": 2,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_gather_daemon", "target": "paleolith_gather_daemon"},
+					{"case": "signal", "signal": "gather_succeeded", "target": "self", "method": "_on_gather_succeeded"},
+					{"case": "signal", "signal": "gather_failed", "target": "self", "method": "_on_gather_failed"},
+				]
 			},
 		],
 		"paleolith_pocket_lens": [

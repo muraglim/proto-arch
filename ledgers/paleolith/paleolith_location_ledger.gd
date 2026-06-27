@@ -16,7 +16,7 @@ func _ready() -> void:
 				"label": "Scrubland",
 				"travel_time_base": 200.0,
 				"material_node": "tinder",
-				"food_node": "tubers",
+				"food_node": "sedge_corms",
 				"event_eligible": true,
 			},
 			"riverbank": {
