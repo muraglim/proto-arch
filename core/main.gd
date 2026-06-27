@@ -8,6 +8,9 @@ func _ready() -> void:
 	_under.name = "under"
 	add_child(_under)
 	Mount.register_main(self)
+	if not Screener.verify_ledger_refs():
+		push_error("Main._ready(): cross-ledger validation failed. Halting boot.")
+		return
 	var uid = Firm.get_value("uid_ledger", "project_start_lens")
 	if not Screener.verify_uid(uid, "project_start_lens", "Main._ready()"): return
 	var instance = start_geist(uid)

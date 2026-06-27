@@ -8,6 +8,7 @@ const LEDGER_SCRIPTS: Array[String] = [
 	"uid://dqki0i06ekyd5", # dest_ledger
 	"uid://bjja3ixg755vw", # dep_ledger
 	"uid://dnxiljrr7tsvg", # scope_ledger
+	"uid://dfe7m23x3sorf", # cross_ref_ledger
 	
 	# project_start/profile
 	"uid://bh5p5wp205m4d", # core_text_ledger
