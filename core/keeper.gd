@@ -3,8 +3,9 @@ extends Node
 # Mutabale state facade
 
 const STORE_SCRIPTS: Array[String] = [
-	# profile
+	# core
 	"uid://4iwjgqs37g7t", #profile_store
+	"uid://oo8gi2lwcm4g", #luck_store
 	
 	# tealwyv
 	"uid://dah77mrkcmp7c", #tealwyv_dev_store
