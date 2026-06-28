@@ -1,8 +1,10 @@
-## Screener — context-aware validation orchestrator.
-## Flattens common Guard + Fuss boilerplate into a single, flat callsite gate.
-## Composes fatal integrity checks (Guard) with soft policy checks (Fuss)
-## and returns false to signal the caller should halt, true to proceed.
-## The exact severity of soft checks (warning vs fatal) can vary by context.
+## Screener — validation orchestrator.
+## verify_uid: flattens Guard + Fuss boilerplate into a single callsite gate.
+##   Composes fatal integrity checks (Guard) with soft policy checks (Fuss)
+##   and returns false to signal the caller should halt, true to proceed.
+## verify_ledger_refs: drives ledger cross-reference validation at startup.
+##   Reads a declared registry from cross_ref_ledger and resolves each ref
+##   against its target, pushing errors for any misses.
 
 extends Node
 
