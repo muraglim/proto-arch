@@ -5,8 +5,11 @@ var _context_map: Dictionary = {}
 
 func register(key: String, channel: Channel, contexts: Array) -> void:
 	_channels[key] = channel
-	for ctx in contexts:
-		_context_map[ctx] = key
+	for context in contexts:
+		if _context_map.has(context):
+			push_error("register(): Context '%s' is already owned by channel '%s'. Cannot assign to '%s'." % [context, _context_map[context], key])
+			continue
+		_context_map[context] = key
 	_log("register(): %s → %s" % [key, contexts])
 
 func deregister_node(channel: Channel) -> void:
@@ -17,9 +20,9 @@ func deregister_node(channel: Channel) -> void:
 			break
 	if found_key.is_empty(): return
 	_channels.erase(found_key)
-	for ctx in _context_map.keys():
-		if _context_map[ctx] == found_key:
-			_context_map.erase(ctx)
+	for context in _context_map.keys():
+		if _context_map[context] == found_key:
+			_context_map.erase(context)
 	_log("deregister_node(): %s removed." % found_key)
 
 func on_transition(context_key: String) -> void:
