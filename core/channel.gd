@@ -10,6 +10,9 @@ extends Control
 func channel_init() -> void:
 	pass
 
+func channel_resume() -> void:
+	pass
+
 func channel_shutdown() -> void:
 	pass
 

@@ -18,6 +18,9 @@ func channel_init() -> void:
 	input.text_submitted.connect(_on_text_submitted)
 	Auteur.register("console_channel", self, ["project_start"])
 
+func channel_resume() -> void:
+	input.grab_focus()
+
 func set_input_max_length(value: int) -> void:
 	input.max_length = value
 

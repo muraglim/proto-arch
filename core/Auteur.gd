@@ -26,7 +26,10 @@ func on_transition(context_key: String) -> void:
 	if not _context_map.has(context_key): return
 	var target_key: String = _context_map[context_key]
 	for key in _channels:
-		_channels[key].visible = (key == target_key)
+		var is_target: bool = (key == target_key)
+		_channels[key].visible = is_target
+		if is_target:
+			_channels[key].channel_resume()
 	_log("on_transition(%s): showing %s" % [context_key, target_key])
 
 func _log(msg: String) -> void:
