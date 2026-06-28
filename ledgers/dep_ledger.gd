@@ -285,7 +285,14 @@ func _ready() -> void:
 				"type": "lens",
 				"role": "paleolith_gather_lens",
 				"order": 8,
-				"wires": []
+					"wires": []
+			},
+			{
+				"uid_key": "paleolith_event_lens",
+				"type": "lens",
+				"role": "paleolith_event_lens",
+				"order": 9,
+					"wires": []
 			},
 		],
 		"paleolith_gather_lens": [
@@ -318,6 +325,45 @@ func _ready() -> void:
 					{"case": "call", "source": "self", "method": "set_gather_daemon", "target": "paleolith_gather_daemon"},
 					{"case": "signal", "signal": "gather_succeeded", "target": "self", "method": "_on_gather_succeeded"},
 					{"case": "signal", "signal": "gather_failed", "target": "self", "method": "_on_gather_failed"},
+				]
+			},
+		],
+		"paleolith_event_lens": [
+			{
+				"uid_key": "paleolith_channel",
+				"type": "channel",
+				"role": "paleolith_channel",
+				"order": 0,
+				"wires": [
+					{"case": "signal", "signal": "input_received", "target": "self", "method": "_on_input"},
+				]
+			},
+			{
+				"uid_key": "paleolith_medium",
+				"type": "geist",
+				"role": "paleolith_medium",
+				"order": 1,
+				"wires": [
+					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+				]
+			},
+			{
+				"uid_key": "paleolith_event_roll_daemon",
+				"type": "daemon",
+				"role": "paleolith_event_roll_daemon",
+				"order": 2,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_event_roll_daemon", "target": "paleolith_event_roll_daemon"},
+				]
+			},
+			{
+				"uid_key": "paleolith_outcome_roll_daemon",
+				"type": "daemon",
+				"role": "paleolith_outcome_roll_daemon",
+				"order": 3,
+				"wires": [
+					{"case": "call", "source": "self", "method": "set_outcome_roll_daemon", "target": "paleolith_outcome_roll_daemon"},
 				]
 			},
 		],

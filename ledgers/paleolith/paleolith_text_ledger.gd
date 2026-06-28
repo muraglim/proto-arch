@@ -4,7 +4,7 @@ extends Ledger
 func _ready() -> void:
 	data = {
 		"paleolith_hub": "Day {day} - {time_label}\nWeather: {weather}\n\nFlint: {flint}/{flint_cap}  Tinder: {tinder}/{tinder_cap}\nBranches: {branches}/{branches_cap}\n{shelter_status}\n{options}",
-		"paleolith_site_selection": "The valley opens before you. Where will you make camp?\n\n[1] Exposed Ridge - close to the thicket, open to the weather\n[2] Sheltered Hollow — protected from wind and rain, a longer walk",
+		"paleolith_site_selection": "The valley opens before you. Where will you make camp?\n\n[1] Exposed Ridge - close to the thicket, open to the weather\n[2] Sheltered Hollow - protected from wind and rain, a longer walk",
 		"paleolith_shelter_trip_clear": "You push through the dry scrub to the acacia thicket and return with an armful of thorn branches.\n\nBranches: {stockpile}/{harvest_count}\n\n[continue]",
 		"paleolith_shelter_trip_lost": "The path back blurs in the low light. You find your way eventually, but the dark cost you time.\n\nBranches: {stockpile}/{harvest_count}\n\n[continue]",
 		"paleolith_shelter_built": "You spend the last of the light dragging and weaving branches into a rough enclosure. It holds.\n\nQuality: {quality_label}\n\n[continue]",
@@ -34,4 +34,21 @@ func _ready() -> void:
 		"paleolith_fire_fail": "The flint sparks but the tinder won't take. The nest cools.\n\n[continue]",
 		"paleolith_deity_reveal": "In the light of your fire, something becomes aware of you.\n\n{name}\n{flavor}\n\n[continue]",
 		"paleolith_pocket_stub": "[POCKET DIMENSION - skeleton]\n\n[b]ack",
+		
+		# - event lens -
+		"paleolith_event_travel": "The valley is quiet. You move through it.\n\n[continue]",
+		"paleolith_event_return": "You pick your way back toward camp.\n\n[continue]",
+
+		"paleolith_event_nest_prompt": "A ground bird's nest, unguarded - {yield_min} to {yield_max} eggs, still warm.\n\n[1] Leave it\n[2] Take one egg\n[3] Take two eggs\n[4] Drink one on the spot",
+		"paleolith_event_nest_drink_choice": "The egg is warm. Rich.\n\nTake one with you?\n\n[Y]es  [N]o",
+
+		"paleolith_event_nest_ignore": "You walk past and don't look back.\n\n[continue]",
+		"paleolith_event_nest_drink_only": "You crack one against your teeth and swallow it whole. Enough.\n\n[continue]",
+
+		"paleolith_event_nest_take_one_safe": "You pocket one egg and move on. Nothing stirs.\n\n[continue]",
+		"paleolith_event_nest_take_one_pursued": "[stub - pursued, one egg]\n\n[continue]",
+		"paleolith_event_nest_take_two_safe": "You take two and walk. The bird doesn't come.\n\n[continue]",
+		"paleolith_event_nest_take_two_pursued": "[stub - pursued, two eggs]\n\n[continue]",
+		"paleolith_event_nest_drink_take_one_safe": "You drink one and pocket another. Nothing follows.\n\n[continue]",
+		"paleolith_event_nest_drink_take_one_pursued": "[stub - pursued, drank and took one]\n\n[continue]",
 	}

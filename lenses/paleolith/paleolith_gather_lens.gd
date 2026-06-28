@@ -74,7 +74,12 @@ func _handle_idle(action: String) -> void:
 			_medium.compose("paleolith_gather_start_%s" % _food_resource, {})
 			_gather_daemon.start_gather(_food_resource)
 		"b":
-			Scope.transition("paleolith_hub")
+			Scope.transition.call_deferred("paleolith_event", {
+				"destination": "paleolith_hub",
+				"location": _location,
+				"context": "return",
+				"return_context": "paleolith_hub",
+				})
 
 # — signal handlers —
 

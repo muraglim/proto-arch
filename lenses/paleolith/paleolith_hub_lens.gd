@@ -102,13 +102,28 @@ func _handle_hub(action: String) -> void:
 	match action:
 		"a":
 			if branches >= branches_cap: return
-			Scope.transition("paleolith_gather", "acacia_thicket")
+			Scope.transition.call_deferred("paleolith_event", {
+				"destination": "paleolith_gather",
+				"location": "acacia_thicket",
+				"context": "travel",
+				"return_context": "paleolith_hub",
+				})
 		"r":
 			if flint >= flint_cap: return
-			Scope.transition("paleolith_gather", "riverbank")
+			Scope.transition.call_deferred("paleolith_event", {
+				"destination": "paleolith_gather",
+				"location": "riverbank",
+				"context": "travel",
+				"return_context": "paleolith_hub",
+				})
 		"s":
 			if tinder >= tinder_cap: return
-			Scope.transition("paleolith_gather", "scrubland")
+			Scope.transition.call_deferred("paleolith_event", {
+				"destination": "paleolith_gather",
+				"location": "scrubland",
+				"context": "travel",
+				"return_context": "paleolith_hub",
+				})
 		"c":
 			if branches < harvest_count or shelter_exists: return
 			_shelter_daemon.attempt_build()

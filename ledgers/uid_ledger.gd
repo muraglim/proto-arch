@@ -34,6 +34,7 @@ func _ready() -> void:
 		"paleolith_hub_lens": "uid://w6kjf8d4qqwg",
 		"paleolith_pocket_lens": "uid://cxva6iy1fs8b4",
 		"paleolith_gather_lens": "uid://xmnf2lp2as5",
+		"paleolith_event_lens": "uid://imdfw1pf2t6w",
 		## mediums
 		"paleolith_medium": "uid://c7afnrqh8v8jj",
 		"paleolith_arc_medium": "uid://cpx7hu0c2rsf1",
@@ -46,6 +47,8 @@ func _ready() -> void:
 		"paleolith_fire_daemon": "uid://b1ofrwj5igp3q",
 		"paleolith_deity_daemon": "uid://3fygn4iogmfj",
 		"paleolith_shelter_daemon": "uid://ceq1b8vdynejw",
+		"paleolith_event_roll_daemon": "uid://cao3smf8mmqi1",
+		"paleolith_outcome_roll_daemon": "uid://bcfeyw17uxxlm",
 		
 		# fonts
 		"perfect_dos_vga_437": "uid://i4bmveojir7s",

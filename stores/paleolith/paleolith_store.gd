@@ -12,6 +12,7 @@ func _init_defaults() -> void:
 		"acacia_gum": 0,
 		"sedge_corms": 0,
 		"crayfish": 0,
+		"eggs": 0,
 		"has_fire": false,
 		"revealed_deities": [],
 		# shelter
