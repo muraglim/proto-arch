@@ -30,6 +30,7 @@ static func _solve_prd_initial(p: float) -> float:
 	while true:
 		var expected := _expected_proc_rate(c)
 		if abs(expected - p) < 0.0001: break
+		if step < 1e-9: break  # float precision floor — accept best approximation
 		c += step if expected < p else -step
 		step *= 0.5
 	return c
