@@ -18,12 +18,6 @@ func daemon_init() -> void:
 func daemon_shutdown() -> void:
 	_log("daemon_shutdown(): combat daemon offline.")
 
-func wire_to_luck_daemon(daemon: TealwyvLuckDaemon) -> void:
-	_luck_daemon = daemon
-
-func wire_to_reward_daemon(daemon: TealwyvRewardDaemon) -> void:
-	_reward_daemon = daemon
-
 # called by tealwyv_forest_channel
 func start_encounter(enemy: Dictionary) -> void:
 	_round_count = 0

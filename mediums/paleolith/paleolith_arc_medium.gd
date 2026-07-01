@@ -6,9 +6,6 @@ var _channel: PaleolithChannel = null
 func geist_shutdown() -> void:
 	_log("geist_shutdown(): offline.")
 
-func set_channel(channel: PaleolithChannel) -> void:
-	_channel = channel
-
 func on_tick(payload: Dictionary) -> void:
 	if Guard.is_null_or_empty(_channel, name + ":on_tick._channel"): return
 	var frames: Array = Firm.get_value("paleolith_arc_animation_ledger2", "frames", [])

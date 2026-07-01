@@ -17,14 +17,6 @@ var _food_resource: String = ""
 var _medium: PaleolithMedium = null
 var _gather_daemon: PaleolithGatherDaemon = null
 
-# — wiring —
-
-func set_medium(medium: PaleolithMedium) -> void:
-	_medium = medium
-
-func set_gather_daemon(daemon: PaleolithGatherDaemon) -> void:
-	_gather_daemon = daemon
-
 # — lifecycle —
 
 func geist_init() -> void:

@@ -5,9 +5,6 @@ const CONTEXT_KEY = "project_start"
 
 var _medium: ConsoleMedium = null
 
-func set_medium(medium: ConsoleMedium) -> void:
-	_medium = medium
-
 func geist_init() -> void:
 	Scope.register(self)
 

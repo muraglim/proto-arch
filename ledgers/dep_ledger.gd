@@ -19,8 +19,8 @@ func _ready() -> void:
 				"role": "console_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "console_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "console_medium"},
+					{"case": "set", "source": "console_medium", "target": "self", "property": "_medium"},
+					{"case": "set", "source": "console_channel", "target": "console_medium", "property": "_channel"},
 				]
 			},
 		],
@@ -40,8 +40,9 @@ func _ready() -> void:
 				"role": "console_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "console_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "console_medium"},
+					{"case": "set", "source": "console_medium", "target": "self", "property": "_medium"},
+					{"case": "set", "source": "console_channel", "target": "console_medium", "property": "_channel"},
+					
 				]
 			},
 			{
@@ -50,7 +51,7 @@ func _ready() -> void:
 				"role": "profile_daemon",
 				"order": 2,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_daemon", "target": "profile_daemon"},
+					{"case": "set", "source": "profile_daemon", "target": "self", "property": "_daemon"},
 					{"case": "signal", "signal": "creation_failed", "target": "self", "method": "_on_creation_failed"},
 					{"case": "signal", "signal": "creation_succeeded", "target": "self", "method": "_on_creation_succeeded"},
 					{"case": "signal", "signal": "selection_succeeded", "target": "self", "method": "_on_selection_succeeded"},
@@ -73,8 +74,8 @@ func _ready() -> void:
 				"role": "console_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "console_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "console_medium"},				
+					{"case": "set", "source": "console_medium", "target": "self", "property": "_medium"},
+					{"case": "set", "source": "console_channel", "target": "console_medium", "property": "_channel"},
 				]
 			},
 			{
@@ -83,7 +84,7 @@ func _ready() -> void:
 				"role": "tealwyv_character_daemon",
 				"order": 2,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_daemon", "target": "tealwyv_character_daemon"},
+					{"case": "set", "source": "tealwyv_character_daemon", "target": "self", "property": "_daemon"},
 					{"case": "signal", "signal": "creation_failed", "target": "self", "method": "_on_creation_failed"},
 					{"case": "signal", "signal": "creation_succeeded", "target": "self", "method": "_on_creation_succeeded"},
 					{"case": "signal", "signal": "selection_failed", "target": "self", "method": "_on_selection_failed"},
@@ -107,8 +108,8 @@ func _ready() -> void:
 				"role": "console_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "console_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "console_medium"},
+					{"case": "set", "source": "console_medium", "target": "self", "property": "_medium"},
+					{"case": "set", "source": "console_channel", "target": "console_medium", "property": "_channel"},
 				]
 			},
 			{
@@ -124,7 +125,7 @@ func _ready() -> void:
 				"role": "tealwyv_event_roll_daemon",
 				"order": 3,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_event_roll_daemon", "target": "tealwyv_event_roll_daemon"},
+					{"case": "set", "source": "tealwyv_event_roll_daemon", "target": "self", "property": "_event_roll_daemon"},
 				]
 			},
 			{
@@ -133,7 +134,7 @@ func _ready() -> void:
 				"role": "tealwyv_text_daemon",
 				"order": 5,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_text_daemon", "target": "tealwyv_text_daemon"},
+					{"case": "set", "source": "tealwyv_text_daemon", "target": "self", "property": "_text_daemon"},
 				]
 			},
 		],
@@ -153,8 +154,8 @@ func _ready() -> void:
 				"role": "console_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "console_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "console_medium"},
+					{"case": "set", "source": "console_channel", "target": "console_medium", "property": "_channel"},
+					{"case": "set", "source": "console_medium", "target": "self", "property": "_medium"},
 				]
 			},
 			{
@@ -163,7 +164,7 @@ func _ready() -> void:
 				"role": "tealwyv_combat_daemon",
 				"order": 2,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_combat_daemon", "target": "tealwyv_combat_daemon"},
+					{"case": "set", "source": "tealwyv_combat_daemon", "target": "self", "property": "_combat_daemon"},
 					{"case": "signal", "signal": "combat_event", "target": "self", "method": "_on_combat_event"},
 				]
 			},
@@ -173,7 +174,7 @@ func _ready() -> void:
 				"role": "tealwyv_luck_daemon",
 				"order": 3,
 				"wires": [
-					{"case": "call", "source": "tealwyv_combat_daemon", "method": "wire_to_luck_daemon", "target": "tealwyv_luck_daemon"},
+					{"case": "set", "source": "tealwyv_luck_daemon", "target": "tealwyv_combat_daemon", "property": "_luck_daemon"},
 				]
 			},
 			{
@@ -182,7 +183,7 @@ func _ready() -> void:
 				"role": "tealwyv_reward_daemon",
 				"order": 4,
 				"wires": [
-					{"case": "call", "source": "tealwyv_combat_daemon", "method": "wire_to_reward_daemon", "target": "tealwyv_reward_daemon"},
+					{"case": "set", "source": "tealwyv_reward_daemon", "target": "tealwyv_combat_daemon", "property": "_reward_daemon"},
 				]
 			},
 			{
@@ -211,8 +212,9 @@ func _ready() -> void:
 				"role": "paleolith_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+					{"case": "set", "source": "paleolith_channel", "target": "paleolith_medium", "property": "_channel"},
+					{"case": "set", "source": "paleolith_medium", "target": "self", "property": "_medium"},
+	
 				]
 			},
 			{
@@ -221,7 +223,7 @@ func _ready() -> void:
 				"role": "paleolith_tick_daemon",
 				"order": 2,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_tick_daemon", "target": "paleolith_tick_daemon"},
+					{"case": "set", "source": "paleolith_tick_daemon", "target": "self", "property": "_tick_daemon"}
 				]
 			},
 			{
@@ -230,7 +232,7 @@ func _ready() -> void:
 				"role": "paleolith_fire_daemon",
 				"order": 3,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_fire_daemon", "target": "paleolith_fire_daemon"},
+					{"case": "set", "source": "paleolith_fire_daemon", "target": "self", "property": "_fire_daemon"},
 					{"case": "signal", "signal": "fire_succeeded", "target": "self", "method": "_on_fire_succeeded"},
 					{"case": "signal", "signal": "fire_failed", "target": "self", "method": "_on_fire_failed"},
 				]
@@ -241,7 +243,7 @@ func _ready() -> void:
 				"role": "paleolith_deity_daemon",
 				"order": 4,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_deity_daemon", "target": "paleolith_deity_daemon"},
+					{"case": "set", "source": "paleolith_deity_daemon", "target": "self", "property": "_deity_daemon"},
 					{"case": "signal", "source": "paleolith_fire_daemon", "signal": "fire_succeeded", "target": "paleolith_deity_daemon", "method": "on_fire_lit"},
 					{"case": "signal", "signal": "deity_revealed", "target": "self", "method": "_on_deity_revealed"},
 				]
@@ -252,7 +254,7 @@ func _ready() -> void:
 				"role": "paleolith_shelter_daemon",
 				"order": 5,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_shelter_daemon", "target": "paleolith_shelter_daemon"},
+					{"case": "set", "source": "paleolith_shelter_daemon", "target": "self", "property": "_shelter_daemon"},
 					{"case": "signal", "signal": "shelter_built", "target": "self", "method": "_on_shelter_built"},
 					{"case": "signal", "signal": "shelter_degraded", "target": "self", "method": "_on_shelter_degraded"},
 					{"case": "signal", "signal": "shelter_destroyed", "target": "self", "method": "_on_shelter_destroyed"},
@@ -266,7 +268,7 @@ func _ready() -> void:
 				"role": "paleolith_arc_medium",
 				"order": 6,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+					{"case": "set", "source": "paleolith_channel", "target": "paleolith_arc_medium", "property": "_channel"},
 					{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_arc_medium", "method": "on_tick"},
 				]
 			},
@@ -276,7 +278,7 @@ func _ready() -> void:
 				"role": "paleolith_status_medium",
 				"order": 7,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
+					{"case": "set", "source": "paleolith_channel", "target": "paleolith_status_medium", "property": "_channel"},
 					{"case": "signal", "source": "paleolith_tick_daemon", "signal": "tick", "target": "paleolith_status_medium", "method": "on_tick"},
 				]
 			},
@@ -311,8 +313,8 @@ func _ready() -> void:
 				"role": "paleolith_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+					{"case": "set", "source": "paleolith_channel", "target": "paleolith_medium", "property": "_channel"},
+					{"case": "set", "source": "paleolith_medium", "target": "self", "property": "_medium"},
 					{"case": "signal", "source": "paleolith_medium", "signal": "animation_complete", "target": "self", "method": "_on_animation_complete"},
 				]
 			},
@@ -322,7 +324,7 @@ func _ready() -> void:
 				"role": "paleolith_gather_daemon",
 				"order": 2,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_gather_daemon", "target": "paleolith_gather_daemon"},
+					{"case": "set", "source": "paleolith_gather_daemon", "target": "self", "property": "_gather_daemon"},
 					{"case": "signal", "signal": "gather_succeeded", "target": "self", "method": "_on_gather_succeeded"},
 					{"case": "signal", "signal": "gather_failed", "target": "self", "method": "_on_gather_failed"},
 				]
@@ -344,8 +346,8 @@ func _ready() -> void:
 				"role": "paleolith_medium",
 				"order": 1,
 				"wires": [
-					{"case": "call", "method": "set_channel", "target": "paleolith_channel"},
-					{"case": "call", "source": "self", "method": "set_medium", "target": "paleolith_medium"},
+					{"case": "set", "source": "paleolith_channel", "target": "paleolith_medium", "property": "_channel"},
+					{"case": "set", "source": "paleolith_medium", "target": "self", "property": "_medium"},
 				]
 			},
 			{
@@ -354,7 +356,7 @@ func _ready() -> void:
 				"role": "paleolith_event_roll_daemon",
 				"order": 2,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_event_roll_daemon", "target": "paleolith_event_roll_daemon"},
+					{"case": "set", "source": "paleolith_event_roll_daemon", "target": "self", "property": "_event_roll_daemon"},
 				]
 			},
 			{
@@ -363,7 +365,7 @@ func _ready() -> void:
 				"role": "paleolith_outcome_roll_daemon",
 				"order": 3,
 				"wires": [
-					{"case": "call", "source": "self", "method": "set_outcome_roll_daemon", "target": "paleolith_outcome_roll_daemon"},
+					{"case": "set", "source": "paleolith_outcome_roll_daemon", "target": "self", "property": "_outcome_roll_daemon"},
 				]
 			},
 		],

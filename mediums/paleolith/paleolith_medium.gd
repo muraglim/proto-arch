@@ -12,9 +12,6 @@ func geist_shutdown() -> void:
 	_kill_animation_tween()
 	_log("geist_shutdown(): offline.")
 
-func set_channel(channel: Channel) -> void:
-	_channel = channel
-
 func compose(context_key: String, data: Dictionary = {}) -> void:
 	if Guard.is_null_or_empty(_channel, name + ":compose._channel"): return
 	var format_string = Firm.get_value("paleolith_text_ledger", context_key)

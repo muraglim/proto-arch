@@ -21,25 +21,10 @@ var _pending_deity: Dictionary = {}
 var _medium: PaleolithMedium = null
 var _tick_daemon: PaleolithTickDaemon = null
 var _fire_daemon: PaleolithFireDaemon = null
-var _deity_daemon: PaleolithDeityDaemon = null
 var _shelter_daemon: PaleolithShelterDaemon = null
 
-# — wiring —
-
-func set_medium(medium: PaleolithMedium) -> void:
-	_medium = medium
-
-func set_tick_daemon(daemon: PaleolithTickDaemon) -> void:
-	_tick_daemon = daemon
-
-func set_fire_daemon(daemon: PaleolithFireDaemon) -> void:
-	_fire_daemon = daemon
-
-func set_deity_daemon(daemon: PaleolithDeityDaemon) -> void:
-	_deity_daemon = daemon
-
-func set_shelter_daemon(daemon: PaleolithShelterDaemon) -> void:
-	_shelter_daemon = daemon
+@warning_ignore("unused_private_class_variable")
+var _deity_daemon: PaleolithDeityDaemon = null
 
 # — lifecycle —
 

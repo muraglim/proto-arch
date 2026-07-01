@@ -19,17 +19,6 @@ var _medium: PaleolithMedium = null
 var _event_roll_daemon: PaleolithEventRollDaemon = null
 var _outcome_roll_daemon: PaleolithOutcomeRollDaemon = null
 
-# — wiring —
-
-func set_medium(medium: PaleolithMedium) -> void:
-	_medium = medium
-
-func set_event_roll_daemon(daemon: PaleolithEventRollDaemon) -> void:
-	_event_roll_daemon = daemon
-
-func set_outcome_roll_daemon(daemon: PaleolithOutcomeRollDaemon) -> void:
-	_outcome_roll_daemon = daemon
-
 # — lifecycle —
 
 func geist_init() -> void:
@@ -58,7 +47,7 @@ func _roll_and_compose() -> void:
 	var location: String = _hint.get("location", "")
 	_current_event = _event_roll_daemon.roll_for_event(context, location)
 	if _current_event.is_empty():
-		_medium.compose("paleolith_event_%s" % context, {"location": location})
+		_medium.compose("paleolith_event_travel", {"location": location, "context": context})
 		return
 	state = EventState.EVENT_PROMPT
 	_medium.compose("paleolith_event_nest_prompt", {
@@ -121,15 +110,10 @@ func _resolve_event() -> void:
 	_outcome_roll_daemon.apply_outcome(_current_event.get("event_key", ""), _player_choice)
 	_pursuit_fired = _roll_pursuit()
 	state = EventState.EVENT_RESOLUTION
-	_medium.compose(_build_resolution_key(), {})
-
-func _build_resolution_key() -> String:
-	match _player_choice:
-		"ignore":
-			return "paleolith_event_nest_ignore"
-		"drink_only":
-			return "paleolith_event_nest_drink_only"
-	return "paleolith_event_nest_%s_%s" % [_player_choice, "pursued" if _pursuit_fired else "safe"]
+	_medium.compose("paleolith_event_nest_resolution", {
+		"choice": _player_choice,
+		"pursuit_fired": _pursuit_fired,
+	})
 
 func _roll_pursuit() -> bool:
 	match _player_choice:

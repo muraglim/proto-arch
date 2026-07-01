@@ -7,15 +7,6 @@ var _medium: ConsoleMedium = null
 var _event_roll_daemon: TealwyvEventRollDaemon = null
 var _text_daemon: TealwyvTextDaemon = null
 
-func set_medium(medium: ConsoleMedium) -> void:
-	_medium = medium
-
-func set_event_roll_daemon(daemon: TealwyvEventRollDaemon) -> void:
-	_event_roll_daemon = daemon
-
-func set_text_daemon(daemon: TealwyvTextDaemon) -> void:
-	_text_daemon = daemon
-
 func geist_init() -> void:
 	Scope.register(self)
 

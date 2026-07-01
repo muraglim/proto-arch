@@ -14,12 +14,6 @@ var state: TealwyvEventState = TealwyvEventState.IDLE
 var _medium: ConsoleMedium = null
 var _combat_daemon: TealwyvCombatDaemon = null
 
-func set_medium(medium: ConsoleMedium) -> void:
-	_medium = medium
-
-func set_combat_daemon(daemon: TealwyvCombatDaemon) -> void:
-	_combat_daemon = daemon
-
 func geist_init() -> void:
 	Scope.register(self)
 

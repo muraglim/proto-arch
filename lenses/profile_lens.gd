@@ -16,12 +16,6 @@ var _error_key: String = ""
 var _medium: ConsoleMedium = null
 var _daemon: ProfileDaemon = null
 
-func set_medium(medium: ConsoleMedium) -> void:
-	_medium = medium
-
-func set_daemon(daemon: ProfileDaemon) -> void:
-	_daemon = daemon
-
 func geist_init() -> void:
 	Scope.register(self)
 

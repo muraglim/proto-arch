@@ -8,7 +8,7 @@ extends Node
 # Wire case types:
 #   "signal" — connects a signal on source to a method on target
 #   "call"   — calls a method on source, passing target as argument
-#   "assign" — sets a named property on target to the source instance
+#   "set" — sets a named property on target to the source instance
 #
 # Explicit "source" field required only when wire caller is not the current dep.
 
@@ -36,7 +36,7 @@ func _execute_wire(lens_key: String, current_role: String, wire: Dictionary, reg
 	match case_type:
 		"signal": _execute_signal_wire(lens_key, source, target, wire)
 		"call":   _execute_call_wire(lens_key, source, target, wire)
-		"assign": _execute_assign_wire(lens_key, source, target, wire)
+		"set": _execute_set_wire(lens_key, source, target, wire)
 		_: push_error("Linker._execute_wire(%s): unknown case type '%s'." % [lens_key, case_type])
 
 func _execute_signal_wire(lens_key: String, source: Node, target: Node, wire: Dictionary) -> void:
@@ -62,14 +62,14 @@ func _execute_call_wire(lens_key: String, source: Node, target: Node, wire: Dict
 	source.call(method_name, target)
 	print("Linker._execute_call_wire: %s.%s(%s)" % [source.name, method_name, target.name])
 
-func _execute_assign_wire(lens_key: String, source: Node, target: Node, wire: Dictionary) -> void:
+func _execute_set_wire(lens_key: String, source: Node, target: Node, wire: Dictionary) -> void:
 	var property = wire.get("property", "")
-	if Guard.is_null_or_empty(property, "Linker._execute_assign_wire(%s)" % lens_key): return
+	if Guard.is_null_or_empty(property, "Linker._execute_set_wire(%s)" % lens_key): return
 	if not property in target:
-		push_error("Linker._execute_assign_wire(%s): '%s' has no property '%s'." % [lens_key, target.name, property])
+		push_error("Linker._execute_set_wire(%s): '%s' has no property '%s'." % [lens_key, target.name, property])
 		return
 	target.set(property, source)
-	print("Linker._execute_assign_wire: %s -> %s.%s" % [source.name, target.name, property])
+	print("Linker._execute_set_wire: %s -> %s.%s" % [source.name, target.name, property])
 
 func _resolve_role(registry: Dictionary, role: String) -> Node:
 	var entry = registry.get(role, null)
