@@ -33,7 +33,7 @@ func geist_resume(hint: Variant = "") -> void:
 	_material_resource = loc.get("material_node", "")
 	_food_resource = loc.get("food_node", "")
 	state = GatherState.IDLE
-	_request_compose()
+	_push_compose()
 
 # — input —
 
@@ -47,7 +47,7 @@ func _on_input(text: String) -> void:
 		GatherState.GATHER_RESULT:
 			_medium.hide_overlay()
 			state = GatherState.IDLE
-			_request_compose()
+			_push_compose()
 
 func _handle_idle(action: String) -> void:
 	match action:
@@ -96,8 +96,8 @@ func _on_animation_complete() -> void:
 
 # — compose —
 
-func _request_compose() -> void:
-	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
+func _push_compose() -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return
 	var locations: Dictionary = Firm.get_value("paleolith_location_ledger", "locations")
 	var loc: Dictionary = locations.get(_location, {})
 	var mat_data: Dictionary = Firm.get_value("paleolith_resource_ledger", _material_resource)

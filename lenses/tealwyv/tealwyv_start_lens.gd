@@ -29,7 +29,7 @@ func geist_shutdown() -> void:
 @warning_ignore("unused_parameter")
 func geist_resume(hint: Variant = "") -> void:
 	state = TealwyvStartState.FOYER
-	_request_compose()
+	_push_compose()
 
 func _on_input(text: String) -> void:
 	if Scope.active_context != CONTEXT_KEY: return
@@ -50,7 +50,7 @@ func _handle_foyer(text: String) -> void:
 	match action:
 		"c":
 			state = TealwyvStartState.CREATION_PROMPT
-			_request_compose()
+			_push_compose()
 		"s":
 			if _get_character_list().is_empty():
 				pass # [S] not shown — silently ignore
@@ -58,7 +58,7 @@ func _handle_foyer(text: String) -> void:
 				_medium.compose("tealwyv_already_selected", {})
 			else:
 				state = TealwyvStartState.SELECTION
-				_request_compose()
+				_push_compose()
 		"t":
 			Mount.mount_lens("tealwyv_hub_lens")
 			Scope.transition.call_deferred("tealwyv_hub")
@@ -70,18 +70,18 @@ func _handle_creation_prompt(text: String) -> void:
 	var character_name = text.strip_edges()
 	if character_name.is_empty():
 		state = TealwyvStartState.FOYER
-		_request_compose()
+		_push_compose()
 		return
 	_pending_name = character_name
 	state = TealwyvStartState.CREATION_GENDER
-	_request_compose()
+	_push_compose()
 
 func _handle_creation_gender(text: String) -> void:
 	var input = text.strip_edges().to_lower()
 	if input.is_empty():
 		_pending_name = ""
 		state = TealwyvStartState.FOYER
-		_request_compose()
+		_push_compose()
 		return
 	var valid_genders: Array = Firm.get_value("tealwyv_character_ledger", "genders")
 	if not input in valid_genders:
@@ -97,24 +97,24 @@ func _on_creation_failed(error_key: String) -> void:
 	_error_key = error_key
 	_pending_name = ""
 	state = TealwyvStartState.CREATION_ERROR
-	_request_compose()
+	_push_compose()
 
 func _on_creation_succeeded() -> void:
 	_pending_name = ""
 	state = TealwyvStartState.FOYER
-	_request_compose()
+	_push_compose()
 
 func _on_selection_failed(error_key: String) -> void:
 	_error_key = error_key
 	state = TealwyvStartState.SELECTION_ERROR
-	_request_compose()
+	_push_compose()
 
 func _on_selection_succeeded() -> void:
 	state = TealwyvStartState.FOYER
-	_request_compose()
+	_push_compose()
 
-func _request_compose() -> void:
-	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
+func _push_compose() -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return
 	var max_len = Firm.get_value("tealwyv_character_ledger", "max_name_length")
 	match state:
 		TealwyvStartState.FOYER:

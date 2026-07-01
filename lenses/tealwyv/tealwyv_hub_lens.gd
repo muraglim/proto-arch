@@ -15,7 +15,7 @@ func geist_shutdown() -> void:
 
 @warning_ignore("unused_parameter")
 func geist_resume(hint: Variant = "") -> void:
-	_request_compose()
+	_push_compose()
 
 func _on_input(text: String) -> void:
 	if Scope.active_context != CONTEXT_KEY: return
@@ -29,7 +29,7 @@ func _on_input(text: String) -> void:
 			Mount.unmount(self)
 			Scope.transition("tealwyv_start")
 
-func _request_compose() -> void:
-	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
-	if Guard.is_null_or_empty(_text_daemon, name + ":_request_compose"): return
+func _push_compose() -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return
+	if Guard.is_null_or_empty(_text_daemon, name + ":_push_compose"): return
 	_medium.compose("tealwyv_hub_main", {"flavor": _text_daemon.get_prompt("forest_hub_flavor")})

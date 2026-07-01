@@ -42,7 +42,7 @@ func geist_resume(hint: Variant = "") -> void:
 		_medium.compose("paleolith_site_selection", {})
 		return
 	state = HubState.HUB
-	_request_compose()
+	_push_compose()
 
 # — input —
 
@@ -60,18 +60,18 @@ func _on_input(text: String) -> void:
 		HubState.DEITY_REVEAL:
 			_pending_deity = {}
 			state = HubState.HUB
-			_request_compose()
+			_push_compose()
 
 func _handle_site_selection(action: String) -> void:
 	match action:
 		"1":
 			_shelter_daemon.select_site("exposed_ridge")
 			state = HubState.HUB
-			_request_compose()
+			_push_compose()
 		"2":
 			_shelter_daemon.select_site("sheltered_hollow")
 			state = HubState.HUB
-			_request_compose()
+			_push_compose()
 
 func _handle_hub(action: String) -> void:
 	var flint: int = Keeper.get_value("paleolith_store", "flint", 0)
@@ -135,7 +135,7 @@ func _handle_continue() -> void:
 		})
 	else:
 		state = HubState.HUB
-		_request_compose()
+		_push_compose()
 
 # — signal handlers —
 
@@ -164,9 +164,9 @@ func _on_deity_revealed(deity: Dictionary) -> void:
 
 # — compose —
 
-func _request_compose() -> void:
-	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
-	if Guard.is_null_or_empty(_tick_daemon, name + ":_request_compose"): return
+func _push_compose() -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return
+	if Guard.is_null_or_empty(_tick_daemon, name + ":_push_compose"): return
 	var tick: Dictionary = _tick_daemon.build_tick_payload()
 	var flint: int = Keeper.get_value("paleolith_store", "flint", 0)
 	var tinder: int = Keeper.get_value("paleolith_store", "tinder", 0)

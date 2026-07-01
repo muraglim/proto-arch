@@ -26,7 +26,7 @@ func geist_resume(hint: Variant = "") -> void:
 	match hint:
 		"creation": state = ProfileState.CREATION_PROMPT
 		"selection": state = ProfileState.SELECTION
-	_request_compose()
+	_push_compose()
 
 func _on_input(text: String) -> void:
 	if Scope.active_context != CONTEXT_KEY: return
@@ -44,7 +44,7 @@ func _handle_creation_prompt(text: String) -> void:
 func _handle_creation_error() -> void:
 	state = ProfileState.CREATION_PROMPT
 	_error_key = ""
-	_request_compose()
+	_push_compose()
 
 func _handle_selection(text: String) -> void:
 	_daemon.submit_selection(text.strip_edges().to_lower())
@@ -52,7 +52,7 @@ func _handle_selection(text: String) -> void:
 func _on_creation_failed(error_key: String) -> void:
 	_error_key = error_key
 	state = ProfileState.CREATION_ERROR
-	_request_compose()
+	_push_compose()
 
 func _on_creation_succeeded() -> void:
 	Scope.transition("project_start")
@@ -60,8 +60,8 @@ func _on_creation_succeeded() -> void:
 func _on_selection_succeeded() -> void:
 	Scope.transition("project_start")
 
-func _request_compose() -> void:
-	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
+func _push_compose() -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return
 	var max_len = Firm.get_value("profile_ledger", "max_name_length")
 	match state:
 		ProfileState.CREATION_PROMPT:

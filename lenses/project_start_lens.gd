@@ -13,7 +13,7 @@ func geist_shutdown() -> void:
 
 @warning_ignore("unused_parameter")
 func geist_resume(hint: Variant = "") -> void:
-	_request_compose()
+	_push_compose()
 
 func _on_input(text: String) -> void:
 	if Scope.active_context != CONTEXT_KEY: return
@@ -32,7 +32,7 @@ func _on_input(text: String) -> void:
 			Mount.mount_lens("paleolith_hub_lens")
 			Scope.transition.call_deferred("paleolith_hub")
 
-func _request_compose() -> void:
-	if Guard.is_null_or_empty(_medium, name + ":_request_compose"): return
+func _push_compose() -> void:
+	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return
 	var active_name = Profile.get_active_profile().get("name", "none")
 	_medium.compose("project_start_main", {"active_name": active_name})
