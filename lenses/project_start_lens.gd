@@ -21,16 +21,16 @@ func _on_input(text: String) -> void:
 	match action:
 		"c":
 			Mount.mount_lens("profile_lens")
-			Scope.transition.call_deferred("profile", "creation")
+			Scope.focus.call_deferred("profile", "creation")
 		"s":
 			Mount.mount_lens("profile_lens")
-			Scope.transition.call_deferred("profile", "selection")
+			Scope.focus.call_deferred("profile", "selection")
 		"t":
 			Mount.mount_lens("tealwyv_start_lens")
-			Scope.transition.call_deferred("tealwyv_start")
+			Scope.focus.call_deferred("tealwyv_start")
 		"p":
 			Mount.mount_lens("paleolith_hub_lens")
-			Scope.transition.call_deferred("paleolith_hub")
+			Scope.focus.call_deferred("paleolith_hub")
 
 func _push_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return

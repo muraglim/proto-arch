@@ -55,10 +55,10 @@ func _on_creation_failed(error_key: String) -> void:
 	_push_compose()
 
 func _on_creation_succeeded() -> void:
-	Scope.transition("project_start")
+	Scope.focus("project_start")
 
 func _on_selection_succeeded() -> void:
-	Scope.transition("project_start")
+	Scope.focus("project_start")
 
 func _push_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return

@@ -61,9 +61,9 @@ func _handle_foyer(text: String) -> void:
 				_push_compose()
 		"t":
 			Mount.mount_lens("tealwyv_hub_lens")
-			Scope.transition.call_deferred("tealwyv_hub")
+			Scope.focus.call_deferred("tealwyv_hub")
 		"b":
-			Scope.transition("project_start")
+			Scope.focus("project_start")
 			Mount.unmount(self)
 
 func _handle_creation_prompt(text: String) -> void:

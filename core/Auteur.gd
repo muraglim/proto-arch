@@ -25,7 +25,7 @@ func deregister_node(channel: Channel) -> void:
 			_context_map.erase(context)
 	_log("deregister_node(): %s removed." % found_key)
 
-func on_transition(context_key: String) -> void:
+func on_focus(context_key: String) -> void:
 	if not _context_map.has(context_key): return
 	var target_key: String = _context_map[context_key]
 	for key in _channels:
@@ -33,7 +33,7 @@ func on_transition(context_key: String) -> void:
 		_channels[key].visible = is_target
 		if is_target:
 			_channels[key].channel_resume()
-	_log("on_transition(%s): showing %s" % [context_key, target_key])
+	_log("on_focus(%s): showing %s" % [context_key, target_key])
 
 func _log(msg: String) -> void:
 	print("[Auteur] %s" % msg)

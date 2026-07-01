@@ -23,7 +23,7 @@ func _on_input(text: String) -> void:
 	match text.strip_edges().to_lower():
 		"b":
 			Mount.unmount(self)
-			Scope.transition("paleolith_hub")
+			Scope.focus("paleolith_hub")
 
 func _push_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return

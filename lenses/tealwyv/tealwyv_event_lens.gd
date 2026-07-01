@@ -36,7 +36,7 @@ func _on_input(text: String) -> void:
 			_combat_daemon.take_action(text.strip_edges().to_lower())
 		TealwyvEventState.RESOLUTION:
 			state = TealwyvEventState.IDLE
-			Scope.transition("tealwyv_hub")
+			Scope.focus("tealwyv_hub")
 
 func _on_combat_event(payload: Dictionary) -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_on_combat_event"): return

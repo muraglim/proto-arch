@@ -87,7 +87,7 @@ func _handle_hub(action: String) -> void:
 	match action:
 		"a":
 			if branches >= branches_cap: return
-			Scope.transition.call_deferred("paleolith_event", {
+			Scope.focus.call_deferred("paleolith_event", {
 				"destination": "paleolith_gather",
 				"location": "acacia_thicket",
 				"context": "travel",
@@ -95,7 +95,7 @@ func _handle_hub(action: String) -> void:
 				})
 		"r":
 			if flint >= flint_cap: return
-			Scope.transition.call_deferred("paleolith_event", {
+			Scope.focus.call_deferred("paleolith_event", {
 				"destination": "paleolith_gather",
 				"location": "riverbank",
 				"context": "travel",
@@ -103,7 +103,7 @@ func _handle_hub(action: String) -> void:
 				})
 		"s":
 			if tinder >= tinder_cap: return
-			Scope.transition.call_deferred("paleolith_event", {
+			Scope.focus.call_deferred("paleolith_event", {
 				"destination": "paleolith_gather",
 				"location": "scrubland",
 				"context": "travel",
@@ -120,10 +120,10 @@ func _handle_hub(action: String) -> void:
 		"p":
 			if not has_fire or revealed.is_empty(): return
 			Mount.mount_lens("paleolith_pocket_lens")
-			Scope.transition.call_deferred("paleolith_pocket")
+			Scope.focus.call_deferred("paleolith_pocket")
 		"b":
 			Mount.unmount(self)
-			Scope.transition("project_start")
+			Scope.focus("project_start")
 
 func _handle_continue() -> void:
 	_medium.hide_overlay()

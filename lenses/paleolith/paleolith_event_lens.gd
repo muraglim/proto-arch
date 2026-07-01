@@ -72,7 +72,7 @@ func _on_input(text: String) -> void:
 			_on_resolution_continue()
 
 func _on_travel_continue() -> void:
-	Scope.transition(_hint.get("destination", "paleolith_hub"), _hint.get("location", ""))
+	Scope.focus(_hint.get("destination", "paleolith_hub"), _hint.get("location", ""))
 
 func _on_event_prompt(action: String) -> void:
 	match action:
@@ -101,7 +101,7 @@ func _on_drink_choice(action: String) -> void:
 func _on_resolution_continue() -> void:
 	# stub: always proceed to destination.
 	# when health system exists, death routes to _hint["return_context"] instead.
-	Scope.transition(_hint.get("destination", "paleolith_hub"), _hint.get("location", ""))
+	Scope.focus(_hint.get("destination", "paleolith_hub"), _hint.get("location", ""))
 
 # — resolution —
 

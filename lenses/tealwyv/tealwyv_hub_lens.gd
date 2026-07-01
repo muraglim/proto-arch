@@ -24,10 +24,10 @@ func _on_input(text: String) -> void:
 		"f":
 			if Guard.is_null_or_empty(_event_roll_daemon, name + ":_on_input.forest"): return
 			var enemy = _event_roll_daemon.roll_event()
-			Scope.transition.call_deferred("tealwyv_event", enemy)
+			Scope.focus.call_deferred("tealwyv_event", enemy)
 		"b":
 			Mount.unmount(self)
-			Scope.transition("tealwyv_start")
+			Scope.focus("tealwyv_start")
 
 func _push_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return
