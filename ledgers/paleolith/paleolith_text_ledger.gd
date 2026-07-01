@@ -51,4 +51,5 @@ func _ready() -> void:
 		"paleolith_event_nest_take_two_pursued": "[stub - pursued, two eggs]\n\n[continue]",
 		"paleolith_event_nest_drink_take_one_safe": "You drink one and pocket another. Nothing follows.\n\n[continue]",
 		"paleolith_event_nest_drink_take_one_pursued": "[stub - pursued, drank and took one]\n\n[continue]",
+		"paleolith_event_nest_resolution": "[stub - test]"
 	}
