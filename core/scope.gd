@@ -20,6 +20,7 @@ func focus(to: String, hint: Variant = "") -> void:
 	if not to in valid:
 		push_error("[Scope] focus(%s -> %s): invalid focus." % [active_context, to])
 		return
+	Firm.audit("%s -> %s" % [active_context, to])
 	active_context = to
 	Auteur.on_focus(to)
 	_registry[to].geist_resume(hint)
