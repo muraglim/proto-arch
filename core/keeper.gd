@@ -2,29 +2,33 @@ extends Node
 
 # Mutabale state facade
 
-const STORE_SCRIPTS: Array[String] = [
+const STORE_SCRIPTS: Dictionary = {
 	# core
-	"uid://4iwjgqs37g7t", #profile_store
-	"uid://oo8gi2lwcm4g", #luck_store
+	"profile_store":           "uid://4iwjgqs37g7t",
+	"luck_store":              "uid://oo8gi2lwcm4g",
 	
 	# tealwyv
-	"uid://dah77mrkcmp7c", #tealwyv_dev_store
-	"uid://dnaj0b86atrx1", #tealwyv_character_store
-	"uid://cm70cvnxnh10s", #tealwyv_luck_store
+	"tealwyv_dev_store":       "uid://dah77mrkcmp7c",
+	"tealwyv_character_store": "uid://dnaj0b86atrx1",
+	"tealwyv_luck_store":      "uid://cm70cvnxnh10s",
 	
 	# paleolith
-	"uid://btfwwyjtecol5", #paleolith_store
-	"uid://brubxwj4wqt3p", #paleolith_dev_store
-]
+	"paleolith_store":         "uid://btfwwyjtecol5",
+	"paleolith_dev_store":     "uid://brubxwj4wqt3p",
+}
 
 var stores: Dictionary = {}
 
 func _ready() -> void:
-	for path in STORE_SCRIPTS:
-		var script: GDScript = load(path)
+	for declared_key in STORE_SCRIPTS:
+		var uid: String = STORE_SCRIPTS[declared_key]
+		var script: GDScript = load(uid)
 		var instance := Node.new()
 		instance.set_script(script)
 		instance.name = script.resource_path.get_file().get_basename()
+		if not Screener.verify_registration(uid, declared_key, instance, Store, "Keeper._ready(%s)" % declared_key):
+			instance.free()
+			continue
 		add_child(instance)
 		stores[instance.name.to_lower()] = instance
 
