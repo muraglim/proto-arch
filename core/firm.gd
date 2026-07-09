@@ -12,9 +12,11 @@ extends Node
 #      GDScript cannot enforce it. Writing through a ledger reference is
 #      deliberate deviance, and grep-able.                      [convention]
 #   4. _ledgers is private. Bypassing the facade is deviance.   [convention]
-#   5. Debug builds snapshot all ledger data at boot and audit it at every
-#      Scope focus change. Mutation of authored data fails loudly at the
-#      next context switch, with the transition edge named in the error.
+#   5. Debug builds snapshot a structural hash of all ledger data at boot
+#      and audit it at every Scope focus change. Mutation of authored data
+#      fails loudly at the next context switch, with the transition edge
+#      named in the error. Detection is probabilistic (32-bit hash) —
+#      collision odds are negligible for a debug tripwire.
 #                                                               [mechanical, debug]
 #   6. Audit coverage extends only to data registered here. Resources
 #      obtained by direct preload() elsewhere are invisible to the audit —
@@ -70,7 +72,7 @@ func _ready() -> void:
 	# populated by this point — safe to snapshot.
 	if OS.is_debug_build():
 		for key in _ledgers:
-			_snapshots[key] = var_to_str(_ledgers[key].data)
+			_snapshots[key] = _ledgers[key].data.hash()
 
 func get_value(ledger_node: String, key: String, default_value = null) -> Variant:
 	if not _ledgers.has(ledger_node):
@@ -107,5 +109,5 @@ func audit(context: String = "") -> void:
 	# Snapshot dict is empty in release builds — this is a no-op there.
 	if _snapshots.is_empty(): return
 	for key in _ledgers:
-		if var_to_str(_ledgers[key].data) != _snapshots[key]:
+		if _ledgers[key].data.hash() != _snapshots[key]:
 			push_error("[Firm] audit(%s): ledger '%s' mutated since boot." % [context, key])
