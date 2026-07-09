@@ -14,6 +14,12 @@ func verify_uid(uid: Variant, uid_key: String, context: String) -> bool:
 	Fuss.about_filename_key_mismatch(uid, uid_key, context)
 	return true
 
+func verify_registration(uid: Variant, declared_key: String, instance: Node, expected_class: Variant, context: String) -> bool:
+	if Guard.is_invalid_uid(uid, context): return false
+	Fuss.about_filename_key_mismatch(uid, declared_key, context)
+	if Guard.is_wrong_class(instance, expected_class, context): return false
+	return true
+
 func verify_ledger_refs() -> bool:
 	var all_valid := true
 	var registry: Array = Firm.get_value("cross_ref_ledger", "refs")

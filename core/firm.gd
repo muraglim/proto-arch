@@ -20,46 +20,50 @@ extends Node
 #      obtained by direct preload() elsewhere are invisible to the audit —
 #      authored data must live behind a registered Ledger to be covered.
 
-const LEDGER_SCRIPTS: Array[String] = [
+const LEDGER_SCRIPTS: Dictionary = {
 	# infrastructure
-	"uid://dqki0i06ekyd5", # dest_ledger
-	"uid://bjja3ixg755vw", # dep_ledger
-	"uid://dnxiljrr7tsvg", # scope_ledger
-	"uid://dfe7m23x3sorf", # cross_ref_ledger
+	"uid_ledger":                            "uid://dqki0i06ekyd5",
+	"dep_ledger":                            "uid://bjja3ixg755vw",
+	"scope_ledger":                          "uid://dnxiljrr7tsvg",
+	"cross_ref_ledger":                      "uid://dfe7m23x3sorf",
 
 	# project_start/profile
-	"uid://bh5p5wp205m4d", # core_text_ledger
-	"uid://dxmduqcmkv4w4", # profile_ledger
+	"core_text_ledger":                      "uid://bh5p5wp205m4d",
+	"profile_ledger":                        "uid://dxmduqcmkv4w4",
 
 	# tealwyv
-	"uid://i6liuf46emr2", # tealwyv_combat_ledger
-	"uid://f2ddwcbtjqfx", # tealwyv_text_ledger
-	"uid://bpk1t01kn21d2", # tealwyv_character_ledger
+	"tealwyv_combat_ledger":                 "uid://i6liuf46emr2",
+	"tealwyv_text_ledger":                   "uid://f2ddwcbtjqfx", 
+	"tealwyv_character_ledger":              "uid://bpk1t01kn21d2", 
 	
 	# paleolith
-	"uid://dbb4nhow24e5x", # paleolith_ledger
-	"uid://u613hticam7w", # paleolith_text_ledger
-	"uid://oyn4dg5uaodl", # paleolith_asset_ledger
-	"uid://bsu8sr44wb447", # paleolith_deity_ledger
-	"uid://uiubxbc0nwlf", # paleolith_arc_test_ledger
-	"uid://dw4618ppx3eh4", # paleolith_arc_animation_ledger
-	"uid://ctyumklh1qnp3", # paleolith_arc_animation_ledger_2
-	"uid://dga5pvhwc537f", # paleolith_event_ledger
-	"uid://vthbp1fahnb3", # paleolith_location_ledger
-	"uid://c8m2qmgj1j3yv", # paleolith_resource_ledger
-	"uid://bmffmvhwgv6l3", # paleolith_arc_background_ledger
-	"uid://wdaxcuvk4knt", # paleolith_arc_background_color_ledger
-]
+	"paleolith_ledger":                      "uid://dbb4nhow24e5x",
+	"paleolith_text_ledger":                 "uid://u613hticam7w",
+	"paleolith_asset_ledger":                "uid://oyn4dg5uaodl",
+	"paleolith_deity_ledger":                "uid://bsu8sr44wb447", 
+	"paleolith_arc_test_ledger":             "uid://uiubxbc0nwlf",
+	"paleolith_arc_animation_ledger":        "uid://dw4618ppx3eh4", 
+	"paleolith_arc_animation_ledger2":       "uid://ctyumklh1qnp3", 
+	"paleolith_event_ledger":                "uid://dga5pvhwc537f",
+	"paleolith_location_ledger":             "uid://vthbp1fahnb3",
+	"paleolith_resource_ledger":             "uid://c8m2qmgj1j3yv",
+	"paleolith_arc_background_ledger":       "uid://bmffmvhwgv6l3",
+	"paleolith_arc_background_color_ledger": "uid://wdaxcuvk4knt", # paleolith_arc_background_color_ledger
+}
 
 var _ledgers: Dictionary = {}
 var _snapshots: Dictionary = {}
 
 func _ready() -> void:
-	for path in LEDGER_SCRIPTS:
-		var script: GDScript = load(path)
+	for declared_key in LEDGER_SCRIPTS:
+		var uid: String = LEDGER_SCRIPTS[declared_key]
+		var script: GDScript = load(uid)
 		var instance := Node.new()
 		instance.set_script(script)
 		instance.name = script.resource_path.get_file().get_basename()
+		if not Screener.verify_registration(uid, declared_key, instance, Ledger, "Firm._ready(%s)" % declared_key):
+			instance.free()
+			continue
 		add_child(instance)
 		_ledgers[instance.name.to_lower()] = instance
 	# child _ready() runs inside add_child(), so all data dicts are

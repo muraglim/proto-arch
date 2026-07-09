@@ -33,3 +33,9 @@ func is_invalid_uid(uid: Variant, context: String) -> bool:
 		push_error("[Guard] %s: invalid uid, uid does not resolve to a local resource." % context)
 		return true
 	return false
+
+func is_wrong_class(value: Variant, expected_class: Variant, context: String) -> bool:
+	if not is_instance_of(value, expected_class):
+		push_error("[Guard] %s: instance is not of expected class." % context)
+		return true
+	return false
