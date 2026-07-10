@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://dp3kkau4gvja4"]
+
+[ext_resource type="Script" uid="uid://m4uf5sy4xh3x" path="res://channels/paleolith/paleolith_channel.gd" id="1_c4dq6"]
+[ext_resource type="FontFile" uid="uid://c2fnwc4exih82" path="res://fonts/perfect_dos_vga_437/Perfect DOS VGA 437.ttf" id="2_xrnvc"]
+[ext_resource type="FontFile" uid="uid://b278khluoy3sm" path="res://fonts/vcr_osd_mono/VCR_OSD_MONO_1.001.ttf" id="3_y2adw"]
+[ext_resource type="FontFile" uid="uid://brt5s7u57m415" path="res://fonts/essential_pragmata_pro/Essential PragmataPro-B_1.4.ttf" id="4_p8lvd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y2adw"]
+
+[node name="paleolith_channel" type="Control" unique_id=448293776]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c4dq6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1513272174]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=14975910]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=1030024821]
+layout_mode = 2
+
+[node name="Output" type="RichTextLabel" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=608595599]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/normal_font = ExtResource("2_xrnvc")
+bbcode_enabled = true
+
+[node name="Input" type="LineEdit" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=115326200]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_xrnvc")
+keep_editing_on_text_submit = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1888852878]
+layout_mode = 2
+
+[node name="StatusBar" type="RichTextLabel" parent="VBoxContainer/HBoxContainer" unique_id=1187766846]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/normal_font = ExtResource("2_xrnvc")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=758527345]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_y2adw")
+
+[node name="ArcPanelBackgroundColor" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/PanelContainer" unique_id=781618936]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("3_y2adw")
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArcPanel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/PanelContainer" unique_id=476586597]
+custom_minimum_size = Vector2(450, 225)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("3_y2adw")
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArcPanelBackground" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/PanelContainer" unique_id=1931203419]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("3_y2adw")
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1645383791]
+
+[node name="Panel" type="Panel" parent="CanvasLayer" unique_id=627789137]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Panel" unique_id=355761214]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OverlayLabel" type="RichTextLabel" parent="CanvasLayer/Panel/CenterContainer" unique_id=816248145]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("4_p8lvd")
+bbcode_enabled = true
+fit_content = true
+autowrap_mode = 0
