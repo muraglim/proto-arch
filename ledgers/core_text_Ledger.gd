@@ -3,7 +3,7 @@ extends Ledger
 
 func _ready() -> void:
 	data = {
-	"project_start_main": "Active profile: {active_name}\n\n[C]reate profile\n[S]elect profile\n[T]ealwyv\n[P]aleolith",
+	"project_start_main": "Active profile: {active_name}\n\n[C]reate profile\n[S]elect profile\n[T]ealwyv\n[P]aleolith\np[E]rstalt",
 	"profile_creation_prompt": "Enter a name for your new profile (max {max_len} characters):",
 	"profile_creation_empty": "Name cannot be empty. Try again:",
 	"profile_creation_forbidden": "Name contains a forbidden character. Forbidden characters: {chars}\n\nTry again:",
@@ -23,4 +23,16 @@ func _ready() -> void:
 	"tealwyv_character_creation_gender_invalid": "Invalid selection — choose [M]ale, [F]emale, or [O]ther.\n\nLeave blank to cancel.",
 	"tealwyv_hub_main": "{flavor}\n\n[F]orest\n[B]ack",
 	"tealwyv_event_main": "[TEALWYV EVENT — skeleton]",
+	"perstalt_start_main": "Active profile: {active_profile_name}\nActive world: {active_world_name}\n\n[C]reate world\n[S]elect world\n[D]elete world\n[B]ack to ProjectStart",
+	"perstalt_start_main_no_worlds": "Active profile: {active_profile_name}\nActive world: {active_world_name}\n\n[C]reate world\n[B]ack to ProjectStart",
+	"perstalt_world_creation_prompt": "Enter a name for your new world (max {max_len} characters, leave blank to cancel):",
+	"perstalt_world_creation_empty": "Name cannot be empty. Try again:",
+	"perstalt_world_creation_forbidden": "Name contains a forbidden character. Forbidden characters: {chars}\n\nTry again:",
+	"perstalt_world_creation_taken": "You already have a world by that name. Try again:",
+	"perstalt_world_creation_no_profile": "No active profile. Leave blank to cancel, then select a profile from ProjectStart.",
+	"perstalt_world_selection_prompt": "{worlds}\n\nType a world name to select it:",
+	"perstalt_world_selection_missing": "No world by that name found.\n\n{worlds}\n\nTry again:",
+	"perstalt_world_deletion_prompt": "{worlds}\n\nType a world name to delete it (leave blank to cancel):",
+	"perstalt_world_deletion_confirm": "Delete world '{world_name}'? This cannot be undone.\n\n[Y]es / [N]o",
+	"perstalt_world_deletion_missing": "No world by that name found.\n\n{worlds}\n\nType a name to delete (leave blank to cancel):",
 }

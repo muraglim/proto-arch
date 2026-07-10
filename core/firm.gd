@@ -51,6 +51,9 @@ const LEDGER_SCRIPTS: Dictionary = {
 	"paleolith_resource_ledger":             "uid://c8m2qmgj1j3yv",
 	"paleolith_arc_background_ledger":       "uid://bmffmvhwgv6l3",
 	"paleolith_arc_background_color_ledger": "uid://wdaxcuvk4knt", # paleolith_arc_background_color_ledger
+	
+	# perstalt
+	"perstalt_world_ledger":                 "uid://cmun3njq2efs4",
 }
 
 var _ledgers: Dictionary = {}

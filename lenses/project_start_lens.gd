@@ -31,6 +31,9 @@ func _on_input(text: String) -> void:
 		"p":
 			Mount.mount_lens("paleolith_hub_lens")
 			Scope.focus.call_deferred("paleolith_hub")
+		"e":
+			Mount.mount_lens("perstalt_start_lens")
+			Scope.focus.call_deferred("perstalt_start")
 
 func _push_compose() -> void:
 	if Guard.is_null_or_empty(_medium, name + ":_push_compose"): return

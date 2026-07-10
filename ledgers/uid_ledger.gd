@@ -50,6 +50,11 @@ func _ready() -> void:
 		"paleolith_event_roll_daemon": "uid://cao3smf8mmqi1",
 		"paleolith_outcome_roll_daemon": "uid://bcfeyw17uxxlm",
 		
+		# perstalt suite
+		"perstalt_start_lens": "uid://bq3b5vael36mt",
+		"perstalt_world_daemon": "uid://bp65dowhjyrmi",
+		
 		# fonts
 		"perfect_dos_vga_437": "uid://i4bmveojir7s",
+		
 }

@@ -15,6 +15,10 @@ const STORE_SCRIPTS: Dictionary = {
 	# paleolith
 	"paleolith_store":         "uid://btfwwyjtecol5",
 	"paleolith_dev_store":     "uid://brubxwj4wqt3p",
+	
+	# perstalt
+	"perstalt_world_store":    "uid://vpbohrluf8d3",
+	"perstalt_save_store":     "uid://dcasu8myiiupo",
 }
 
 var stores: Dictionary = {}
